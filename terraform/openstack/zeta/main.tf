@@ -1,4 +1,4 @@
-module "sanger_internal_openstack_zeta_hgi_systems_keypairs" {
+module "uk_sanger_internal_openstack_zeta_hgi_keypairs" {
   source          = "../modules/keypairs/"
   region          = "${var.region}"
   env             = "${var.env}"
@@ -6,7 +6,7 @@ module "sanger_internal_openstack_zeta_hgi_systems_keypairs" {
   mercury_keypair = "${var.mercury_public_key}"
 }
 
-module "sanger_internal_openstack_zeta_hgi_systems_networking" {
+module "uk_sanger_internal_openstack_zeta_hgi_networking" {
   source                = "../modules/networking/"
   region                = "${var.region}"
   env                   = "${var.env}"
@@ -17,14 +17,30 @@ module "sanger_internal_openstack_zeta_hgi_systems_networking" {
   gateway_ip            = "${var.gateway_ip}"
 }
 
-module "sanger_internal_openstack_zeta_hgi_systems_secgroups" {
+module "uk_sanger_internal_openstack_zeta_hgi_secgroups" {
   source  = "../modules/secgroups/"
   region  = "${var.region}"
   env     = "${var.env}"
 }
 
+module "uk_sanger_internal_openstack_zeta_hgi_cluster" {
+  source          = "../modules/cluster/"
+  region          = "${var.region}"
+  env             = "${var.env}"
+  role            = "${var.role}"
+  count           = "${var.count}"
+  image_name      = "${var.image_name}"
+  flavour_name    = "${var.flavour_name}"
+  network_name    = "${var.network_name}"
+  affinity        = "${var.affinity}"
+  key_pair        = "${module.uk_sanger_internal_openstack_zeta_hgi_keypairs.mercury}"
+  security_groups = "${keys(module.uk_sanger_internal_openstack_zeta_hgi_secgroups)}"
+  subnetpool_id   = "${module.uk_sanger_internal_openstack_zeta_hgi_networking.subnetpool_id}"
+  subnetpool_name = "${module.uk_sanger_internal_openstack_zeta_hgi_networking.subnetpool_name}"
+}
+
 /*
- *  module "sanger_internal_openstack_zeta_hgi_systems_ssh-gateway" {
+ *  module "uk_sanger_internal_openstack_zeta_hgi_ssh-gateway" {
  *    source = "../modules/ssh-gateway/"
  *    env    = "${var.env}"
  *    region = "${var.region}"
