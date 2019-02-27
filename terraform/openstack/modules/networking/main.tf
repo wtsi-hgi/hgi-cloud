@@ -29,10 +29,16 @@ resource "openstack_networking_subnet_v2" "main" {
   gateway_ip      = "${var.gateway_ip}"
 }
 
+resource "openstack_networking_network_v2" "main" {
+  provider       = "openstack"
+  name           = "sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_systems_network_main"
+  admin_state_up = "true"
+}
+
 resource "openstack_networking_router_v2" "main" {
   count               = "1"
   name                = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_router_main"
-  external_network_id = "${data.openstack_networking_network_v2.uk_sanger_internal_openstack_zeta_hgi_network_external.id}"
+  external_network_id = "${data.openstack_networking_network_v2.main.id}"
 }
 
 resource "openstack_networking_router_interface_v2" "main" {
