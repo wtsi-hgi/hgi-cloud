@@ -18,10 +18,8 @@ module "uk_sanger_internal_openstack_zeta_hgi_networking" {
   source              = "../modules/networking/"
   env                 = "${var.env}"
   external_network_id = "${data.openstack_networking_network_v2.external.network.id}"
-  subnet              = "${var.subnet}"
+  subnet_cidr         = "${var.subnet_cidr}"
   dns_nameservers     = "${var.dns_nameservers}"
-  # host_routes         = "${var.host_routes}"
-  # gateway_ip          = "${var.gateway_ip}"
 }
 
 # module "uk_sanger_internal_openstack_zeta_hgi_secgroups" {
