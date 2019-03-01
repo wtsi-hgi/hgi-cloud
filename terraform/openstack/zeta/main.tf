@@ -1,3 +1,4 @@
+# Manages public keys
 module "keypairs" {
   source              = "../modules/keypairs/"
   env                 = "${var.env}"
@@ -5,9 +6,7 @@ module "keypairs" {
   mercury_public_key  = "${var.mercury_public_key}"
 }
 
-###############################################################################
-# Look up external network id from name
-###############################################################################
+# Manages network, subnet, and router
 module "networking" {
   source                = "../modules/networking/"
   env                   = "${var.env}"
@@ -16,11 +15,13 @@ module "networking" {
   dns_nameservers       = "${var.dns_nameservers}"
 }
 
+# Manages security groups
 module "secgroups" {
   source  = "../modules/secgroups/"
   env     = "${var.env}"
 }
 
+# Manages the main servers group
 module "cluster" {
   source          = "../modules/clusters/"
   env             = "${var.env}"

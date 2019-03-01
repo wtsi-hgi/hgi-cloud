@@ -1,3 +1,7 @@
+# Everything is a module in this repository. Even the main infrastructure
+# itself is created by a module. Each directory should have a README.md file
+# explaining the purpose of the directory's content.
+
 provider "openstack" {
   # Use environment variables for a detailed configuration of this provider:
   #   https://www.terraform.io/docs/providers/openstack/index.html#configuration-reference
