@@ -3,7 +3,7 @@
 ###############################################################################
 
 resource "openstack_compute_secgroup_v2" "ping" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_ping"
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_ping"
   description = "ICMP ping"
 
   # All ICMP
@@ -15,8 +15,8 @@ resource "openstack_compute_secgroup_v2" "ping" {
   }
 }
 
-resource "openstack_compute_secgroup_v2" "consul-server" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_consul-server"
+resource "openstack_compute_secgroup_v2" "consul_server" {
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_consul_server"
   description = "Access to consul server agent"
 
   # Server RPC
@@ -68,8 +68,8 @@ resource "openstack_compute_secgroup_v2" "consul-server" {
   }
 }
 
-resource "openstack_compute_secgroup_v2" "consul-client" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_consul-client"
+resource "openstack_compute_secgroup_v2" "consul_client" {
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_consul_client"
   description = "Access to consul client agent"
 
   # serf LAN TCP
@@ -90,7 +90,7 @@ resource "openstack_compute_secgroup_v2" "consul-client" {
 }
 
 resource "openstack_compute_secgroup_v2" "http" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_http"
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_http"
   description = "Incoming http access"
 
   rule {
@@ -101,8 +101,8 @@ resource "openstack_compute_secgroup_v2" "http" {
   }
 }
 
-resource "openstack_compute_secgroup_v2" "http-cogs" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_http-cogs"
+resource "openstack_compute_secgroup_v2" "http_cogs" {
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_http_cogs"
   description = "Incoming http access for studentportal development"
 
   rule {
@@ -114,7 +114,7 @@ resource "openstack_compute_secgroup_v2" "http-cogs" {
 }
 
 resource "openstack_compute_secgroup_v2" "https" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_https"
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_https"
   description = "Incoming https access"
 
   rule {
@@ -126,7 +126,7 @@ resource "openstack_compute_secgroup_v2" "https" {
 }
 
 resource "openstack_compute_secgroup_v2" "ssh" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_ssh"
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_ssh"
   description = "Incoming ssh access"
 
   rule {
@@ -137,8 +137,8 @@ resource "openstack_compute_secgroup_v2" "ssh" {
   }
 }
 
-resource "openstack_compute_secgroup_v2" "postgres-local" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_postgres-local"
+resource "openstack_compute_secgroup_v2" "postgres_local" {
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_postgres_local"
   description = "Local network access on postgres port 5432"
 
   rule {
@@ -149,8 +149,8 @@ resource "openstack_compute_secgroup_v2" "postgres-local" {
   }
 }
 
-resource "openstack_compute_secgroup_v2" "tcp-local" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_tcp-local"
+resource "openstack_compute_secgroup_v2" "tcp_local" {
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_tcp_local"
   description = "Local network access from all TCP ports"
 
   rule {
@@ -161,8 +161,8 @@ resource "openstack_compute_secgroup_v2" "tcp-local" {
   }
 }
 
-resource "openstack_compute_secgroup_v2" "udp-local" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_udp-local"
+resource "openstack_compute_secgroup_v2" "udp_local" {
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_udp_local"
   description = "Local network access from all UDP ports"
 
   rule {
@@ -173,8 +173,8 @@ resource "openstack_compute_secgroup_v2" "udp-local" {
   }
 }
 
-resource "openstack_compute_secgroup_v2" "slurm-master" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_slurm-master"
+resource "openstack_compute_secgroup_v2" "slurm_master" {
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_slurm_master"
   description = "Slurm master node"
 
   rule {
@@ -199,8 +199,8 @@ resource "openstack_compute_secgroup_v2" "slurm-master" {
   }
 }
 
-resource "openstack_compute_secgroup_v2" "slurm-compute" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_slurm-compute"
+resource "openstack_compute_secgroup_v2" "slurm_compute" {
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_slurm_compute"
   description = "Slurm compute node"
 
   rule {
@@ -211,8 +211,8 @@ resource "openstack_compute_secgroup_v2" "slurm-compute" {
   }
 }
 
-resource "openstack_compute_secgroup_v2" "keep-service" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_keep-service"
+resource "openstack_compute_secgroup_v2" "keep_service" {
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_keep_service"
   description = "Arvados keep service"
 
   rule {
@@ -223,8 +223,8 @@ resource "openstack_compute_secgroup_v2" "keep-service" {
   }
 }
 
-resource "openstack_compute_secgroup_v2" "keep-proxy" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_keep-proxy"
+resource "openstack_compute_secgroup_v2" "keep_proxy" {
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_keep_proxy"
   description = "Arvados keep proxy (keep service accessible from anywhere)"
 
   rule {
@@ -236,7 +236,7 @@ resource "openstack_compute_secgroup_v2" "keep-proxy" {
 }
 
 resource "openstack_compute_secgroup_v2" "netdata" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_netdata"
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_netdata"
   description = "Netdata web UI accessible from within tenant network"
 
   rule {
@@ -247,8 +247,8 @@ resource "openstack_compute_secgroup_v2" "netdata" {
   }
 }
 
-resource "openstack_compute_secgroup_v2" "nfs-server" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_nfs-server"
+resource "openstack_compute_secgroup_v2" "nfs_server" {
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_nfs_server"
   description = "NFS server"
 
   rule {
@@ -281,7 +281,7 @@ resource "openstack_compute_secgroup_v2" "nfs-server" {
 }
 
 resource "openstack_compute_secgroup_v2" "krb5" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_krb5"
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_krb5"
   description = "Kerberos authentication"
 
   rule {
@@ -293,7 +293,7 @@ resource "openstack_compute_secgroup_v2" "krb5" {
 }
 
 resource "openstack_compute_secgroup_v2" "irobot" {
-  name        = "uk_sanger_internal_openstack_zeta_${var.region}_${var.env}_hgi_secgroup_irobot"
+  name        = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_secgroup_irobot"
   description = "iRobot"
 
   rule {
