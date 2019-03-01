@@ -1,4 +1,4 @@
-module "uk_sanger_internal_openstack_zeta_hgi_keypairs" {
+module "keypairs" {
   source              = "../modules/keypairs/"
   env                 = "${var.env}"
   jr17_public_key     = "${var.jr17_public_key}"
@@ -14,20 +14,20 @@ data "openstack_networking_network_v2" "external" {
 }
 
 
-module "uk_sanger_internal_openstack_zeta_hgi_networking" {
+module "networking" {
   source              = "../modules/networking/"
   env                 = "${var.env}"
-  external_network_id = "${data.openstack_networking_network_v2.external.network.id}"
+  external_network_id = "${data.openstack_networking_network_v2.external.id}"
   subnet_cidr         = "${var.subnet_cidr}"
   dns_nameservers     = "${var.dns_nameservers}"
 }
 
-# module "uk_sanger_internal_openstack_zeta_hgi_secgroups" {
-#   source  = "../modules/secgroups/"
-#   env     = "${var.env}"
-# }
-# 
-# module "uk_sanger_internal_openstack_zeta_hgi_cluster" {
+module "secgroups" {
+  source  = "../modules/secgroups/"
+  env     = "${var.env}"
+}
+
+# module "cluster" {
 #   source          = "../modules/cluster/"
 #   env             = "${var.env}"
 #   role            = "${var.role}"
