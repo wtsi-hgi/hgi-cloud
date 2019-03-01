@@ -8,18 +8,12 @@ module "keypairs" {
 ###############################################################################
 # Look up external network id from name
 ###############################################################################
-data "openstack_networking_network_v2" "external" {
-  name     = "${var.external_network_name}"
-  external = true
-}
-
-
 module "networking" {
-  source              = "../modules/networking/"
-  env                 = "${var.env}"
-  external_network_id = "${data.openstack_networking_network_v2.external.id}"
-  subnet_cidr         = "${var.subnet_cidr}"
-  dns_nameservers     = "${var.dns_nameservers}"
+  source                = "../modules/networking/"
+  env                   = "${var.env}"
+  external_network_name = "${var.external_network_name}"
+  subnet_cidr           = "${var.subnet_cidr}"
+  dns_nameservers       = "${var.dns_nameservers}"
 }
 
 module "secgroups" {
@@ -27,23 +21,18 @@ module "secgroups" {
   env     = "${var.env}"
 }
 
-# module "cluster" {
-#   source          = "../modules/cluster/"
-#   env             = "${var.env}"
-#   role            = "${var.role}"
-#   count           = "${var.count}"
-#   image_name      = "${var.image_name}"
-#   flavour_name    = "${var.flavour_name}"
-#   network_name    = "${var.network_name}"
-#   affinity        = "${var.affinity}"
-#   key_pair        = "${module.uk_sanger_internal_openstack_zeta_hgi_keypairs.mercury}"
-#   security_groups = "${keys(module.uk_sanger_internal_openstack_zeta_hgi_secgroups)}"
-#   subnetpool_id   = "${module.uk_sanger_internal_openstack_zeta_hgi_networking.subnetpool_id}"
-#   subnetpool_name = "${module.uk_sanger_internal_openstack_zeta_hgi_networking.subnetpool_name}"
-# 
-#   depends_on = [
-#   ]
-# }
+module "cluster" {
+  source          = "../modules/clusters/"
+  env             = "${var.env}"
+  role            = "${var.role}"
+  count           = "${var.count}"
+  image_name      = "${var.image_name}"
+  flavor_name     = "${var.flavor_name}"
+  network_name    = "${module.networking.main_network_name}"
+  affinity        = "${var.affinity}"
+  key_pair        = "${module.keypairs.mercury}"
+  security_groups = ["${values(module.secgroups.name)}"]
+}
 
 /*
  *  module "uk_sanger_internal_openstack_zeta_hgi_ssh-gateway" {
@@ -52,7 +41,7 @@ module "secgroups" {
  *  
  *    image = "${module.hgi-openstack-image-hgi-base-freebsd11-4cb02ffa.image}"
  *  
- *    flavour      = "o1.medium"
+ *    flavor       = "o1.medium"
  *    domain       = "zeta-hgi.hgi.sanger.ac.uk"
  *    core_context = "${module.openstack.context}"
  *  

@@ -24,3 +24,23 @@ variable "dns_nameservers" {
   type        = "list"
   description = "The list of the DNS servers"
 }
+
+variable "role" {
+  default = "vanilla"
+}
+
+variable "count" {
+  default = 1
+}
+
+variable "image_name" {
+  default = "hgi-base-bionic-latest"
+}
+
+variable "flavor_name" {
+  default = "o1.small"
+}
+
+variable "affinity" {
+  default = "soft-anti-affinity"
+}
