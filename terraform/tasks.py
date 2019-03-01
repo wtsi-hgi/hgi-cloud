@@ -27,15 +27,15 @@ def plan(context, to='create'):
   context.run("terraform plan %s -var-file=vars/dev.tfvars" % out[to])
 
 @task(pre=[call(plan, to='create')])
-def create(context):
-  pass
+def creation(context):
+  context.run('terraform apply creation.tfplan')
 
 # Since both destroy and update are meant to modify an infrastructure, we won't
 # run them automatically at this stage.
 @task
-def destroy(context):
-  if os.path.isfile('destroy.tfplan'):
-    context.run('terraform apply -plan=destroy.tfplan -var-file=vars/dev.tfvars')
+def destruction(context):
+  if os.path.isfile('destruction.tfplan'):
+    context.run('terraform apply destruction.tfplan')
   else:
     print('destroy.tfplan does not exist or is not a regular file.')
     print("Use `invoke plan --to destroy` first")
@@ -44,7 +44,7 @@ def destroy(context):
 @task
 def update(context):
   if os.path.isfile('update.tfplan'):
-    context.run('terraform apply -plan=update.tfplan -var-file=vars/dev.tfvars')
+    context.run('terraform apply update.tfplan')
   else:
     print('update.tfplan does not exist or is not a regular file.')
     print("Use `invoke plan --to update` first")
