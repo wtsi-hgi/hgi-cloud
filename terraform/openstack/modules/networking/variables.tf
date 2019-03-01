@@ -3,9 +3,9 @@ variable "env" {
   description = "The name of environment"
 }
 
-variable "external_network_id" {
+variable "external_network_name" {
   type        = "string"
-  description = "The ID of the externale network"
+  description = "The name of the externale network"
 }
 
 variable "subnet_cidr" {
