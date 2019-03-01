@@ -12,6 +12,18 @@ We chose to have a fresh start on the IaC, rather then refactoring legacy
 code. This will let us choose simple and effective objectives, outline better
 requirements, and design around operability from the very beginning.
 
+# Usage
+
+To create the infrastructure:
+```
+bash invoke create
+```
+
+To destroy the infrastructure:
+```
+bash invoke destroy
+```
+
 # Architecture
 TODO: include a simple design diagram
 
