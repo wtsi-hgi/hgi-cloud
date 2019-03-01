@@ -6,3 +6,4 @@ mercury_public_key    = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC33E9dReKYHouMSEm
 external_network_name = "public"
 subnet_cidr           = "192.168.224.16/28"
 dns_nameservers       = ["172.18.255.1", "172.18.255.2", "172.18.255.3"]
+count                 = 3

@@ -20,4 +20,9 @@ module "uk_sanger_internal_openstack_zeta_hgi_systems" {
   external_network_name = "${var.external_network_name}"
   subnet_cidr           = "${var.subnet_cidr}"
   dns_nameservers       = "${var.dns_nameservers}"
+  role                  = "${var.role}"
+  count                 = "${var.count}"
+  image_name            = "${var.image_name}"
+  flavor_name           = "${var.flavor_name}"
+  affinity              = "${var.affinity}"
 }
