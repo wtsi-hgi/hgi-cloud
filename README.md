@@ -14,15 +14,44 @@ requirements, and design around operability from the very beginning.
 
 # Usage
 
+## What do you need?
+1. (required) `terraform` executable anywhere in your `PATH`
+2. (optional) `python3` interpreter anywhere in your `PATH`
+3. (optional) `virtualenv` executable anywhere in your `PATH`
+4. (optional) `openrc.sh` OpenStack's RC file, that you can get from
+   OpenStack's web interface
+
+## The easy way
+The easy way is to use the `invoke` shellscript in the base directory of this
+project, given that you have `python3`, `virtualenv` and `openrc.sh` available:
+`invoke` will create the python3 virtualenv with all the dependencies, read all
+the bash environment variables in `openrc.sh` and then run the appropriate
+tasks.
+
 To create the infrastructure:
 ```
 bash invoke create
 ```
 
+To update the infrastructure:
+```
+bash invoke plan --to update
+# Check the plan
+bash invoke update
+```
+
 To destroy the infrastructure:
 ```
+bash invoke plan --to destroy
+# Check the plan
 bash invoke destroy
 ```
+
+## The hard way
+If you know your way around `OpenStack` and `terraform`, you will be able to
+setup the bash environment variables you need, and then run the appropriate
+terraform commands to get your tasks done. Feel free to take inspiration from
+`invoke` and all the `tasks.py` files you can find.
 
 # Architecture
 TODO: include a simple design diagram
