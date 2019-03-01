@@ -1,4 +1,6 @@
 py3/
-*/.terraform
 openrc.sh
+*/.terraform
 *.tfplan
+*.tfstate
+*.tfstate.*
