@@ -30,7 +30,7 @@ tasks.
 
 To create the infrastructure:
 ```
-bash invoke create
+bash invoke creation
 ```
 
 To update the infrastructure:
@@ -44,7 +44,7 @@ To destroy the infrastructure:
 ```
 bash invoke plan --to destroy
 # Check the plan
-bash invoke destroy
+bash invoke destruction
 ```
 
 ## The hard way
