@@ -41,7 +41,6 @@ pip install --requirement requirements.txt
 
 echo
 
-cd terraform
 echo -e "${PWD}\n"
 
 invoke --echo "${@}"

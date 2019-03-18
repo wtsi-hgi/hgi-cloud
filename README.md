@@ -30,21 +30,21 @@ tasks.
 
 To create the infrastructure:
 ```
-bash invoke creation
+bash invoke terraform.creation
 ```
 
 To update the infrastructure:
 ```
-bash invoke plan --to update
+bash invoke terraform.plan --to update
 # Check the plan
-bash invoke update
+bash invoke terraform.update
 ```
 
 To destroy the infrastructure:
 ```
-bash invoke plan --to destroy
+bash invoke terraform.plan --to destroy
 # Check the plan
-bash invoke destruction
+bash invoke terraform.destruction
 ```
 
 ## The hard way
