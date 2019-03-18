@@ -1,4 +1,5 @@
 variable "env" {}
+variable "os_release" {}
 variable "network_name" {}
 variable "key_pair" {}
 variable "security_groups" {
@@ -14,11 +15,11 @@ variable "count" {
 }
 
 variable "image_name" {
-  default = "hgi-base-bionic-latest"
+  default = "bionic-server"
 }
 
 variable "flavor_name" {
-  default = "o1.small"
+  default = "o2.small"
 }
 
 variable "affinity" {

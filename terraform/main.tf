@@ -18,8 +18,8 @@ provider "openstack" {
 module "uk_sanger_internal_openstack_zeta_hgi_systems" {
   source                = "openstack/zeta/"
   region                = "${var.region}"
+  os_release            = "${var.os_release}"
   env                   = "${var.env}"
-  jr17_public_key       = "${var.jr17_public_key}"
   mercury_public_key    = "${var.mercury_public_key}"
   external_network_name = "${var.external_network_name}"
   subnet_cidr           = "${var.subnet_cidr}"

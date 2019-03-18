@@ -17,7 +17,7 @@ variable "count" {
 }
 
 variable "image_name" {
-  default = "hgi-base-bionic-latest"
+  default = "bionic-server"
 }
 
 variable "flavor_name" {
@@ -26,4 +26,8 @@ variable "flavor_name" {
 
 variable "affinity" {
   default = "soft-anti-affinity"
+}
+
+variable "os_release" {
+  default = "eta"
 }

@@ -2,6 +2,7 @@
 module "keypairs" {
   source              = "../modules/keypairs/"
   env                 = "${var.env}"
+  os_release          = "${var.os_release}"
   mercury_public_key  = "${var.mercury_public_key}"
 }
 
@@ -9,6 +10,7 @@ module "keypairs" {
 module "networking" {
   source                = "../modules/networking/"
   env                   = "${var.env}"
+  os_release            = "${var.os_release}"
   external_network_name = "${var.external_network_name}"
   subnet_cidr           = "${var.subnet_cidr}"
   dns_nameservers       = "${var.dns_nameservers}"
@@ -16,13 +18,15 @@ module "networking" {
 
 # Manages security groups
 module "secgroups" {
-  source  = "../modules/secgroups/"
-  env     = "${var.env}"
+  source      = "../modules/secgroups/"
+  env         = "${var.env}"
+  os_release  = "${var.os_release}"
 }
 
 # Manages the main servers group
 module "cluster" {
   source          = "../modules/clusters/"
+  os_release      = "${var.os_release}"
   env             = "${var.env}"
   role            = "${var.role}"
   count           = "${var.count}"
@@ -35,7 +39,7 @@ module "cluster" {
 }
 
 /*
- *  module "uk_sanger_internal_openstack_zeta_hgi_ssh-gateway" {
+ *  module "uk-sanger-internal-openstack-${var.os_release}-gateway" {
  *    source = "../modules/ssh-gateway/"
  *    env    = "${var.env}"
  *  

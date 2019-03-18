@@ -1,5 +1,5 @@
 resource "openstack_compute_servergroup_v2" "cluster" {
-  name      = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_cluster_${var.role}"
+  name      = "uk-sanger-internal-openstack-${var.os_release}-${var.env}-hgi-cluster-${var.role}"
   policies  = ["${var.affinity}"]
 }
 
@@ -9,7 +9,7 @@ resource "openstack_compute_floatingip_v2" "public" {
 }
 
 resource "openstack_compute_instance_v2" "instance" {
-  name            = "uk_sanger_internal_openstack_zeta_${var.env}_hgi_cluster_${var.role}_${count.index + 1}"
+  name            = "uk-sanger-internal-openstack-${var.os_release}-${var.env}-hgi-cluster-${var.role}-${count.index + 1}"
   count           = "${var.count}"
   image_name      = "${var.image_name}"
   flavor_name     = "${var.flavor_name}"

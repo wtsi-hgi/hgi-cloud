@@ -4,12 +4,12 @@ locals {
   ]
 }
 
-resource "openstack_networking_floatingip_v2" "sanger_internal_openstack_zeta_hgi_systems_ssh-gateway" {
+resource "openstack_networking_floatingip_v2" "sanger_internal_openstack_${var.os_release}_hgi_systems_ssh-gateway" {
   provider = "openstack"
   pool     = "${var.floatingip_pool_name}"
 }
 
-resource "openstack_compute_instance_v2" "sanger_internal_openstack_zeta_hgi_systems_ssh-gateway" {
+resource "openstack_compute_instance_v2" "sanger_internal_openstack_${var.os_release}_hgi_systems_ssh-gateway" {
   provider    = "openstack"
   count       = 1
   name        = "ssh-gateway"
@@ -33,14 +33,14 @@ resource "openstack_compute_instance_v2" "sanger_internal_openstack_zeta_hgi_sys
   metadata = {
     ansible_groups = "${join(" ", distinct(concat(local.ansible_groups, var.extra_ansible_groups)))}"
     user           = "${var.image["user"]}"
-    bastion_host   = "${openstack_networking_floatingip_v2.sanger_internal_openstack_zeta_hgi_systems_ssh-gateway.address}"
+    bastion_host   = "${openstack_networking_floatingip_v2.sanger_internal_openstack_${var.os_release}_hgi_systems_ssh-gateway.address}"
     bastion_user   = "${var.image["user"]}"
   }
 }
 
-resource "openstack_compute_floatingip_associate_v2" "sanger_internal_openstack_zeta_hgi_systems_ssh-gateway" {
-  floating_ip = "${openstack_networking_floatingip_v2.sanger_internal_openstack_zeta_hgi_systems_ssh-gateway.address}"
-  instance_id = "${openstack_compute_instance_v2.sanger_internal_openstack_zeta_hgi_systems_ssh-gateway.id}"
+resource "openstack_compute_floatingip_associate_v2" "sanger_internal_openstack_${var.os_release}_hgi_systems_ssh-gateway" {
+  floating_ip = "${openstack_networking_floatingip_v2.sanger_internal_openstack_${var.os_release}_hgi_systems_ssh-gateway.address}"
+  instance_id = "${openstack_compute_instance_v2.sanger_internal_openstack_${var.os_release}_hgi_systems_ssh-gateway.id}"
 }
 
 resource "infoblox_record" "ssh-gateway" {

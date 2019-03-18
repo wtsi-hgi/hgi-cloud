@@ -3,6 +3,9 @@ variable "env" {
   description = "The name of environment"
 }
 
+variable "os_release" {
+}
+
 variable "external_network_name" {
   type        = "string"
   description = "The name of the externale network"
