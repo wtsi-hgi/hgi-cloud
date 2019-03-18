@@ -2,7 +2,6 @@
 module "keypairs" {
   source              = "../modules/keypairs/"
   env                 = "${var.env}"
-  jr17_public_key     = "${var.jr17_public_key}"
   mercury_public_key  = "${var.mercury_public_key}"
 }
 

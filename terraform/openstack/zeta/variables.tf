@@ -2,7 +2,6 @@ variable "region" {
   type = "string"
 }
 
-variable "jr17_public_key" {}
 variable "mercury_public_key" {}
 
 variable "env" {
