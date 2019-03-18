@@ -1,3 +1,0 @@
----
-terraform_path: terraform
-terraform_tfvars: vars/dev.tfvars

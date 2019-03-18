@@ -1,0 +1,3 @@
+---
+terraform_path: terraform
+terraform_tfvars: vars/zeta-hgi-dev.tfvars

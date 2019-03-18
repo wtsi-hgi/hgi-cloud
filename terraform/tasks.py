@@ -11,13 +11,13 @@ def clean(context):
 
 @task(clean)
 def init(context):
-  tfvars = context.config.get('terraform_tfvars', 'vars/dev.tfvars')
+  tfvars = context.config.get('terraform_tfvars', 'vars/zeta-hgi-dev.tfvars')
   with context.cd(context.config.get('terraform_path', '.')):
     context.run('terraform init -var-file={}'.format(tfvars))
 
 @task(init)
 def validate(context):
-  tfvars = context.config.get('terraform_tfvars', 'vars/dev.tfvars')
+  tfvars = context.config.get('terraform_tfvars', 'vars/zeta-hgi-dev.tfvars')
   with context.cd(context.config.get('terraform_path', '.')):
     context.run('terraform validate -var-file={}'.format(tfvars))
 
@@ -28,7 +28,7 @@ def plan(context, to='create'):
     'update': '-out=update.tfplan',
     'destroy': '-destroy -out=destruction.tfplan'
   }
-  tfvars = context.config.get('terraform_tfvars', 'vars/dev.tfvars')
+  tfvars = context.config.get('terraform_tfvars', 'vars/zeta-hgi-dev.tfvars')
   with context.cd(context.config.get('terraform_path', '.')):
     context.run('terraform plan {} -var-file={}'.format(out[to], tfvars))
 
