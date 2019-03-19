@@ -16,7 +16,7 @@ provider "openstack" {
 }
 
 module "uk_sanger_internal_openstack_zeta_hgi_systems" {
-  source                = "openstack/zeta/"
+  source                = "openstack/any/"
   region                = "${var.region}"
   os_release            = "${var.os_release}"
   env                   = "${var.env}"
