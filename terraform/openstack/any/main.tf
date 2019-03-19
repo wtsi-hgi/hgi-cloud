@@ -21,10 +21,10 @@ module "cluster" {
   affinity        = "${var.affinity}"
   key_pair        = "${module.environment.mercury_keypair}"
   security_groups = [
-    "uk-sanger-internal-openstack-${var.os_release}-${var.env}-hgi-secgroup-ping",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.env}-hgi-secgroup-ssh",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.env}-hgi-secgroup-tcp-local",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.env}-hgi-secgroup-udp-local"
+    "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-ping",
+    "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-ssh",
+    "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-tcp-local",
+    "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-udp-local"
   ]
 }
 

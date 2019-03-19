@@ -6,12 +6,12 @@ data "openstack_networking_network_v2" "external" {
   external = true
 }
 resource "openstack_networking_network_v2" "main" {
-  name           = "uk-sanger-internal-openstack-${var.os_release}-${var.env}-hgi-network-main"
+  name           = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-network-main"
   admin_state_up = "true"
 }
 
 resource "openstack_networking_subnet_v2" "main" {
-  name            = "uk-sanger-internal-openstack-${var.os_release}-${var.env}-hgi-subnet-main"
+  name            = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-subnet-main"
   network_id      = "${openstack_networking_network_v2.main.id}"
   cidr            = "${var.subnet_cidr}"
   dns_nameservers = "${var.dns_nameservers}"
@@ -19,7 +19,7 @@ resource "openstack_networking_subnet_v2" "main" {
 
 resource "openstack_networking_router_v2" "main" {
   count               = "1"
-  name                = "uk-sanger-internal-openstack-${var.os_release}-${var.env}-hgi-router-main"
+  name                = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-router-main"
   external_network_id = "${data.openstack_networking_network_v2.external.id}"
 }
 
