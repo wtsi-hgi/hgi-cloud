@@ -9,8 +9,8 @@
     {
       "type": "openstack",
       "ssh_username": "ubuntu",
-      "source_image": "2aa1d591-08ba-484a-8fd0-1f1499480092",
-      "networks": ["0050c89b-838d-4650-a659-00b7c26b0ff0"],
+      "source_image": "{{user `source_image_id`}}",
+      "networks": ["{{user `network_id`}}"],
       "image_name": "uk-sanger-internal-openstack-{{user `os_release`}}-hgi-{{user `env`}}-{{user `role_name`}}-{{user `role_version`}}",
       "instance_name": "uk-sanger-internal-openstack-{{user `os_release`}}-hgi-{{user `env`}}-packer-{{user `role_name`}}-{{user `role_version`}}",
       "floating_ip_network": "public",
