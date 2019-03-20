@@ -1,0 +1,17 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - apt:
+        state: present
+        name:
+          - git
+          - wget
+          - curl
+          - vim
+          - python-pip
+    - pip:
+        name: testinfra
+        state: present

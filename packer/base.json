@@ -1,0 +1,57 @@
+{
+  "variables": {
+    "os_release": "",
+    "env": "",
+    "role_name": "base",
+    "role_version": "0.0.0"
+  },
+  "builders": [
+    {
+      "type": "openstack",
+      "ssh_username": "ubuntu",
+      "source_image": "2aa1d591-08ba-484a-8fd0-1f1499480092",
+      "networks": ["0050c89b-838d-4650-a659-00b7c26b0ff0"],
+      "image_name": "uk-sanger-internal-openstack-{{user `os_release`}}-hgi-{{user `env`}}-{{user `role_name`}}-{{user `role_version`}}",
+      "instance_name": "uk-sanger-internal-openstack-{{user `os_release`}}-hgi-{{user `env`}}-packer-{{user `role_name`}}-{{user `role_version`}}",
+      "floating_ip_network": "public",
+      "security_groups": [
+        "uk-sanger-internal-openstack-{{user `os_release`}}-hgi-{{user `env`}}-secgroup-ping",
+        "uk-sanger-internal-openstack-{{user `os_release`}}-hgi-{{user `env`}}-secgroup-ssh",
+        "uk-sanger-internal-openstack-{{user `os_release`}}-hgi-{{user `env`}}-secgroup-tcp-local",
+        "uk-sanger-internal-openstack-{{user `os_release`}}-hgi-{{user `env`}}-secgroup-udp-local"
+      ],
+      "flavor": "o2.small"
+    }
+  ],
+  "provisioners" : [
+    {
+      "type": "shell",
+      "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+      "script": "scripts/setup.sh"
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "ansible/main.yml"
+    },
+    {
+      "type": "shell",
+      "script": "scripts/validate.sh"
+    },
+    {
+      "type": "shell",
+      "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+      "script": "scripts/cleanup.sh"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "checksum",
+      "checksum_types": ["md5", "sha512"],
+      "output": "packer_{{.BuildName}}_{{.BuilderType}}_{{.ChecksumType}}.checksum"
+    },
+    {
+      "type": "manifest",
+      "output": "packer-manifest.json"
+    }
+  ]
+}
