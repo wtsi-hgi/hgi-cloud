@@ -1,5 +1,0 @@
----
-iac_path: terraform/openstack/any/modules/environment
-terraform_tfvars: terraform/vars/eta-hgi-dev.tfvars
-run:
-  echo: true

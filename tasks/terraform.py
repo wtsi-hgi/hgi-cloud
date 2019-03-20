@@ -1,44 +1,52 @@
-from invoke import Collection, task, call
+import invoke
 import glob
 import os
 import os.path
 import sys
 
-@task
-def terraform_clean(context):
+def terraform_tfvars(context):
+  env = context.config['env']
+  os_release = context.config['os_release']
+  return 'terraform/vars/{}-hgi-{}.tfvars'.format(os_release, env)
+
+@invoke.task
+def clean(context):
   tfplan = '{}/*.tfplan'.format(context.config['iac_path'])
+  print('Removing {}'.format(tfplan))
   for plan in glob.glob(tfplan):
     os.remove(plan)
 
-@task(terraform_clean)
-def terraform_init(context):
-  tfvars = context.config['terraform_tfvars']
+@invoke.task(pre=[clean])
+def init(context):
+  var_file = terraform_tfvars(context)
   iac_path = context.config['iac_path']
-  context.run('terraform init -var-file={} {}'.format(tfvars, iac_path))
+  context.run('terraform init -var-file={} {}'.format(var_file, iac_path))
 
-@task(terraform_init)
-def terraform_validate(context):
-  tfvars = context.config['terraform_tfvars']
+@invoke.task(init)
+def validate(context):
+  var_file = terraform_tfvars(context)
   iac_path = context.config['iac_path']
-  context.run('terraform validate -var-file={} {}'.format(tfvars, iac_path))
+  context.run('terraform validate -var-file={} {}'.format(var_file, iac_path))
 
-@task(terraform_validate)
-def terraform_plan(context, to='create'):
+@invoke.task(validate)
+def plan(context, to='create'):
+  var_file = terraform_tfvars(context)
   iac_path = context.config['iac_path']
+  terraform_plan = 'terraform plan {} -var-file={} {}'
   options = '-out={}/{}.tfplan'.format(iac_path, to)
-  options += ' -destroy' if to == 'destroy' else ''
-  tfvars = context.config['terraform_tfvars']
-  context.run('terraform plan {} -var-file={} {}'.format(options, tfvars, iac_path))
+  if to == 'destroy':
+    options += ' -destroy'
+  context.run(terraform_plan.format(options, var_file, iac_path))
 
-@task(pre=[call(terraform_plan, to='create')])
-def terraform_up(context):
+@invoke.task(pre=[invoke.call(plan, to='create')])
+def up(context):
   iac_path = context.config['iac_path']
   context.run('terraform apply {}/{}.tfplan'.format(iac_path, 'create'))
 
 # Since both destruction and update are meant to modify an infrastructure, we
 # won't run them automatically at this stage.
-@task
-def terraform_down(context):
+@invoke.task
+def down(context):
   iac_path = context.config['iac_path']
   tfplan = '{}/destroy.tfplan'.format(iac_path)
   if os.path.isfile(tfplan):
@@ -50,8 +58,8 @@ def terraform_down(context):
     print(error.format(tfplan))
     sys.exit(1)
 
-@task
-def terraform_update(context):
+@invoke.task
+def update(context):
   iac_path = context.config['iac_path']
   tfplan = '{}/update.tfplan'.format(iac_path)
   if os.path.isfile(tfplan):
@@ -62,15 +70,3 @@ def terraform_update(context):
       'You need to willingly create a plan for the update')
     print(error.format(tfplan))
     sys.exit(1)
-
-terraform = Collection()
-terraform.add_task(terraform_clean, name='clean')
-terraform.add_task(terraform_init, name='init')
-terraform.add_task(terraform_validate, name='validate')
-terraform.add_task(terraform_plan, name='plan')
-terraform.add_task(terraform_up, name='up', default=True)
-terraform.add_task(terraform_down, name='down')
-terraform.add_task(terraform_update, name='update')
-
-ns = Collection()
-ns.add_collection(terraform, name='terraform')
