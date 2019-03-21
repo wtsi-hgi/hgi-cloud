@@ -1,6 +1,7 @@
 module "environment" {
   source                = "../environment/"
   os_release            = "${var.os_release}"
+  programme             = "${var.programme}"
   env                   = "${var.env}"
   external_network_name = "${var.external_network_name}"
   subnet_cidr           = "${var.subnet_cidr}"
@@ -12,6 +13,7 @@ module "environment" {
 module "cluster" {
   source          = "../clusters/"
   os_release      = "${var.os_release}"
+  programme       = "${var.programme}"
   env             = "${var.env}"
   role            = "${var.role}"
   count           = "${var.count}"
@@ -21,10 +23,10 @@ module "cluster" {
   affinity        = "${var.affinity}"
   key_pair        = "${module.environment.mercury_keypair}"
   security_groups = [
-    "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-ping",
-    "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-ssh",
-    "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-tcp-local",
-    "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-udp-local"
+    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ping",
+    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ssh",
+    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-tcp-local",
+    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-udp-local"
   ]
 }
 
@@ -33,12 +35,12 @@ module "cluster" {
  *    source = "../modules/ssh-gateway/"
  *    env    = "${var.env}"
  *  
- *    image = "${module.hgi-openstack-image-hgi-base-freebsd11-4cb02ffa.image}"
+ *    image = "${module.${var.programme}-openstack-image-${var.programme}-base-freebsd11-4cb02ffa.image}"
  *  
  *    flavor       = "o1.medium"
- *    domain       = "zeta-hgi.hgi.sanger.ac.uk"
+ *    domain       = "zeta-${var.programme}.${var.programme}.sanger.ac.uk"
  *    core_context = "${module.openstack.context}"
  *  
- *    extra_ansible_groups = ["docker-consul-cluster-zeta-hgi"]
+ *    extra_ansible_groups = ["docker-consul-cluster-zeta-${var.programme}"]
  *  }
  */

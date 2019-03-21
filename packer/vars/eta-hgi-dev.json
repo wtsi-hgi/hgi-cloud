@@ -1,4 +1,5 @@
 {
   "os_release": "eta",
+  "programme": "hgi",
   "env": "dev"
 }

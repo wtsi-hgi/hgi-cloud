@@ -1,5 +1,5 @@
 resource "openstack_compute_servergroup_v2" "cluster" {
-  name      = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-cluster-${var.role}"
+  name      = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-servergroup-${var.role}"
   policies  = ["${var.affinity}"]
 }
 
@@ -9,17 +9,13 @@ resource "openstack_compute_floatingip_v2" "public" {
 }
 
 resource "openstack_compute_instance_v2" "instance" {
-  name            = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-cluster-${var.role}-${count.index + 1}"
+  name            = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-instance-${var.role}-${count.index + 1}"
+  group           = "${openstack_compute_servergroup_v2.cluster.id}"
   count           = "${var.count}"
   image_name      = "${var.image_name}"
   flavor_name     = "${var.flavor_name}"
   key_pair        = "${var.key_pair}"
-  security_groups = [
-    "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-ping",
-    "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-ssh",
-    "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-tcp-local",
-    "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-udp-local"
-  ]
+  security_groups = var.security_groups
 
   network {
     name = "${var.network_name}"
@@ -43,5 +39,4 @@ resource "openstack_compute_floatingip_associate_v2" "associate" {
   count = "${var.count}"
   floating_ip = "${element(openstack_compute_floatingip_v2.public.*.address, count.index)}"
   instance_id = "${element(openstack_compute_instance_v2.instance.*.id, count.index)}"
-
 }

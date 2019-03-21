@@ -11,6 +11,8 @@ variable "env" {
 
 variable "os_release" {}
 
+variable "programme" {}
+
 variable "external_network_name" {
   type        = "string"
   description = "The name of the externale network"

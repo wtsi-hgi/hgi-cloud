@@ -3,7 +3,7 @@
 ###############################################################################
 
 resource "openstack_compute_secgroup_v2" "ping" {
-  name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-ping"
+  name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ping"
   description = "ICMP ping"
 
   # All ICMP
@@ -16,7 +16,7 @@ resource "openstack_compute_secgroup_v2" "ping" {
 }
 
 # resource "openstack_compute_secgroup_v2" "consul_server" {
-#   name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-consul-server"
+#   name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-consul-server"
 #   description = "Access to consul server agent"
 # 
 #   # Server RPC
@@ -69,7 +69,7 @@ resource "openstack_compute_secgroup_v2" "ping" {
 # }
 # 
 # resource "openstack_compute_secgroup_v2" "consul_client" {
-#   name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-consul-client"
+#   name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-consul-client"
 #   description = "Access to consul client agent"
 # 
 #   # serf LAN TCP
@@ -90,7 +90,7 @@ resource "openstack_compute_secgroup_v2" "ping" {
 # }
 # 
 # resource "openstack_compute_secgroup_v2" "http" {
-#   name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-http"
+#   name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-http"
 #   description = "Incoming http access"
 # 
 #   rule {
@@ -102,7 +102,7 @@ resource "openstack_compute_secgroup_v2" "ping" {
 # }
 # 
 # resource "openstack_compute_secgroup_v2" "http_cogs" {
-#   name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-http-cogs"
+#   name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-http-cogs"
 #   description = "Incoming http access for studentportal development"
 # 
 #   rule {
@@ -114,7 +114,7 @@ resource "openstack_compute_secgroup_v2" "ping" {
 # }
 # 
 # resource "openstack_compute_secgroup_v2" "https" {
-#   name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-https"
+#   name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-https"
 #   description = "Incoming https access"
 # 
 #   rule {
@@ -126,7 +126,7 @@ resource "openstack_compute_secgroup_v2" "ping" {
 # }
 
 resource "openstack_compute_secgroup_v2" "ssh" {
-  name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-ssh"
+  name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ssh"
   description = "Incoming ssh access"
 
   rule {
@@ -138,7 +138,7 @@ resource "openstack_compute_secgroup_v2" "ssh" {
 }
 
 # resource "openstack_compute_secgroup_v2" "postgres_local" {
-#   name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-postgres-local"
+#   name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-postgres-local"
 #   description = "Local network access on postgres port 5432"
 # 
 #   rule {
@@ -150,7 +150,7 @@ resource "openstack_compute_secgroup_v2" "ssh" {
 # }
 # 
 resource "openstack_compute_secgroup_v2" "tcp_local" {
-  name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-tcp-local"
+  name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-tcp-local"
   description = "Local network access from all TCP ports"
 
   rule {
@@ -162,7 +162,7 @@ resource "openstack_compute_secgroup_v2" "tcp_local" {
 }
 
 resource "openstack_compute_secgroup_v2" "udp_local" {
-  name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-udp-local"
+  name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-udp-local"
   description = "Local network access from all UDP ports"
 
   rule {
@@ -174,7 +174,7 @@ resource "openstack_compute_secgroup_v2" "udp_local" {
 }
 # 
 # resource "openstack_compute_secgroup_v2" "slurm_master" {
-#   name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-slurm-master"
+#   name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-slurm-master"
 #   description = "Slurm master node"
 # 
 #   rule {
@@ -200,7 +200,7 @@ resource "openstack_compute_secgroup_v2" "udp_local" {
 # }
 # 
 # resource "openstack_compute_secgroup_v2" "slurm_compute" {
-#   name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-slurm-compute"
+#   name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-slurm-compute"
 #   description = "Slurm compute node"
 # 
 #   rule {
@@ -212,7 +212,7 @@ resource "openstack_compute_secgroup_v2" "udp_local" {
 # }
 # 
 # resource "openstack_compute_secgroup_v2" "keep_service" {
-#   name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-keep-service"
+#   name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-keep-service"
 #   description = "Arvados keep service"
 # 
 #   rule {
@@ -224,7 +224,7 @@ resource "openstack_compute_secgroup_v2" "udp_local" {
 # }
 # 
 # resource "openstack_compute_secgroup_v2" "keep_proxy" {
-#   name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-keep-proxy"
+#   name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-keep-proxy"
 #   description = "Arvados keep proxy (keep service accessible from anywhere)"
 # 
 #   rule {
@@ -236,7 +236,7 @@ resource "openstack_compute_secgroup_v2" "udp_local" {
 # }
 # 
 # resource "openstack_compute_secgroup_v2" "netdata" {
-#   name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-netdata"
+#   name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-netdata"
 #   description = "Netdata web UI accessible from within tenant network"
 # 
 #   rule {
@@ -248,7 +248,7 @@ resource "openstack_compute_secgroup_v2" "udp_local" {
 # }
 # 
 # resource "openstack_compute_secgroup_v2" "nfs_server" {
-#   name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-nfs-server"
+#   name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-nfs-server"
 #   description = "NFS server"
 # 
 #   rule {
@@ -281,7 +281,7 @@ resource "openstack_compute_secgroup_v2" "udp_local" {
 # }
 # 
 # resource "openstack_compute_secgroup_v2" "krb5" {
-#   name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-krb5"
+#   name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-krb5"
 #   description = "Kerberos authentication"
 # 
 #   rule {
@@ -293,7 +293,7 @@ resource "openstack_compute_secgroup_v2" "udp_local" {
 # }
 # 
 # resource "openstack_compute_secgroup_v2" "irobot" {
-#   name        = "uk-sanger-internal-openstack-${var.os_release}-hgi-${var.env}-secgroup-irobot"
+#   name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-irobot"
 #   description = "iRobot"
 # 
 #   rule {

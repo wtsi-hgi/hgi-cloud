@@ -1,6 +1,7 @@
 {
   "variables": {
     "os_release": "",
+    "programme": "",
     "env": "",
     "role_name": "base",
     "role_version": "0.0.0"
@@ -11,14 +12,14 @@
       "ssh_username": "ubuntu",
       "source_image": "{{user `source_image_id`}}",
       "networks": ["{{user `network_id`}}"],
-      "image_name": "uk-sanger-internal-openstack-{{user `os_release`}}-hgi-{{user `env`}}-{{user `role_name`}}-{{user `role_version`}}",
-      "instance_name": "uk-sanger-internal-openstack-{{user `os_release`}}-hgi-{{user `env`}}-packer-{{user `role_name`}}-{{user `role_version`}}",
+      "image_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-image-{{user `role_name`}}-{{user `role_version`}}",
+      "instance_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-image-{{user `role_name`}}-{{user `role_version`}}",
       "floating_ip_network": "public",
       "security_groups": [
-        "uk-sanger-internal-openstack-{{user `os_release`}}-hgi-{{user `env`}}-secgroup-ping",
-        "uk-sanger-internal-openstack-{{user `os_release`}}-hgi-{{user `env`}}-secgroup-ssh",
-        "uk-sanger-internal-openstack-{{user `os_release`}}-hgi-{{user `env`}}-secgroup-tcp-local",
-        "uk-sanger-internal-openstack-{{user `os_release`}}-hgi-{{user `env`}}-secgroup-udp-local"
+        "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-secgroup-ping",
+        "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-secgroup-ssh",
+        "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-secgroup-tcp-local",
+        "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-secgroup-udp-local"
       ],
       "flavor": "o2.small"
     }
