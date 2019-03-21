@@ -4,3 +4,4 @@ py3/
 *.tfplan
 *.tfstate
 *.tfstate.*
+*manifest.json
