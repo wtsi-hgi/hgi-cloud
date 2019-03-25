@@ -43,4 +43,6 @@ echo
 
 echo -e "${PWD}\n"
 
-invoke --echo "${@}"
+COLLECTION_NAME="${1}"
+shift
+invoke --collection "invoke/${COLLECTION_NAME}_collection" "${@}"
