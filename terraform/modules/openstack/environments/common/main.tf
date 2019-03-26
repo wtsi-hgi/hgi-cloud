@@ -1,6 +1,6 @@
 # Manages public keys
 module "keypairs" {
-  source              = "../../keypairs/"
+  source              = "../../infrastructure/keypairs/"
   os_release          = "${var.os_release}"
   programme           = "${var.programme}"
   env                 = "${var.env}"
@@ -9,7 +9,7 @@ module "keypairs" {
 
 # Manages security groups
 module "secgroups" {
-  source      = "../../secgroups/"
+  source      = "../../infrastructure/secgroups/"
   os_release  = "${var.os_release}"
   programme   = "${var.programme}"
   env         = "${var.env}"

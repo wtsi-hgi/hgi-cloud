@@ -1,6 +1,6 @@
 # Manages network, subnet, and router
 module "build_network" {
-  source                = "../../networks/simple"
+  source                = "../../infrastructure/networks/routed"
   os_release            = "${var.os_release}"
   programme             = "${var.programme}"
   env                   = "${var.env}"

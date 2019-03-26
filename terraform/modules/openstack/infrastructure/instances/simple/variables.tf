@@ -1,10 +1,11 @@
-variable "tenant_name" {}
-variable "region" {}
 variable "env" {}
-variable "mercury_public_key" {}
-variable "external_network_name" {}
-variable "subnet_cidr" {}
-variable "dns_nameservers" {
+variable "programme" {}
+variable "os_release" {}
+variable "networks" {
+  type = "list"
+}
+variable "key_pair" {}
+variable "security_groups" {
   type = "list"
 }
 
@@ -21,13 +22,13 @@ variable "image_name" {
 }
 
 variable "flavor_name" {
-  default = "o1.small"
+  default = "o2.small"
 }
 
 variable "affinity" {
   default = "soft-anti-affinity"
 }
 
-variable "os_release" {
-  default = "eta"
+variable "subnetpool_name" {
+  default = "public"
 }

@@ -7,12 +7,10 @@ variable "env" {
   description = "The name of environment"
 }
 
-variable "subnet_name" {
+variable "network_name" {
   type        = "string"
   description = "The name of the subnet"
 }
-
-variable "network_id" {}
 
 variable "router_id" {}
 

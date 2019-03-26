@@ -1,10 +1,16 @@
 variable "env" {}
 variable "programme" {}
 variable "os_release" {}
-variable "network_name" {}
+variable "networks" {
+  type = "list"
+}
 variable "key_pair" {}
 variable "security_groups" {
   type = "list"
+}
+
+variable "count" {
+  default = 1
 }
 
 variable "image_name" {

@@ -53,7 +53,7 @@ def down(context):
     context.run('terraform apply {}'.format(tfplan))
   else:
     error = (
-      '{} does not exist or is not a regular file.'
+      '{} does not exist or is not a regular file. '
       'You need to willingly create a plan for destruction')
     print(error.format(tfplan))
     sys.exit(1)
@@ -66,7 +66,7 @@ def update(context):
     context.run('terraform apply {}'.format(tfplan))
   else:
     error = (
-      '{} does not exist or is not a regular file.'
+      '{} does not exist or is not a regular file. '
       'You need to willingly create a plan for the update')
     print(error.format(tfplan))
     sys.exit(1)

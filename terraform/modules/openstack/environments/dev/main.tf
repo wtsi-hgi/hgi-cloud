@@ -22,6 +22,8 @@ module "spark_environment" {
   external_network_name     = "${var.external_network_name}"
   spark_subnet_cidr         = "${var.spark_subnet_cidr}"
   workstations_subnet_cidr  = "${var.workstations_subnet_cidr}"
+  management_subnet_cidr    = "${var.management_subnet_cidr}"
+  consensus_subnet_cidr     = "${var.consensus_subnet_cidr}"
   dns_nameservers           = "${var.dns_nameservers}"
   depends_on                = ["${module.common_environment.mercury_keypair}"]
 }

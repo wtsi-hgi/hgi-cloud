@@ -1,18 +1,19 @@
 variable "env" {}
 variable "programme" {}
 variable "os_release" {}
-variable "network_name" {}
+variable "networks" {
+  type = "list"
+}
+variable "count" {
+  default = 3
+}
 variable "key_pair" {}
 variable "security_groups" {
   type = "list"
 }
 
-variable "role" {
-  default = "vanilla"
-}
-
-variable "count" {
-  default = 1
+variable "consul_servers" {
+  default = 3
 }
 
 variable "image_name" {
@@ -30,3 +31,9 @@ variable "affinity" {
 variable "subnetpool_name" {
   default = "public"
 }
+
+variable "dns_nameservers" {
+  type = "list"
+}
+
+variable "subnet_cidr" {}

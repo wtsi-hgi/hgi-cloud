@@ -23,6 +23,16 @@ variable "spark_subnet_cidr" {
   description = "The CIDR of the main and only subnet"
 }
 
+variable "consensus_subnet_cidr" {
+  type        = "string"
+  description = "The CIDR of the main and only subnet"
+}
+
+variable "management_subnet_cidr" {
+  type        = "string"
+  description = "The CIDR of the main and only subnet"
+}
+
 variable "dns_nameservers" {
   type        = "list"
   description = "The list of the DNS servers"

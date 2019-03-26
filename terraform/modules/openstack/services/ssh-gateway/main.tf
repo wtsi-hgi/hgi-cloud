@@ -1,23 +1,23 @@
 module "instances" {
-  source          = "../../instances/simple/"
+  source          = "../../infrastructure/instances/simple/"
   env             = "${var.env}"
   programme       = "${var.programme}"
   os_release      = "${var.os_release}"
-  network_name    = "${var.network_name}"
+  networks        = "${var.networks}"
   key_pair        = "${var.key_pair}"
   security_groups = "${var.security_groups}"
   role            = "ssh-gateway"
-  count           = "1"
+  count           = "${var.count}"
   image_name      = "${var.image_name}"
   flavor_name     = "${var.flavor_name}"
   affinity        = "${var.affinity}"
 }
 
-module "floating_ip" {
-  source            = "../../instances/extra/floating_ip/"
-  count             = "1"
+module "external_ip" {
+  source            = "../../infrastructure/instances/extra/external_ip/"
+  count             = "${var.count}"
   floating_ip_pool  = "public"
-  instances         = "${module.instances.ids[*]}"
+  instance_id       = "${module.instances.instance_id}"
 }
 
 # locals {

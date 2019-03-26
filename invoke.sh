@@ -9,10 +9,12 @@ die() {
   exit $1
 }
 
-if [ -f ./openrc.sh ] ; then
-  . ./openrc.sh
-else
-  die 1 "Cannot find openrc.sh\n\tPlease, download an \`Openstack RC File' from the \`API Access' web interface or write one"
+if [ -z "${OS_PASSWORD}" ] ; then
+  if [ -f ./openrc.sh ] ; then
+    . ./openrc.sh
+  else
+    die 1 "Cannot find openrc.sh\n\tPlease, download an \`Openstack RC File' from the \`API Access' web interface or write one"
+  fi
 fi
 
 echo

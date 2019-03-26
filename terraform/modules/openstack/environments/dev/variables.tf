@@ -5,6 +5,8 @@ variable "external_network_name" {}
 variable "spark_subnet_cidr" {}
 variable "workstations_subnet_cidr" {}
 variable "build_subnet_cidr" {}
+variable "management_subnet_cidr" {}
+variable "consensus_subnet_cidr" {}
 variable "mercury_public_key" {}
 variable "dns_nameservers" {
   type = "list"
