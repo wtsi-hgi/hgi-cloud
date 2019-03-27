@@ -1,4 +1,8 @@
 # Manages public keys
+provider "openstack" {
+  version = "~> 1.16"
+}
+
 module "keypairs" {
   source              = "../../infrastructure/keypairs/"
   os_release          = "${var.os_release}"

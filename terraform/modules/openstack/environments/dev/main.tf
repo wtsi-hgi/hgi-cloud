@@ -1,15 +1,3 @@
-provider "openstack" {
-  version = "~> 1.16"
-}
-
-module "common_environment" {
-  source                    = "../common/"
-  os_release                = "${var.os_release}"
-  programme                 = "${var.programme}"
-  env                       = "${var.env}"
-  mercury_public_key        = "${var.mercury_public_key}"
-}
-
 module "spark_environment" {
   source                    = "../spark/"
   os_release                = "${var.os_release}"
@@ -25,7 +13,6 @@ module "spark_environment" {
   management_subnet_cidr    = "${var.management_subnet_cidr}"
   consensus_subnet_cidr     = "${var.consensus_subnet_cidr}"
   dns_nameservers           = "${var.dns_nameservers}"
-  depends_on                = ["${module.common_environment.mercury_keypair}"]
 }
 
 module "build_environment" {
@@ -36,5 +23,4 @@ module "build_environment" {
   external_network_name     = "${var.external_network_name}"
   build_subnet_cidr         = "${var.build_subnet_cidr}"
   dns_nameservers           = "${var.dns_nameservers}"
-  depends_on                = ["${module.common_environment.mercury_keypair}"]
 }

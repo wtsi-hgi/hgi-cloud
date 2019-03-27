@@ -11,7 +11,7 @@ resource "openstack_compute_instance_v2" "instance" {
   key_pair        = "${var.key_pair}"
   security_groups = "${var.security_groups}"
 
-  network = "${var.networks}"
+  network = ["${var.networks}"]
 
   scheduler_hints {
     group = "${openstack_compute_servergroup_v2.servergroup.id}"

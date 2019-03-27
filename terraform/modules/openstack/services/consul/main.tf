@@ -17,7 +17,7 @@ module "consul_cluster" {
   os_release      = "${var.os_release}"
   programme       = "${var.programme}"
   env             = "${var.env}"
-  role            = "spark-master"
+  role            = "consul"
   count           = "${var.consul_servers}"
   image_name      = "${var.image_name}"
   flavor_name     = "${var.flavor_name}"

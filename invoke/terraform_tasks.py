@@ -32,16 +32,21 @@ def validate(context):
 def plan(context, to='create'):
   var_file = terraform_tfvars(context)
   iac_path = context.config['iac_path']
-  terraform_plan = 'terraform plan {} -var-file={} {}'
-  options = '-out={}/{}.tfplan'.format(iac_path, to)
+  tfplan = '{}/{}.tfplan'.format(iac_path, to)
+  tfstate = '{}/terraform.tfstate'.format(iac_path)
+  options = '-out={} -state={} -var-file={}'.format(tfplan, tfstate, var_file)
   if to == 'destroy':
     options += ' -destroy'
-  context.run(terraform_plan.format(options, var_file, iac_path))
+  context.run('terraform plan {} {}'.format(options, iac_path))
+  print('terraform plan created: {}'.format(tfplan))
 
 @invoke.task(pre=[invoke.call(plan, to='create')])
 def up(context):
   iac_path = context.config['iac_path']
-  context.run('terraform apply {}/{}.tfplan'.format(iac_path, 'create'))
+  tfplan = '{}/create.tfplan'.format(iac_path)
+  tfstate = '{}/terraform.tfstate'.format(iac_path)
+  options = '-state-out={}'.format(tfstate)
+  context.run('terraform apply {} {}'.format(options, tfplan))
 
 # Since both destruction and update are meant to modify an infrastructure, we
 # won't run them automatically at this stage.
@@ -49,8 +54,10 @@ def up(context):
 def down(context):
   iac_path = context.config['iac_path']
   tfplan = '{}/destroy.tfplan'.format(iac_path)
+  tfstate = '{}/terraform.tfstate'.format(iac_path)
+  options = '-state-out={}'.format(tfstate)
   if os.path.isfile(tfplan):
-    context.run('terraform apply {}'.format(tfplan))
+    context.run('terraform apply {} {}'.format(options, tfplan))
   else:
     error = (
       '{} does not exist or is not a regular file. '
@@ -62,11 +69,22 @@ def down(context):
 def update(context):
   iac_path = context.config['iac_path']
   tfplan = '{}/update.tfplan'.format(iac_path)
+  tfstate = '{}/terraform.tfstate'.format(iac_path)
+  options = '-state-out={}'.format(tfstate)
   if os.path.isfile(tfplan):
-    context.run('terraform apply {}'.format(tfplan))
+    context.run('terraform apply {} {}'.format(options, tfplan))
   else:
     error = (
       '{} does not exist or is not a regular file. '
       'You need to willingly create a plan for the update')
     print(error.format(tfplan))
     sys.exit(1)
+
+ns = invoke.Collection()
+ns.add_task(clean)
+ns.add_task(init)
+ns.add_task(validate)
+ns.add_task(plan)
+ns.add_task(up, default=True)
+ns.add_task(down)
+ns.add_task(update)

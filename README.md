@@ -12,52 +12,113 @@ We chose to have a fresh start on the IaC, rather then refactoring legacy
 code. This will let us choose simple and effective objectives, outline better
 requirements, and design around operability from the very beginning.
 
-# Usage
-
-## What do you need?
-1. (required) `terraform` executable anywhere in your `PATH`
-2. (optional) `python3` interpreter anywhere in your `PATH`
-3. (optional) `virtualenv` executable anywhere in your `PATH`
-4. (optional) `openrc.sh` OpenStack's RC file, that you can get from
-   OpenStack's web interface
-
-## The easy way
-The easy way is to use the `invoke` shellscript in the base directory of this
-project, given that you have `python3`, `virtualenv` and `openrc.sh` available:
-`invoke` will create the python3 virtualenv with all the dependencies, read all
-the bash environment variables in `openrc.sh` and then run the appropriate
-tasks.
-
-To create the infrastructure:
-```
-bash invoke terraform.creation
-```
-
-To update the infrastructure:
-```
-bash invoke terraform.plan --to update
-# Check the plan
-bash invoke terraform.update
-```
-
-To destroy the infrastructure:
-```
-bash invoke terraform.plan --to destroy
-# Check the plan
-bash invoke terraform.destruction
-```
-
-## The hard way
-If you know your way around `OpenStack` and `terraform`, you will be able to
-setup the bash environment variables you need, and then run the appropriate
-terraform commands to get your tasks done. Feel free to take inspiration from
-`invoke` and all the `tasks.py` files you can find.
-
 # Architecture
 TODO: include a simple design diagram
 
 # Design choices
-TODO: write down a small paragraph about any design choice.
+
+## The common environment
+Regardless of the Openstack's project, all environments will require some
+common resources such as `keypair`s or `secgroup`s, therefore a module for the
+`common` environment has been created. Before you create/mange any resource,
+you should ensure that the all the resources in [the common
+environment](terraform/modules/openstack/environments/common) are created. See
+[The easy way](#the-easy-way) in the [Usage](#usage) section below
+
+# Usage
+
+## What do you need?
+1. (required) `terraform` executable anywhere in your `PATH`
+2. (required) `packer` executable anywhere in your `PATH`
+3. (optional) `python3` interpreter anywhere in your `PATH`
+  1. (optional) `virtualenv` executable anywhere in your `PATH`
+  2. (optional) `invoke` python module installed
+4. (optional) `openrc.sh` OpenStack's RC file, that you can get from
+   OpenStack's web interface
+
+## Pyinvoke and invoke.sh
+[Pyinvoke](https://www.pyinvoke.org) is:
+> a Python (2.7 and 3.4+) task execution tool & library, drawing inspiration from
+> various sources
+like:
+- Ruby’s Rake
+- GNU Make
+- Fabric
+
+`invoke.sh` is shell script to wrap `pyinvoke` quite extensive list of tasks
+and collections and meke its usage even easier.
+To understand how to use `invoke.sh`, you can run:
+```
+bash invoke.sh --help
+```
+`invoke.sh` is quite straightforward and you are very wellcome to read the
+source.
+
+## The easy way
+Given that you have all required and optional items listed in [What do you
+need?](#what-do-you-need) section, the easy way is to use this project is
+through the `invoke.sh` shellscript from the base directory of this repository.
+`invoke.sh` will create the `python3` virtual environment named `py3` with all
+the required `python3` modules, read all the bash environment variables in
+`openrc.sh` and then run `invoke` with the appropriate options and tasks.
+
+To build the base Openstack image:
+```
+bash invoke.sh base_image build
+```
+
+To create an environment:
+```
+bash invoke.sh common_environment up
+```
+The above command will run `terraform` with the correct variables file, and
+against the correct initial module. It also depends on other tasks:
+1. `clean`
+2. `init`
+3. `validate`
+4. `plan`
+which will automatically run in the correct order. You can replace
+`common_environment` with other values. Use the following command to figure out
+what is available:
+```
+ls -1 invoke/*environment_collection.py | sed 's/invoke\/\(.*\)_collection.py/\1/'
+```
+
+To update an environment:
+```
+bash invoke.sh dev_environment plan --to update
+# At this point you should check the update.tfplan
+bash invoke.sh dev_environment update
+```
+The `update` task won't run unless there is an `update.tfplan` file available,
+but that file is not automatically created as a result of running other
+`invoke`'s tasks: the rationale is that we don't want you to unwillingly modify
+the infrastructure. That being said, the `up` task is effectively the same as:
+```
+bash invoke.sh dev_environment plan --to update
+bash invoke.sh dev_environment update
+```
+This means that you could use the `up` task to bypass the 2 steps approach, if
+you know what you are doing. The `up` tasks just uses different file names and
+options which let all subtasks to run automatically.
+
+To destroy an environment:
+```
+bash invoke.sh dev_environment plan --to destroy
+# At this point you should check the destroy.tfplan
+bash invoke.sh dev_environment down
+```
+The `down` task won't run unless there is a `destroy.tfplan` file available.
+The same rationale for to the `update` task is applied here, however, there is
+no way to bypass the 2 steps.
+ 
+
+## The hard way
+If you know your way around `OpenStack`, `packer` and `terraform` and you know
+how to setup the bash environment variables you need, then you are wellcome to
+run the appropriate terraform/packer commands to get your tasks done. Feel free
+to take inspiration from `invoke.sh` and all the `tasks` and `collection` files
+you can find in the `invoke/` directory.
 
 # Use cases
 
