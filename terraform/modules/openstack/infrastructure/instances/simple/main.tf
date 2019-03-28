@@ -3,6 +3,14 @@ resource "openstack_compute_servergroup_v2" "servergroup" {
   policies  = ["${var.affinity}"]
 }
 
+data "template_file" "user_data" {
+  template = "${file("${path.module}/user_data.sh.tpl")}"
+  vars = {
+    role = "${var.role}"
+    facts = "${var.facts}"
+  }
+}
+
 resource "openstack_compute_instance_v2" "instance" {
   name            = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-instance-${var.role}-${count.index + 1}"
   count           = "${var.count}"
@@ -16,6 +24,8 @@ resource "openstack_compute_instance_v2" "instance" {
   scheduler_hints {
     group = "${openstack_compute_servergroup_v2.servergroup.id}"
   }
+
+  user_data = "${data.template_file.user_data.rendered}"
 
 #   provisioner "remote-exec" {
 #     connection {

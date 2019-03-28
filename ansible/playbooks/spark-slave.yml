@@ -1,0 +1,7 @@
+--
+- name: run the base role on localhost
+  hosts: localhost
+  become: yes
+  gather_facts: yes
+  roles:
+    - spark-slave

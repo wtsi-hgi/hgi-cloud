@@ -13,6 +13,11 @@ variable "role" {
   default = "vanilla"
 }
 
+variable "facts" {
+  type = "map"
+  default = {}
+}
+
 variable "count" {
   default = 1
 }
