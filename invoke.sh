@@ -37,7 +37,6 @@ HELP
   *)
     COLLECTION_NAME="${1}"
     shift
-    break
   ;;
 esac
 

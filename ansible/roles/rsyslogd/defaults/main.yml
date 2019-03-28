@@ -1,0 +1,4 @@
+---
+rsyslogd_version: "8.32.0-1ubuntu4"
+rsyslogd_install_recommends: True
+rsyslogd_interval: 10

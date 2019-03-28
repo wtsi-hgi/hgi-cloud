@@ -8,7 +8,7 @@ import openstack
 def packer_network_name(context):
   env = context.config['env']
   os_release = context.config['os_release']
-  template = 'uk-sanger-internal-openstack-{}-hgi-{}-network-main'
+  template = 'uk-sanger-internal-openstack-{}-hgi-{}-network-build'
   return template.format(os_release, env)
 
 def packer_var_file_option(context):
