@@ -22,45 +22,44 @@ Regardless of the Openstack's project, all environments will require some
 common resources such as `keypair`s or `secgroup`s, therefore a module for the
 `common` environment has been created. Before you create/mange any resource,
 you should ensure that the all the resources in [the common
-environment](terraform/modules/openstack/environments/common) are created. See
-[The easy way](#the-easy-way) in the [Usage](#usage) section below
+environment](terraform/modules/openstack/environments/common) are created. Read
+the [Usage](#usage) section below.
+
+# Use cases
+
+## Create a Spark Cluster
+TODO: wirte down the use case's details
+
+## Destroy a Spark Cluster
+TODO: wirte down the use case's details
 
 # Usage
 
 ## What do you need?
 1. (required) `terraform` executable anywhere in your `PATH`
 2. (required) `packer` executable anywhere in your `PATH`
-3. (optional) `python3` interpreter anywhere in your `PATH`
-  1. (optional) `virtualenv` executable anywhere in your `PATH`
-  2. (optional) `invoke` python module installed
 4. (optional) `openrc.sh` OpenStack's RC file, that you can get from
-   OpenStack's web interface
+   OpenStack's web interface. Alternatively, you could manually export the
+   shell environment variables required to configure the OpenStack provider in
+   `terraform`.
 
-## Pyinvoke and invoke.sh
-[Pyinvoke](https://www.pyinvoke.org) is:
-> a Python (2.7 and 3.4+) task execution tool & library, drawing inspiration from
-> various sources
-like:
-- Ruby’s Rake
-- GNU Make
-- Fabric
-
-`invoke.sh` is shell script to wrap `pyinvoke` quite extensive list of tasks
-and collections and meke its usage even easier.
-To understand how to use `invoke.sh`, you can run:
+### invoke.sh
+`invoke.sh` is shell script made to wrap `pyinvoke` quite extensive list of
+tasks and collections, and meke its usage even easier. `invoke.sh` will fulfill
+all the [requirements for invoke](invoke/README.md#what-do-you-need): it will
+create the `python3` virtual environment named `py3` with all the required
+`python3` modules, read all the bash environment variables in `openrc.sh` and
+then run `invoke` with the appropriate options and tasks. To understand how to
+use `invoke.sh`, you can run:
 ```
 bash invoke.sh --help
 ```
 `invoke.sh` is quite straightforward and you are very wellcome to read the
-source.
+source code.
 
 ## The easy way
-Given that you have all required and optional items listed in [What do you
-need?](#what-do-you-need) section, the easy way is to use this project is
-through the `invoke.sh` shellscript from the base directory of this repository.
-`invoke.sh` will create the `python3` virtual environment named `py3` with all
-the required `python3` modules, read all the bash environment variables in
-`openrc.sh` and then run `invoke` with the appropriate options and tasks.
+The easy way to use this project is through the [invoke.sh](#invoke-sh)
+shellscript from the base directory of this repository.
 
 To build the base Openstack image:
 ```
@@ -78,10 +77,10 @@ against the correct initial module. It also depends on other tasks:
 3. `validate`
 4. `plan`
 which will automatically run in the correct order. You can replace
-`common_environment` with other values. Use the following command to figure out
-what is available:
+`common_environment` with other values. 
+To get the list of available tasks collections, you can run:
 ```
-ls -1 invoke/*environment_collection.py | sed 's/invoke\/\(.*\)_collection.py/\1/'
+bash invoke.sh --list
 ```
 
 To update an environment:
@@ -98,20 +97,23 @@ the infrastructure. That being said, the `up` task is effectively the same as:
 bash invoke.sh dev_environment plan --to update
 bash invoke.sh dev_environment update
 ```
-This means that you could use the `up` task to bypass the 2 steps approach, if
-you know what you are doing. The `up` tasks just uses different file names and
-options which let all subtasks to run automatically.
+This means that you could use the `up` task to bypass the "2 steps" approach,
+**if you know what you are doing**. The `up` tasks just uses different file
+names and options which let all subtasks to run automatically.
 
 To destroy an environment:
 ```
-bash invoke.sh dev_environment plan --to destroy
+bash invoke.sh spark_environment plan --to destroy
 # At this point you should check the destroy.tfplan
-bash invoke.sh dev_environment down
+bash invoke.sh spark_environment down
 ```
 The `down` task won't run unless there is a `destroy.tfplan` file available.
 The same rationale for to the `update` task is applied here, however, there is
-no way to bypass the 2 steps.
- 
+no task that bypasses the 2 steps. If you really (I mean REALLY) know what you
+are doing, you could run 2 tasks with the same `invoke.sh` run:
+```
+bash invoke.sh spark_environment plan --to destroy down
+```
 
 ## The hard way
 If you know your way around `OpenStack`, `packer` and `terraform` and you know
@@ -119,14 +121,6 @@ how to setup the bash environment variables you need, then you are wellcome to
 run the appropriate terraform/packer commands to get your tasks done. Feel free
 to take inspiration from `invoke.sh` and all the `tasks` and `collection` files
 you can find in the `invoke/` directory.
-
-# Use cases
-
-## Create a Spark Cluster
-TODO: wirte down the use case's details
-
-## Destroy a Spark Cluster
-TODO: wirte down the use case's details
 
 # How to contribute
 Read the [CONTRIBUTING.md](CONTRIBUTING.md) file
