@@ -21,62 +21,49 @@ module "workstations_network" {
   dns_nameservers       = "${var.dns_nameservers}"
 }
 
+module "management_network" {
+  source                = "../../infrastructure/networks/extra/network/"
+  os_release            = "${var.os_release}"
+  programme             = "${var.programme}"
+  env                   = "${var.env}"
+  subnet_cidr           = "${var.management_subnet_cidr}"
+  network_name          = "management"
+  router_id             = "${module.spark_network.router_id}"
+  dns_nameservers       = "${var.dns_nameservers}"
+}
+
 module "spark_cluster" {
-  source          = "../../services/spark-cluster"
-  os_release      = "${var.os_release}"
-  programme       = "${var.programme}"
-  env             = "${var.env}"
-  spark_masters   = "1"
-  spark_slaves    = "3"
-  image_name      = "${var.image_name}"
-  flavor_name     = "${var.flavor_name}"
-  affinity        = "${var.affinity}"
-  networks        = [
-    {
-      name = "${module.spark_network.network_name}"
-    }
-  ]
-  key_pair        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-keypair-mercury"
-  security_groups = [
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ping",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ssh",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-tcp-local",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-udp-local"
-  ]
+  source                    = "../../deployments/spark-cluster"
+  os_release                = "${var.os_release}"
+  programme                 = "${var.programme}"
+  env                       = "${var.env}"
+  key_pair                  = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-keypair-mercury"
+  deployment_name           = "primary"
+  spark_masters_count       = 1
+  spark_slaves_count        = 3
+  spark_masters_flavor_name = "o2.small"
+  spark_slaves_flavor_name  = "o2.small"
+  spark_masters_affinity    = "soft-anti-affinity"
+  spark_slaves_affinity     = "soft-anti-affinity"
+  spark_masters_networks    = [ { name = "${module.spark_network.network_name}" } ]
+  spark_slaves_networks     = [ { name = "${module.spark_network.network_name}" } ]
 }
 
 module "workstations" {
-  source          = "../../services/ssh-gateway"
+  source          = "../../deployments/ssh-gateway"
   os_release      = "${var.os_release}"
   programme       = "${var.programme}"
   env             = "${var.env}"
-  count           = "${var.count}"
-  image_name      = "${var.image_name}"
-  flavor_name     = "${var.flavor_name}"
-  affinity        = "${var.affinity}"
-  networks        = [ { name = "${module.workstations_network.network_name}" } ]
+  count           = 1
   key_pair        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-keypair-mercury"
-  security_groups = [
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ping",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ssh",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-tcp-local",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-udp-local"
-  ]
+  deployment_name = "primary"
+  flavor_name     = "o2.small"
+  affinity        = "soft-anti-affinity"
+  networks        = [ { name = "${module.workstations_network.network_name}" } ]
 }
 
-# module "management_network" {
-#   source                = "../../infrastructure/networks/extra/network/"
-#   os_release            = "${var.os_release}"
-#   programme             = "${var.programme}"
-#   env                   = "${var.env}"
-#   subnet_cidr           = "${var.management_subnet_cidr}"
-#   network_name          = "management"
-#   router_id             = "${module.spark_network.router_id}"
-#   dns_nameservers       = "${var.dns_nameservers}"
-# }
-
 # module "consul" {
-#   source          = "../../services/consul"
+#   source          = "../../deployments/consul"
 #   os_release      = "${var.os_release}"
 #   programme       = "${var.programme}"
 #   env             = "${var.env}"

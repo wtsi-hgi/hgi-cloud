@@ -1,7 +1,7 @@
 ---
-- name: run the base role on localhost
+- name: run the role on the image
   hosts: localhost
   become: yes
   gather_facts: yes
   roles:
-    - ssh-gateway
+    - "{{role_name}}"

@@ -1,0 +1,9 @@
+---
+- name: run the role on the instance
+  hosts: localhost
+  become: yes
+  gather_facts: yes
+  roles:
+    - "common"
+    - "{{role_name}}"
+    - "register"

@@ -2,4 +2,4 @@ import invoke
 import terraform_tasks
 
 ns = terraform_tasks.ns
-ns.configure({'iac_path': 'terraform/openstack/modules/environments/spark'})
+ns.configure({'iac_path': 'terraform/modules/openstack/environments/spark'})

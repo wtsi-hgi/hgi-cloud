@@ -1,0 +1,16 @@
+---
+# tasks file for base
+- name: install base packages
+  apt:
+    state: present
+    name:
+      - git
+      - wget
+      - curl
+      - vim
+      - python-pip
+- name: install testinfra python module
+  pip:
+    state: present
+    name:
+      - testinfra
