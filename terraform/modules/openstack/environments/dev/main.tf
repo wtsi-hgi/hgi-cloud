@@ -1,3 +1,15 @@
+provider "openstack" {
+  version = "~> 1.16"
+}
+provider "template" {
+  version = "~> 2.1"
+}
+
+locals {
+  deployment_version = "0.0.0"
+  dependency = {}
+}
+
 module "spark_environment" {
   source                    = "../spark/"
   os_release                = "${var.os_release}"

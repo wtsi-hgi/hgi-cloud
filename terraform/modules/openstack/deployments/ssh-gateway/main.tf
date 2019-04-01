@@ -1,3 +1,10 @@
+provider "openstack" {
+  version = "~> 1.16"
+}
+provider "template" {
+  version = "~> 2.1"
+}
+
 locals {
   deployment_version = "0.0.0"
   dependency = {
@@ -36,12 +43,3 @@ module "external_ip" {
   floating_ip_pool  = "public"
   instance_id       = "${module.ssh_gateway.instance_id}"
 }
-
-# resource "infoblox_record" "ssh-gateway" {
-#   value  = "${openstack_compute_floatingip_associate_v2.ssh-gateway.floating_ip}"
-#   name   = "ssh"
-#   domain = "${var.domain}"
-#   type   = "A"
-#   ttl    = 600
-#   view   = "internal"
-# }

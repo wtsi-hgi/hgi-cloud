@@ -17,6 +17,7 @@ deployment_version: "${deployment_version}"
 deployment_color: "${deployment_color}"
 role_name: "${role_name}"
 role_version: "${role_version}"
+count: "${count}"
 VARS
 
 ansible-playbook instance.yml --extra-vars @vars.yml

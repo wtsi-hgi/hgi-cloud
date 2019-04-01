@@ -24,6 +24,7 @@ data "template_file" "user_data" {
     deployment_color    = "${local.metadata["deployment_color"]}"
     role_name           = "${local.metadata["role_name"]}"
     role_version        = "${local.metadata["role_version"]}"
+    count               = "00"
   }
 }
 
@@ -48,6 +49,7 @@ resource "openstack_compute_instance_v2" "instance" {
   security_groups     = "${var.security_groups}"
   metadata            = "${local.metadata}"
   user_data           = "${data.template_file.user_data.rendered}"
+# user_data           = "${templatefile("${path.module}/user_data.sh.tpl", merge(local.metadata, map("count", format("%02d", count.index + 1))))}"
 
   scheduler_hints {
     group = "${openstack_compute_servergroup_v2.servergroup.id}"
