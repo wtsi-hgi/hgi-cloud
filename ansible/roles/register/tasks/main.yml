@@ -1,2 +1,16 @@
 ---
-# tasks file for register
+- name: install infoblox python module
+  pip:
+    state: present
+    name:
+      - infoblox-client
+# - name: register host to DNS
+#   nios_a_record:
+#     state: present
+#     name: "{{deployment_name}}-{{role_name}}-{{count}}"
+#     ipv4: 
+#     comment: "{{datacentre}}-{{os_release}}-{{programme}}-{{env}}-instance-{{deployment_name}}-{{role_name}}-{{count}}"
+#     provider:
+#       host: "{{ infoblox_api_endpoint }}"
+#       username: "{{infoblox_api_username}}"
+#       password: "{{infoblox_api_password}}"

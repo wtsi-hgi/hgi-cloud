@@ -1,0 +1,43 @@
+---
+spark_version: "2.4.0-bin-hadoop2.7"
+spark_mirror: "https://www.apache.org/dyn/closer.lua/spark/spark-2.4.0"
+
+spark_download_dir: "/tmp"
+spark_install_dir: "/opt/sanger.ac.uk"  #this is the folder where the spark archive will be extracted
+spark_conf_dir: "/opt/sanger.ac.uk/spark/conf"
+spark_work_dir: "/opt/sanger.ac.uk/spark/work"
+spark_tmp_dir: "/opt/sanger.ac.uk/spark/tmp"
+spark_run_dir: "/opt/sanger.ac.uk/spark/run"
+spark_log_dir: "/opt/sanger.ac.uk/spark/log"
+
+spark_local_dirs: [] # optional list of spark-local dirs (can be used in SPARK_LOCAL_DIRS)
+spark_local_dir_mode: "1777"
+
+spark_user_username: "spark"           # the name of the (OS)user created for spark
+spark_user_groups: []         # Optional list of (OS)groups the new spark user should belong to
+spark_user_shell: "/bin/false"    # the spark user's default shell
+
+spark_env_extras: {}
+spark_defaults_extras: {}
+
+# Logger levels set to the official defaults
+# Ref: https://github.com/apache/spark/blob/master/conf/log4j.properties.template
+spark_log4j_extras:
+  - name: log4j.logger.org.apache.spark.repl.Main
+    value: WARN
+  - name: log4j.logger.org.spark_project.jetty
+    value: WARN
+  - name: log4j.logger.org.spark_project.jetty.util.component.AbstractLifeCycle
+    value: ERROR
+  - name: log4j.logger.org.apache.spark.repl.SparkIMain$exprTyper
+    value: INFO
+  - name: log4j.logger.org.apache.spark.repl.SparkILoop$SparkILoopInterpreter
+    value: INFO
+  - name: log4j.logger.org.apache.parquet
+    value: ERROR
+  - name: log4j.logger.parquet
+    value: ERROR
+  - name: log4j.logger.org.apache.hadoop.hive.metastore.RetryingHMSHandler
+    value: FATAL
+  - name: log4j.logger.org.apache.hadoop.hive.ql.exec.FunctionRegistry
+    value: ERROR
