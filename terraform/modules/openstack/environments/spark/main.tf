@@ -60,6 +60,40 @@ module "spark_cluster" {
   spark_slaves_networks     = [ { name = "${module.spark_network.network_name}" } ]
 }
 
+# module "spark_cluster2" {
+#   source                    = "../../deployments/spark-cluster"
+#   os_release                = "${var.os_release}"
+#   programme                 = "${var.programme}"
+#   env                       = "${var.env}"
+#   key_pair                  = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-keypair-mercury"
+#   deployment_name           = "secondary"
+#   spark_masters_count       = 1
+#   spark_slaves_count        = 3
+#   spark_masters_flavor_name = "o2.small"
+#   spark_slaves_flavor_name  = "o2.small"
+#   spark_masters_affinity    = "soft-anti-affinity"
+#   spark_slaves_affinity     = "soft-anti-affinity"
+#   spark_masters_networks    = [ { name = "${module.spark_network.network_name}" } ]
+#   spark_slaves_networks     = [ { name = "${module.spark_network.network_name}" } ]
+# }
+
+# module "spark_cluster3" {
+#   source                    = "../../deployments/spark-cluster"
+#   os_release                = "${var.os_release}"
+#   programme                 = "${var.programme}"
+#   env                       = "${var.env}"
+#   key_pair                  = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-keypair-mercury"
+#   deployment_name           = "tertiary"
+#   spark_masters_count       = 1
+#   spark_slaves_count        = 3
+#   spark_masters_flavor_name = "o2.small"
+#   spark_slaves_flavor_name  = "o2.small"
+#   spark_masters_affinity    = "soft-anti-affinity"
+#   spark_slaves_affinity     = "soft-anti-affinity"
+#   spark_masters_networks    = [ { name = "${module.spark_network.network_name}" } ]
+#   spark_slaves_networks     = [ { name = "${module.spark_network.network_name}" } ]
+# }
+
 module "workstations" {
   source          = "../../deployments/ssh-gateway"
   os_release      = "${var.os_release}"

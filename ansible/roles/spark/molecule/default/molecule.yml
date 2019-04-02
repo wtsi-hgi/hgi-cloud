@@ -15,8 +15,24 @@ provisioner:
   name: ansible
   lint:
     name: ansible-lint
-  converge: playbook.yml
+  playbooks:
+    create: create.yml
+    converge: playbook.yml
 verifier:
   name: testinfra
   lint:
     name: flake8
+scenario:
+  name: default
+  test_sequence:
+    - lint
+    - destroy
+    - dependency
+    - syntax
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - side_effect
+    - verify
+    - destroy

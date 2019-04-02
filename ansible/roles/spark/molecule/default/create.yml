@@ -1,0 +1,20 @@
+---
+- name: Create
+  hosts: localhost
+  # become: true
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Create molecule instance
+      os_server:
+        name: uk-sanger-internal-openstack-eta-hgi-dev-instance-molecule-spark-0.0.0
+        image: uk-sanger-internal-openstack-eta-hgi-dev-image-base-0.0.0
+        flavor: o2.small
+        floating_ip_pools: public
+        key_name: uk-sanger-internal-openstack-eta-hgi-dev-keypair-mercury
+        security_groups:
+          - uk-sanger-internal-openstack-eta-hgi-dev-secgroup-ping
+          - uk-sanger-internal-openstack-eta-hgi-dev-secgroup-ssh
+          - uk-sanger-internal-openstack-eta-hgi-dev-secgroup-tcp-local
+          - uk-sanger-internal-openstack-eta-hgi-dev-secgroup-udp-local
+        network: uk-sanger-internal-openstack-eta-hgi-dev-network-build

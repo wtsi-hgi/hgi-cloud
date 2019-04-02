@@ -51,8 +51,8 @@
     dest: "{{ spark_download_dir }}/spark-{{ spark_version }}.tgz"
 
 # FIXME: This should really be implemented
-- name: Verify downloaded Spark distribution
-  command: /bin/true
+# - name: Verify downloaded Spark distribution
+#   command: /bin/true
 
 - name: Extract Spark distribution
   unarchive:
@@ -92,7 +92,7 @@
     group: "{{ spark_user_username }}"
     mode: "{{ spark_local_dir_mode }}"
   when: item != "/tmp"
-  with_items: "{{spark_local_dirs}}"
+  with_items: "{{ spark_local_dirs }}"
   tags: ["spark-local-dirs"]
 
 - name: Configure Spark environment
@@ -110,6 +110,6 @@
 - name: Deploy Spark log4j properties
   template:
     src: "{{ log4j_template_file }}.j2"
-    dest: "{{spark_install_dir}}/spark-{{spark_version}}/conf/{{ log4j_template_file }}"
+    dest: "{{ spark_install_dir }}/spark-{{ spark_version }}/conf/{{ log4j_template_file }}"
     owner: "{{ spark_user_username }}"
     group: "{{ spark_user_username }}"
