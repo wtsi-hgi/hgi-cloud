@@ -50,6 +50,10 @@
     url: "{{ spark_mirror }}/spark-{{ spark_version }}.tgz"
     dest: "{{ spark_download_dir }}/spark-{{ spark_version }}.tgz"
 
+# FIXME: This should really be implemented
+- name: Verify downloaded Spark distribution
+  command: /bin/true
+
 - name: Extract Spark distribution
   unarchive:
     src: "{{ spark_download_dir }}/spark-{{ spark_version }}.tgz"
