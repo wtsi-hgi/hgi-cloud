@@ -70,10 +70,12 @@ if [ ! -d "${PWD}/py3" ] ; then
 fi
 
 # Activates python3's virtualenv
-if [ -f "${PWD}/py3/bin/activate" ] ; then
-  . ./py3/bin/activate
-else
-  die 4 "Cannot find ${PWD}/py3/bin/activate\n\tvirtualenv is broken, you can remove the direcotry and run ${0} again"
+if [ -z "${VIRTUAL_ENV}" ] ; then
+  if [ -f "${PWD}/py3/bin/activate" ] ; then
+    . ./py3/bin/activate
+  else
+    die 4 "Cannot find ${PWD}/py3/bin/activate\n\tvirtualenv is broken, you can remove the direcotry and run ${0} again"
+  fi
 fi
 
 # Install all modules
