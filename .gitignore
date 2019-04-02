@@ -5,3 +5,4 @@ py3/
 *.tfstate
 *.tfstate.*
 *manifest.json
+.yamllint
