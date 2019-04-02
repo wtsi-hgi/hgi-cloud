@@ -11,24 +11,17 @@ variable "deployment_color" {
 variable "env" {
   description = "The name of the environment for this deployment"
   type        = "string"
+  default     = "dev"
 }
 variable "programme" {
   description = "The name of the programme that owns this deployment"
   type        = "string"
+  default     = "hgi"
 }
 variable "os_release" {
   description = "The name of the Openstack's release"
   type        = "string"
-}
-
-variable "key_pair" {
-  description = "The name of the default SSH key pair"
-  type        = "string"
-}
-
-variable "networks" {
-  description = "A list of details for each network the SSH Gateways have to attach to"
-  type        = "list"
+  default     = "eta"
 }
 
 variable "count" {
@@ -47,4 +40,14 @@ variable "affinity" {
   description = "The type of affinity of the SSH Gateways instances"
   type        = "string"
   default     = "soft-anti-affinity"
+}
+
+variable "key_pair" {
+  description = "The name of the default SSH key pair"
+  type        = "string"
+}
+
+variable "networks" {
+  description = "A list of details for each network the SSH Gateways have to attach to"
+  type        = "list"
 }
