@@ -6,17 +6,16 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: uk-sanger-internal-openstack-eta-hgi-dev-instance-molecule-spark-0.0.0
+  - name: default
     image: uk-sanger-internal-openstack-eta-hgi-dev-image-base-0.0.0
     flavor: o2.small
-    floating_ip_pool: public
-    network: uk-sanger-internal-openstack-eta-hgi-dev-network-build
 provisioner:
   name: ansible
   lint:
     name: ansible-lint
   playbooks:
     create: create.yml
+    destroy: destroy.yml
     converge: playbook.yml
 verifier:
   name: testinfra

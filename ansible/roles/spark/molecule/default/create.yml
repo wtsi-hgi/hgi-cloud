@@ -1,20 +1,95 @@
 ---
 - name: Create
   hosts: localhost
-  # become: true
   connection: local
   gather_facts: false
+  no_log: false
+  vars:
+    # FIXME: This solution assumes an ubuntu host. To make this solution
+    # operating-system-agnostic, any base image, regardless of the operating
+    # system and/or software distribution, shoulud rename the default user to
+    # something neutral like 'sanger'.
+    ssh_user: ubuntu
+    ssh_port: 22
+    identity_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
+    # keypair_user: "{{ lookup('env', 'OS_USERNAME') }}"
+    keypair_user: mercury
+
   tasks:
+    - name: Read metadata from file
+      include_vars:
+        file: metadata.yml
+        name: metadata
+
+    # We assume:
+    # 1. A "build" network is already available.
+    # 2. All the required security groups are already available.
+    # 3. There already is a keypair for the user in the cloud.
     - name: Create molecule instance
       os_server:
-        name: uk-sanger-internal-openstack-eta-hgi-dev-instance-molecule-spark-0.0.0
-        image: uk-sanger-internal-openstack-eta-hgi-dev-image-base-0.0.0
-        flavor: o2.small
+        state: present
+        name: "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ item.name }}-{{ metadata['deployment_color'] }}-{{ metadata['role_name'] }}"
+        image: "{{ item.image }}"
+        flavor: "{{ item.flavor }}"
         floating_ip_pools: public
-        key_name: uk-sanger-internal-openstack-eta-hgi-dev-keypair-mercury
+        key_name: "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-keypair-{{ keypair_user }}"
+        # Whatever service you are going to install, it is not going to be
+        # accessed from the outside, therefore you don't need specific security
+        # groups. Molecule's tests need to assert the configuration and the
+        # state of the instances produced by this role. Tests on the
+        # functionality of the resulting service might require multiple roles
+        # and/or an entire deployment, which will be addressed by terraform &
+        # terratest.
         security_groups:
-          - uk-sanger-internal-openstack-eta-hgi-dev-secgroup-ping
-          - uk-sanger-internal-openstack-eta-hgi-dev-secgroup-ssh
-          - uk-sanger-internal-openstack-eta-hgi-dev-secgroup-tcp-local
-          - uk-sanger-internal-openstack-eta-hgi-dev-secgroup-udp-local
-        network: uk-sanger-internal-openstack-eta-hgi-dev-network-build
+          - "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-ping"
+          - "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-ssh"
+          - "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-tcp-local"
+          - "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-udp-local"
+        network: "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-network-build"
+        meta: "{{ metadata }}"
+      register: instance
+      with_items: "{{ molecule_yml.platforms }}"
+      async: 7200
+      poll: 0
+
+    - name: Wait for instance(s) creation to complete
+      async_status:
+        jid: "{{ item.ansible_job_id }}"
+      register: os_jobs
+      until: os_jobs.finished
+      retries: 300
+      with_items: "{{ instance.results }}"
+
+    # Mandatory configuration for Molecule to function.
+
+    - name: Populate instance config dict
+      set_fact:
+        instance_conf_dict: {
+          'instance': "{{ item.openstack.name }}",
+          'address': "{{ item.openstack.accessIPv4 }}",
+          'user': "{{ ssh_user }}",
+          'port': "{{ ssh_port }}",
+          'identity_file': "{{ identity_file }}", }
+      with_items: "{{ os_jobs.results }}"
+      register: instance_config_dict
+      when: instance.changed | bool
+
+    - name: Convert instance config dict to a list
+      set_fact:
+        instance_conf: "{{ instance_config_dict.results | map(attribute='ansible_facts.instance_conf_dict') | list }}"
+      when: instance.changed | bool
+
+    - name: Dump instance config
+      copy:
+        content: "{{ instance_conf | to_json | from_json | molecule_to_yaml | molecule_header }}"
+        dest: "{{ molecule_instance_config }}"
+      when: instance.changed | bool
+
+    - name: Wait for SSH
+      wait_for:
+        port: "{{ ssh_port }}"
+        host: "{{ item.address }}"
+        search_regex: SSH
+        delay: 10
+      with_items: "{{ lookup('file', molecule_instance_config) | molecule_from_yaml }}"
+

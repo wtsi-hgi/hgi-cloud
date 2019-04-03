@@ -1,11 +1,16 @@
 ---
 - name: Destroy
   hosts: localhost
-  # become: true
   connection: local
   gather_facts: false
   tasks:
+    - name: Read metadata from file
+      include_vars:
+        file: metadata.yml
+        name: metadata
+
     - name: Destroy molecule instance
       os_server:
-        name: uk-sanger-internal-openstack-eta-hgi-dev-instance-molecule-spark-0.0.0
         state: absent
+        name: "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ item.name }}-{{ metadata['deployment_color'] }}-{{ metadata['role_name'] }}"
+      with_items: "{{ molecule_yml.platforms }}"
