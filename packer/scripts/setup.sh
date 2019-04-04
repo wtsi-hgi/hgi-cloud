@@ -1,13 +1,13 @@
 #!/bin/bash -eux
 
 # Install Ansible repository.
-apt --assume-yes update && apt --assume-yes upgrade
-apt --assume-yes install software-properties-common
+apt-get --assume-yes update && apt-get --assume-yes upgrade
+apt-get --assume-yes install software-properties-common
 apt-add-repository ppa:ansible/ansible
 
 # Install Ansible.
-apt --assume-yes update
-apt --assume-yes install ansible
+apt-get --assume-yes update
+apt-get --assume-yes install ansible
 mkdir --parents /opt/sanger.ac.uk/ansible/{log,facts.d}
 chown --recursive ubuntu:ubuntu /opt/sanger.ac.uk
 

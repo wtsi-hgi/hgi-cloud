@@ -4,11 +4,14 @@
   apt:
     state: present
     name:
+      - bzip2
+      - unzip
       - git
       - wget
       - curl
       - vim
       - python-pip
+      - gpg
 - name: install testinfra python module
   pip:
     state: present

@@ -4,7 +4,7 @@
     "programme": "",
     "env": "",
     "role_name": "base",
-    "role_version": "0.0.0"
+    "role_version": "0.0.2"
   },
   "builders": [
     {
