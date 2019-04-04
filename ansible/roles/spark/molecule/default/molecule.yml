@@ -7,7 +7,7 @@ lint:
   name: yamllint
 platforms:
   - name: default
-    image: uk-sanger-internal-openstack-eta-hgi-dev-image-base-0.0.0
+    image: uk-sanger-internal-openstack-eta-hgi-dev-image-base-0.0.2
     flavor: o2.small
 provisioner:
   name: ansible
@@ -21,17 +21,17 @@ verifier:
   name: testinfra
   lint:
     name: flake8
-scenario:
-  name: default
-  test_sequence:
-    - lint
-    - destroy
-    - dependency
-    - syntax
-    - create
-    - prepare
-    - converge
-    - idempotence
-    - side_effect
-    - verify
-    - destroy
+# scenario:
+#   name: default
+#   test_sequence:
+#     - lint
+#     - destroy
+#     - dependency
+#     - syntax
+#     - create
+#     - prepare
+#     - converge
+#     - idempotence
+#     - side_effect
+#     - verify
+#     - destroy

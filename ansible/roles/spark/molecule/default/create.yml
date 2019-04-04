@@ -22,13 +22,13 @@
         name: metadata
 
     # We assume:
-    # 1. A "build" network is already available.
-    # 2. All the required security groups are already available.
-    # 3. There already is a keypair for the user in the cloud.
+    #   1. A "build" network is already available.
+    #   2. All the required security groups are already available.
+    #   3. There already is a keypair for the user in the cloud.
     - name: Create molecule instance
       os_server:
         state: present
-        name: "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ item.name }}-{{ metadata['deployment_color'] }}-{{ metadata['role_name'] }}"
+        name: "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ metadata['role_name'] }}-{{ item.name }}"
         image: "{{ item.image }}"
         flavor: "{{ item.flavor }}"
         floating_ip_pools: public
@@ -46,7 +46,7 @@
           - "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-tcp-local"
           - "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-udp-local"
         network: "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-network-build"
-        meta: "{{ metadata }}"
+        meta: "{{ metadata | combine({ 'deployment_color': item.name }) }}"
       register: instance
       with_items: "{{ molecule_yml.platforms }}"
       async: 7200
@@ -65,7 +65,7 @@
     - name: Populate instance config dict
       set_fact:
         instance_conf_dict: {
-          'instance': "{{ item.openstack.name }}",
+          'instance': "{{ item.openstack.metadata.deployment_color }}",
           'address': "{{ item.openstack.accessIPv4 }}",
           'user': "{{ ssh_user }}",
           'port': "{{ ssh_port }}",
@@ -92,4 +92,3 @@
         search_regex: SSH
         delay: 10
       with_items: "{{ lookup('file', molecule_instance_config) | molecule_from_yaml }}"
-

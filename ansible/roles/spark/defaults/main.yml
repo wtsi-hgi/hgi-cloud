@@ -1,21 +1,16 @@
 ---
 spark_version: "2.4.0-bin-hadoop2.7"
-spark_mirror: "https://www.apache.org/dyn/closer.lua/spark/spark-2.4.0"
-
-spark_download_dir: "/tmp"
-spark_install_dir: "/opt/sanger.ac.uk"
-spark_conf_dir: "/opt/sanger.ac.uk/spark/conf"
-spark_work_dir: "/opt/sanger.ac.uk/spark/work"
-spark_tmp_dir: "/opt/sanger.ac.uk/spark/tmp"
-spark_run_dir: "/opt/sanger.ac.uk/spark/run"
-spark_log_dir: "/opt/sanger.ac.uk/spark/log"
-
-spark_local_dirs: []
-spark_local_dir_mode: "1777"
+spark_mirror: "https://www-eu.apache.org/dist/spark/spark-2.4.0"
 
 spark_user_username: "spark"
 spark_user_groups: []
 spark_user_shell: "/bin/false"
+
+spark_download_dir: "/tmp"
+spark_install_dir: "/opt/sanger.ac.uk"
+
+spark_local_dirs: []
+spark_local_dir_mode: "1777"
 
 spark_env_extras: {}
 spark_defaults_extras: {}

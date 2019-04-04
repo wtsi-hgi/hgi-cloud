@@ -4,5 +4,4 @@ os_release: eta
 programme: hgi
 env: dev
 deployment_name: molecule
-deployment_color: white
 role_name: spark

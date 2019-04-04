@@ -12,5 +12,5 @@
     - name: Destroy molecule instance
       os_server:
         state: absent
-        name: "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ item.name }}-{{ metadata['deployment_color'] }}-{{ metadata['role_name'] }}"
+        name: "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ metadata['role_name'] }}-{{ item.name }}"
       with_items: "{{ molecule_yml.platforms }}"
