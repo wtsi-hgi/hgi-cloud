@@ -1,6 +1,6 @@
 ---
 # tasks file for base
-- name: install base packages
+- name: Install base packages
   apt:
     state: present
     name:
@@ -12,6 +12,19 @@
       - vim
       - python-pip
       - gpg
+
+- name: Install Collectd
+  apt: 
+    name: "collectd={{ collectd_version }}"
+    state: present
+    install_recommends: "{{ collectd_install_recommends }}"
+
+- name: Install RsyslogD
+  apt: 
+    name: "rsyslog={{ rsyslog_version }}"
+    state: present
+    install_recommends: "{{ rsyslog_install_recommends }}"
+
 - name: install testinfra python module
   pip:
     state: present

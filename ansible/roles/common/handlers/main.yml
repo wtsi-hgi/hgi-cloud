@@ -1,2 +1,10 @@
 ---
-# handlers file for common
+- name: Restart Collectd
+  service:
+    name: collectd
+    state: restarted
+
+- name: Restart RsyslogD
+  service:
+    name: rsyslog
+    state: restarted

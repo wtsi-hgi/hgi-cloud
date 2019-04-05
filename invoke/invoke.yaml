@@ -1,5 +1,0 @@
----
-os_release: eta
-env: dev
-run:
-  echo: true

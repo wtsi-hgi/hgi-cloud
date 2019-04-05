@@ -64,17 +64,20 @@ variable "spark_slaves_affinity" {
   default     = "soft-anti-affinity"
 }
 
-variable "spark_masters_networks" {
-  description = "A list of details for each network the Spark masters have to attach to"
-  type        = "list"
+variable "spark_masters_network" {
+  description = "The name of the network where to deply the Spark masters"
+  type        = "string"
+  default     = ""
 }
 
-variable "spark_slaves_networks" {
-  description = "A list of details for each network the Spark masters have to attach to"
-  type        = "list"
+variable "spark_slaves_network" {
+  description = "The name of the network where to deply the Spark slaves"
+  type        = "string"
+  default     = ""
 }
 
 variable "key_pair" {
   description = "The name of the default SSH key pair"
   type        = "string"
+  default     = ""
 }

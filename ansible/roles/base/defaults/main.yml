@@ -1,2 +1,5 @@
 ---
-# defaults file for base
+collectd_version: 5.7.2-2ubuntu1
+collectd_install_recommends: true
+rsyslog_version: 8.32.0-1ubuntu4
+rsyslog_install_recommends: true

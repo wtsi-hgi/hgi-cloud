@@ -1,2 +1,14 @@
 ---
-# tasks file for common
+- name: Configure Collectd
+  template:
+    src: collectd.conf.j2
+    dest: /etc/collectd/collectd.conf
+  notify:
+    - Restart Collectd
+
+- name: Configure RsyslogD
+  template:
+    src: rsyslog.conf.j2
+    dest: /etc/rsyslog.conf
+  notify:
+    - Restart RsyslogD

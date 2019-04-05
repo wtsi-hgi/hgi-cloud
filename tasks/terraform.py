@@ -4,47 +4,49 @@ import os
 import os.path
 import sys
 
-def terraform_tfvars(context):
-  env = context.config['env']
-  os_release = context.config['os_release']
-  return 'terraform/vars/{}-hgi-{}.tfvars'.format(os_release, env)
+def iac_path(context):
+  path = 'terraform/modules/openstack/{}s/{}'
+  return path.format(context.config['object']['type'],
+                     context.config['object']['name'])
+
+def tfvars_path(context):
+  path = 'terraform/vars/{}-{}-{}.tfvars'
+  return path.format(context.config['meta']['release'],
+                     context.config['meta']['programme'],
+                     context.config['meta']['env'])
 
 @invoke.task
 def clean(context):
-  tfplan = '{}/*.tfplan'.format(context.config['iac_path'])
+  tfplan = '{}/*.tfplan'.format(iac_path(context))
   print('Removing {}'.format(tfplan))
   for plan in glob.glob(tfplan):
     os.remove(plan)
 
 @invoke.task(pre=[clean])
 def init(context):
-  var_file = terraform_tfvars(context)
-  iac_path = context.config['iac_path']
-  context.run('terraform init -var-file={} {}'.format(var_file, iac_path))
+  var_file = tfvars_path(context)
+  context.run('terraform init -var-file={} {}'.format(var_file, iac_path(context)))
 
 @invoke.task(init)
 def validate(context):
-  var_file = terraform_tfvars(context)
-  iac_path = context.config['iac_path']
-  context.run('terraform validate -var-file={} {}'.format(var_file, iac_path))
+  var_file = tfvars_path(context)
+  context.run('terraform validate -var-file={} {}'.format(var_file, iac_path(context)))
 
 @invoke.task(validate)
 def plan(context, to='create'):
-  var_file = terraform_tfvars(context)
-  iac_path = context.config['iac_path']
-  tfplan = '{}/{}.tfplan'.format(iac_path, to)
-  tfstate = '{}/terraform.tfstate'.format(iac_path)
+  var_file = tfvars_path(context)
+  tfplan = '{}/{}.tfplan'.format(iac_path(context), to)
+  tfstate = '{}/terraform.tfstate'.format(iac_path(context))
   options = '-out={} -state={} -var-file={}'.format(tfplan, tfstate, var_file)
   if to == 'destroy':
     options += ' -destroy'
-  context.run('terraform plan {} {}'.format(options, iac_path))
+  context.run('terraform plan {} {}'.format(options, iac_path(context)))
   print('terraform plan created: {}'.format(tfplan))
 
 @invoke.task(pre=[invoke.call(plan, to='create')])
 def up(context):
-  iac_path = context.config['iac_path']
-  tfplan = '{}/create.tfplan'.format(iac_path)
-  tfstate = '{}/terraform.tfstate'.format(iac_path)
+  tfplan = '{}/create.tfplan'.format(iac_path(context))
+  tfstate = '{}/terraform.tfstate'.format(iac_path(context))
   options = '-state-out={}'.format(tfstate)
   context.run('terraform apply {} {}'.format(options, tfplan))
 
@@ -52,9 +54,8 @@ def up(context):
 # won't run them automatically at this stage.
 @invoke.task
 def down(context):
-  iac_path = context.config['iac_path']
-  tfplan = '{}/destroy.tfplan'.format(iac_path)
-  tfstate = '{}/terraform.tfstate'.format(iac_path)
+  tfplan = '{}/destroy.tfplan'.format(iac_path(context))
+  tfstate = '{}/terraform.tfstate'.format(iac_path(context))
   options = '-state-out={}'.format(tfstate)
   if os.path.isfile(tfplan):
     context.run('terraform apply {} {}'.format(options, tfplan))
@@ -67,9 +68,8 @@ def down(context):
 
 @invoke.task
 def update(context):
-  iac_path = context.config['iac_path']
-  tfplan = '{}/update.tfplan'.format(iac_path)
-  tfstate = '{}/terraform.tfstate'.format(iac_path)
+  tfplan = '{}/update.tfplan'.format(iac_path(context))
+  tfstate = '{}/terraform.tfstate'.format(iac_path(context))
   options = '-state-out={}'.format(tfstate)
   if os.path.isfile(tfplan):
     context.run('terraform apply {} {}'.format(options, tfplan))

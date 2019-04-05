@@ -1,8 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 # This wants to be an handy script to wrap the usage of invoke.
 # This tool is supposed to work only from the base project directory.
 
 set -e
+
+# These variables will describe the exact cloud / project in which to operate
+export INVOKE_META_ENV="${META_ENV:-dev}"
+export INVOKE_META_RELEASE="${META_RELEASE:-eta}"
+export INVOKE_META_PROGRAMME="${META_PROGRAMME:-hgi}"
 
 die() {
   echo -e "$2" >&2
@@ -16,27 +21,60 @@ SYNOPSIS
 
   ${0} --help
   ${0} --list
-  ${0} COLLECTION_NAME [invoke_options] [ [task_name] [task_options] ... ]
+  ${0} [image|deployment|env|environment] NAME-VERSION [invoke_options] [ [task_name] [task_options] ... ]
 
 DESCRIPTION
+  Runs automation tasks on a specific types of objects within the
+  infrastructure. The task names depend on the type of the object.
 
-  --help          Prints this help message. Any other argument will be
-                  discarded.
-  --list          Prints the list of available tasks collection. Any other
-                  argument will be discarded.
- COLLECTION_NAME  Runs invoke with the given collection of tasks. Any other
-                  argument will be passed to invoke. 
+  --help                          Prints this help message. Any other argument
+                                  will be discarded.
+  --list                          Prints the list of available tasks
+                                  collection. Any other argument will be
+                                  discarded.
+  [image|deployment|environment]  Tells invoke the kind of object to automate.
+  NAME                            Tells invoke which object to automate.
+  VERSION                         Tells invoke which version of the object to
+                                  automate.
 
+EXAMPLES
+
+  $ bash invoke.sh env spark-1.0.0 up
+  $ bash invoke.sh environment build-1.2.3 plan --to destroy
+  $ bash invoke.sh image base-0.1.0 build
+  $ bash invoke.sh deployment spark-1.1.0-ld14-test1 down
 HELP
     exit 0
   ;;
   --list)
-    ls -1 ${PWD}/invoke/*_collection.py | sed "s#${PWD}/invoke/\\(.*\\)_collection.py#\\1#"
+    ls -1 tasks/*.py | sed "s#tasks/\\(.*\\).py#\\1#"
     exit 0
   ;;
+  image|role|deployment|env|environment)
+    if [ "${1}" == "env" ] ; then
+      INVOKE_OBJECT_TYPE="environment"
+    else
+      INVOKE_OBJECT_TYPE="${1}"
+    fi
+    IFS="-" read INVOKE_OBJECT_NAME INVOKE_OBJECT_VERSION <<<"${2}"
+    export INVOKE_OBJECT_TYPE INVOKE_OBJECT_NAME INVOKE_OBJECT_VERSION
+  ;;
   *)
-    COLLECTION_NAME="${1}"
-    shift
+    die 1 "Sorry, cannot automate \`${1}'"
+  ;;
+esac
+
+shift 2
+
+case "${INVOKE_OBJECT_TYPE}" in
+  image)
+    COLLECTION=packer
+  ;;
+  role)
+    COLLECTION=molecule
+  ;;
+  *)
+    COLLECTION=terraform
   ;;
 esac
 
@@ -84,4 +122,4 @@ pip install --requirement requirements.txt
 echo
 
 # Runs the actual invoke command
-invoke --collection "invoke/${COLLECTION_NAME}_collection" "${@}"
+invoke --collection "tasks/${COLLECTION}" "${@}"

@@ -1,0 +1,13 @@
+---
+run:
+  echo: true
+
+meta:
+  env: default
+  release: default
+  programme: default
+
+object:
+  type: default
+  name: default
+  version: 0.0.0

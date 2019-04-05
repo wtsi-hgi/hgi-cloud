@@ -3,14 +3,23 @@
     "os_release": "",
     "programme": "",
     "env": "",
-    "role_name": "base",
-    "role_version": "0.0.2"
+    "source_image_name": "",
+    "network_id": "",
+    "role_name": "",
+    "role_version": ""
   },
   "builders": [
     {
       "type": "openstack",
       "ssh_username": "ubuntu",
-      "source_image": "{{user `source_image_id`}}",
+      "source_image_filter": {
+        "filters": {
+          "name": "{{user `source_image_name`}}",
+          "owner": "bd69a555635247bb94c23e02542c50ef",
+          "visibility": "public"
+        },
+        "most_recent": true
+      },
       "networks": ["{{user `network_id`}}"],
       "image_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-image-{{user `role_name`}}-{{user `role_version`}}",
       "instance_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-instance-packer-{{user `role_name`}}-{{user `role_version`}}",
@@ -21,7 +30,7 @@
         "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-secgroup-tcp-local",
         "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-secgroup-udp-local"
       ],
-      "flavor": "o2.small"
+      "flavor": "o2.medium"
     }
   ],
   "provisioners" : [
