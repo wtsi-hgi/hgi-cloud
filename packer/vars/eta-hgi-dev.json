@@ -1,5 +1,6 @@
 {
   "os_release": "eta",
   "programme": "hgi",
-  "env": "dev"
+  "env": "dev",
+  "source_image_name": "bionic-server"
 }
