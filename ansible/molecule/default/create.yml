@@ -18,8 +18,9 @@
   tasks:
     - name: Read metadata from file
       include_vars:
-        file: metadata.yml
+        file: ../../molecule/default/metadata.yml
         name: metadata
+
 
     # We assume:
     #   1. A "build" network is already available.
@@ -28,7 +29,7 @@
     - name: Create molecule instance
       os_server:
         state: present
-        name: "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ metadata['role_name'] }}-{{ item.name }}"
+        name: "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ item.role }}-{{ item.name }}"
         image: "{{ item.image }}"
         flavor: "{{ item.flavor }}"
         floating_ip_pools: public
@@ -46,7 +47,7 @@
           - "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-tcp-local"
           - "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-udp-local"
         network: "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-network-build"
-        meta: "{{ metadata | combine({ 'deployment_color': item.name }) }}"
+        meta: "{{ metadata | combine({ 'molecule_platform': item.name, 'molecule_scenario': molecule_yml.scenario['name'], 'role_name': item.role }) }}"
       register: instance
       with_items: "{{ molecule_yml.platforms }}"
       async: 7200
@@ -65,7 +66,7 @@
     - name: Populate instance config dict
       set_fact:
         instance_conf_dict: {
-          'instance': "{{ item.openstack.metadata.deployment_color }}",
+          'instance': "{{ item.openstack.metadata['molecule_platform'] }}",
           'address': "{{ item.openstack.accessIPv4 }}",
           'user': "{{ ssh_user }}",
           'port': "{{ ssh_port }}",

@@ -1,10 +1,36 @@
 ---
-- name: Ensure Java and Scala are installed
+- name: Set spark_version fact
+  set_fact:
+    spark_version: "{{ spark_version_major }}.{{ spark_version_minor }}.{{ spark_version_patch }}"
+
+- name: Set spark_home fact
+  set_fact:
+    spark_home: "{{ spark_install_dir }}/spark-{{ spark_version }}"
+
+- name: Ensure Scala is installed
   apt:
     state: present
     name:
       - scala
-      - default-jdk
+
+- name: Create group account for Spark
+  group:
+    state: present
+    name: "{{ spark_group_name }}"
+    gid: "{{ spark_group_gid }}"
+  tags: ["spark-group"]
+
+- name: Create user account for Spark
+  user:
+    state: present
+    name: "{{ spark_user_name }}"
+    uid: "{{ spark_user_uid }}"
+    group: "{{ spark_group_name }}"
+    system: no
+    home: "{{ spark_home }}"
+    shell: "{{ spark_user_shell }}"
+    groups: "{{ spark_user_groups | join(',') }}"
+  tags: ["spark-user"]
 
 - name: Ensure Spark download and install directories exist
   file:
@@ -27,10 +53,6 @@
 # - name: Verify downloaded Spark distribution
 #   command: /bin/true
 
-- name: Set spark_home fact
-  set_fact:
-    spark_home: "{{ spark_install_dir }}/spark-{{ spark_version }}"
-
 - name: Extract Spark distribution
   unarchive:
     src: "{{ spark_download_dir }}/spark-{{ spark_version }}.tgz"
@@ -38,35 +60,20 @@
     copy: no
     creates: "{{ spark_home }}"
 
-- name: Cleanup downloaded Spark distribution
-  file:
-    state: absent
-    name: "{{ spark_download_dir }}/spark-{{ spark_version }}.tgz"
-
-- name: Create service account for Spark
-  user:
-    state: present
-    name: "{{ spark_user_username }}"
-    system: yes
-    home: "{{ spark_home }}"
-    shell: "{{ spark_user_shell }}"
-    groups: "{{ spark_user_groups | join(',') }}"
-  tags: ["spark-user"]
-
 - name: Ensure Spark configuration directory exists
   file:
     state: directory
     path: "{{ spark_home }}/conf"
-    owner: "{{ spark_user_username }}"
-    group: "{{ spark_user_username }}"
+    owner: "{{ spark_user_name }}"
+    group: "{{ spark_group_name }}"
   tags: ["config"]
 
 - name: Ensure Spark log, run, temp and work directories exist
   file:
     state: directory
     path: "{{ spark_home }}/{{ item }}"
-    owner: "{{ spark_user_username }}"
-    group: "{{ spark_user_username }}"
+    owner: "{{ spark_user_name }}"
+    group: "{{ spark_group_name }}"
     mode: 0775
   with_items:
     - log
@@ -78,8 +85,8 @@
   file:
     state: directory
     path: "{{ item }}"
-    owner: "{{ spark_user_username }}"
-    group: "{{ spark_user_username }}"
+    owner: "{{ spark_user_name }}"
+    group: "{{ spark_group_name }}"
     mode: "{{ spark_local_dir_mode }}"
   when: item != "/tmp"
   with_items: "{{ spark_local_dirs }}"
@@ -101,5 +108,11 @@
   template:
     src: log4j.properties.j2
     dest: "{{ spark_home }}/conf/log4j.properties"
-    owner: "{{ spark_user_username }}"
-    group: "{{ spark_user_username }}"
+    owner: "{{ spark_user_name }}"
+    group: "{{ spark_group_name }}"
+
+- name: Create symlink to Spark versioned installation directory
+  file:
+    state: link
+    path: "{{ spark_install_dir }}/spark"
+    src: "{{ spark_home }}"
