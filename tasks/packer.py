@@ -18,9 +18,11 @@ def packer_options(context):
                                          context.config['meta']['env'])
   network_id = cloud.network.find_network(network_name).id
 
-  options = '-var "network_id={}" -var-file=vars/{}-{}-{}.json'
+  options = '-var "network_id={}" -var "role_name={}" -var "role_version={}" -var-file=vars/{}-{}-{}.json'
 
   return options.format(network_id,
+                        context.config['object']['name'],
+                        context.config['object']['version'],
                         context.config['meta']['release'],
                         context.config['meta']['programme'],
                         context.config['meta']['env'])
