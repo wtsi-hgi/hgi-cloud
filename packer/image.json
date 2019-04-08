@@ -12,6 +12,8 @@
     {
       "type": "openstack",
       "ssh_username": "ubuntu",
+      "ssh_keypair_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-keypair-mercury",
+      "ssh_private_key_file": "~/.ssh/id_rsa",
       "source_image_filter": {
         "filters": {
           "name": "{{user `source_image_name`}}",
