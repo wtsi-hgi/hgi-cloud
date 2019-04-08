@@ -1,0 +1,38 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: openstack
+lint:
+  name: yamllint
+platforms:
+  - name: default
+    image: uk-sanger-internal-openstack-eta-hgi-dev-image-base-0.0.3
+    flavor: o2.medium
+    role: spark
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+  playbooks:
+    create: ../../../../molecule/default/create.yml
+    destroy: ../../../../molecule/default/destroy.yml
+    converge: playbook.yml
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
+scenario:
+  name: default
+  test_sequence:
+    - lint
+    - destroy
+#    - dependency
+    - syntax
+    - create
+#    - prepare
+    - converge
+#    - idempotence
+#    - side_effect
+#    - verify
+    - destroy

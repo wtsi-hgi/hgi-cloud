@@ -1,0 +1,16 @@
+---
+hadoop_version_major: 2
+hadoop_version_minor: 2
+hadoop_version_patch: 7
+hadoop_mirror: http://www.mirrorservice.org/sites/ftp.apache.org/hadoop/common
+
+hadoop_group_name: "hadoop"
+hadoop_group_gid: 10001
+
+hadoop_user_name: "hadoop"
+hadoop_user_uid: 10001
+hadoop_user_groups: []
+hadoop_user_shell: "/bin/false"
+
+hadoop_download_dir: "/opt/sanger.ac.uk/download"
+hadoop_install_dir: "/opt/sanger.ac.uk"
