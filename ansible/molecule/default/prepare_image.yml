@@ -1,0 +1,14 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Copy setup script to remote host
+      local_action: "command scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/id_rsa ../../../packer/scripts/setup.sh ubuntu@{{ item.address }}:/tmp"
+      with_items: "{{ lookup('file', molecule_instance_config) | molecule_from_yaml }}"
+
+    - name: Run setup script on remote host
+      raw: "bash -eux /tmp/setup.sh > /tmp/setup.log"
+      become: true
+      changed_when: false
+
