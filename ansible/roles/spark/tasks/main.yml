@@ -32,7 +32,7 @@
     groups: "{{ spark_user_groups | join(',') }}"
   tags: ["spark-user"]
 
-- name: Ensure Spark download and install directories exist
+- name: Ensure Spark download, source and install directories exist
   file:
     state: directory
     path: "{{ item }}"
@@ -41,10 +41,11 @@
   with_items:
     - "{{ spark_download_dir }}"
     - "{{ spark_install_dir }}"
+    - "{{ spark_source_dir }}"
 
 - name: Download Spark distribution
   get_url:
-    url: "{{ spark_mirror }}/spark-{{ spark_version }}.tgz"
+    url: "{{ spark_mirror }}/spark-{{ spark_version }}/spark-{{ spark_version }}.tgz"
     dest: "{{ spark_download_dir }}/spark-{{ spark_version }}.tgz"
 
 # FIXME: This should really be implemented
@@ -54,65 +55,85 @@
 #   command: /bin/true
 
 - name: Extract Spark distribution
+  become: false
   unarchive:
     src: "{{ spark_download_dir }}/spark-{{ spark_version }}.tgz"
-    dest: "{{ spark_install_dir }}"
+    dest: "{{ spark_source_dir }}"
     copy: no
-    creates: "{{ spark_home }}"
+    # creates: "{{ spark_home }}"
 
-- name: Ensure Spark configuration directory exists
-  file:
-    state: directory
-    path: "{{ spark_home }}/conf"
-    owner: "{{ spark_user_name }}"
-    group: "{{ spark_group_name }}"
-  tags: ["config"]
+- name: Install spark
+  become: false
+  shell: |
+    JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
+    HADOOP_HOME=/opt/sanger.ac.uk/hadoop-2.9.2 \
+    MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn" \
+    ./dev/make-distribution.sh \
+      --name hadoop2.9.2-netlib-lgpl \
+      --tgz \
+      -B \
+      -Phadoop-2.9.2 \
+      -Psparkr \
+      -Pyarn \
+      -DzincPort=3036 \
+      -Pnetlib-lgpl \
+      -Dhadoop.version=2.9.2
+  args:
+    chdir: "{{ spark_source_dir }}/spark-{{ spark_version }}"
 
-- name: Ensure Spark log, run, temp and work directories exist
-  file:
-    state: directory
-    path: "{{ spark_home }}/{{ item }}"
-    owner: "{{ spark_user_name }}"
-    group: "{{ spark_group_name }}"
-    mode: 0775
-  with_items:
-    - log
-    - run
-    - temp
-    - work
-
-- name: Ensure Spark local directories exist
-  file:
-    state: directory
-    path: "{{ item }}"
-    owner: "{{ spark_user_name }}"
-    group: "{{ spark_group_name }}"
-    mode: "{{ spark_local_dir_mode }}"
-  when: item != "/tmp"
-  with_items: "{{ spark_local_dirs }}"
-  tags: ["spark-local-dirs"]
-
-- name: Configure Spark environment
-  template:
-    src: spark-env.sh.j2
-    dest: "{{ spark_home }}/conf/spark-env.sh"
-  tags: ["config"]
-
-- name: Configure Spark defaults config file
-  template:
-    src: spark-defaults.conf.j2
-    dest: "{{ spark_home }}/conf/spark-defaults.conf"
-  tags: ["config"]
-
-- name: Deploy Spark log4j properties
-  template:
-    src: log4j.properties.j2
-    dest: "{{ spark_home }}/conf/log4j.properties"
-    owner: "{{ spark_user_name }}"
-    group: "{{ spark_group_name }}"
-
-- name: Create symlink to Spark versioned installation directory
-  file:
-    state: link
-    path: "{{ spark_install_dir }}/spark"
-    src: "{{ spark_home }}"
+# - name: Ensure Spark configuration directory exists
+#   file:
+#     state: directory
+#     path: "{{ spark_home }}/conf"
+#     owner: "{{ spark_user_name }}"
+#     group: "{{ spark_group_name }}"
+#   tags: ["config"]
+# 
+# - name: Ensure Spark log, run, temp and work directories exist
+#   file:
+#     state: directory
+#     path: "{{ spark_home }}/{{ item }}"
+#     owner: "{{ spark_user_name }}"
+#     group: "{{ spark_group_name }}"
+#     mode: 0775
+#   with_items:
+#     - log
+#     - run
+#     - temp
+#     - work
+# 
+# - name: Ensure Spark local directories exist
+#   file:
+#     state: directory
+#     path: "{{ item }}"
+#     owner: "{{ spark_user_name }}"
+#     group: "{{ spark_group_name }}"
+#     mode: "{{ spark_local_dir_mode }}"
+#   when: item != "/tmp"
+#   with_items: "{{ spark_local_dirs }}"
+#   tags: ["spark-local-dirs"]
+# 
+# - name: Configure Spark environment
+#   template:
+#     src: spark-env.sh.j2
+#     dest: "{{ spark_home }}/conf/spark-env.sh"
+#   tags: ["config"]
+# 
+# - name: Configure Spark defaults config file
+#   template:
+#     src: spark-defaults.conf.j2
+#     dest: "{{ spark_home }}/conf/spark-defaults.conf"
+#   tags: ["config"]
+# 
+# - name: Deploy Spark log4j properties
+#   template:
+#     src: log4j.properties.j2
+#     dest: "{{ spark_home }}/conf/log4j.properties"
+#     owner: "{{ spark_user_name }}"
+#     group: "{{ spark_group_name }}"
+# 
+# - name: Create symlink to Spark versioned installation directory
+#   file:
+#     state: link
+#     path: "{{ spark_install_dir }}/spark"
+#     src: "{{ spark_home }}"

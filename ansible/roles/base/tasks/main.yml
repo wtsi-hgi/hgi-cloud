@@ -14,13 +14,13 @@
       - gpg
 
 - name: Install Collectd
-  apt: 
+  apt:
     name: "collectd={{ collectd_version }}"
     state: present
     install_recommends: "{{ collectd_install_recommends }}"
 
 - name: Install RsyslogD
-  apt: 
+  apt:
     name: "rsyslog={{ rsyslog_version }}"
     state: present
     install_recommends: "{{ rsyslog_install_recommends }}"

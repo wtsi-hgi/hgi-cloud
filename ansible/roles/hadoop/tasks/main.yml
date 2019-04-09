@@ -7,12 +7,6 @@
   set_fact:
     hadoop_home: "{{ hadoop_install_dir }}/hadoop-{{ hadoop_version }}"
 
-- name: Ensure Java is installed
-  apt:
-    state: present
-    name:
-      - default-jdk
-
 - name: Create group account for Hadoop
   group:
     state: present
@@ -30,7 +24,20 @@
     home: "{{ hadoop_home }}"
     shell: "{{ hadoop_user_shell }}"
     groups: "{{ hadoop_user_groups | join(',') }}"
+    create_home: no
   tags: ["hadoop-user"]
+
+- name: Ensure JDK 8 is installed
+  apt:
+    state: present
+    name:
+      - openjdk-8-jdk
+
+- name: Set JAVA_HOME environment variable
+  copy:
+    dest: /etc/profile.d/openjdk.sh
+    content: |
+      export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
 
 - name: Ensure Hadoop download and install directories exist
   file:
@@ -43,9 +50,9 @@
     - "{{ hadoop_install_dir }}"
 
 - name: Download Hadoop distribution
-  rcet_url:
-    url: "{{ hadoop_mirror }}/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}-src.tar.gz"
-    dest: "{{ hadoop_download_dir }}/hadoop-{{ hadoop_version }}-src.tar.gz"
+  get_url:
+    url: "{{ hadoop_mirror }}/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz"
+    dest: "{{ hadoop_download_dir }}/hadoop-{{ hadoop_version }}.tar.gz"
 
 # FIXME: This should really be implemented https://hadoop.apache.org/releases.html
 #
@@ -54,20 +61,39 @@
 
 - name: Extract Hadoop distribution
   unarchive:
-    src: "{{ hadoop_download_dir }}/hadoop-{{ hadoop_version }}-src.tar.gz"
+    src: "{{ hadoop_download_dir }}/hadoop-{{ hadoop_version }}.tar.gz"
     dest: "{{ hadoop_install_dir }}"
     copy: no
     owner: "{{ hadoop_user_name }}"
     group: "{{ hadoop_group_name }}"
     creates: "{{ hadoop_home }}"
+    list_files: yes
 
-- name: Cleanup downloaded Hadoop distribution
+- name: Ensure Hadoop runtime directories exist
   file:
-    state: absent
-    name: "{{ hadoop_download_dir }}/hadoop-{{ hadoop_version }}-src.tar.gz"
+    state: directory
+    path: "{{ item }}"
+    mode: 0755
+    owner: "{{ hadoop_user_name }}"
+    group: "{{ hadoop_group_name }}"
+  with_items:
+    - "{{ hadoop_home }}/run"
+    - "{{ hadoop_home }}/log"
+    - "{{ hadoop_home }}/tmp"
 
 - name: Create symlink to Hadoop versioned installation directory
   file:
     state: link
     path: "{{ hadoop_install_dir }}/hadoop"
     src: "{{ hadoop_home }}"
+
+- name: Set JAVA_HOME environment variable
+  copy:
+    dest: /etc/profile.d/openjdk.sh
+    content: |
+      export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
+
+- name: Set Hadoop profile variables
+  template:
+    src: profile.sh.tpl
+    dest: /etc/profile.d/hadoop.sh

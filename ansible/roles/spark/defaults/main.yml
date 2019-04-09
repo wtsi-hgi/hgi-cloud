@@ -2,7 +2,7 @@
 spark_version_major: 2
 spark_version_minor: 4
 spark_version_patch: 1
-spark_mirror: "https://www-eu.apache.org/dist/spark/spark-2.4.1"
+spark_mirror: "https://archive.apache.org/dist/spark/"
 
 spark_group_name: "spark"
 spark_group_gid: 10002
@@ -12,6 +12,7 @@ spark_user_uid: 10002
 spark_user_groups: []
 spark_user_shell: "/bin/false"
 
+spark_source_dir: "/opt/sanger.ac.uk/src"
 spark_download_dir: "/opt/sanger.ac.uk/download"
 spark_install_dir: "/opt/sanger.ac.uk"
 
