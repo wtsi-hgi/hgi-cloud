@@ -11,6 +11,7 @@
   "builders": [
     {
       "type": "openstack",
+      "user_data_file": "scripts/user_data.sh",
       "ssh_username": "ubuntu",
       "ssh_keypair_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-keypair-mercury",
       "ssh_private_key_file": "~/.ssh/id_rsa",
