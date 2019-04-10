@@ -1,0 +1,12 @@
+---
+- name: Converge
+  hosts: all
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Run platform's role
+      include_role:
+        name: "{{ molecule_platform.role }}"
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        loop_var: molecule_platform
