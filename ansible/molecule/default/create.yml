@@ -5,10 +5,6 @@
   gather_facts: false
   no_log: false
   vars:
-    # FIXME: This solution assumes an ubuntu host. To make this solution
-    # operating-system-agnostic, any base image, regardless of the operating
-    # system and/or software distribution, shoulud rename the default user to
-    # something neutral like 'sanger'.
     ssh_user: ubuntu
     ssh_port: 22
     identity_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
@@ -29,6 +25,7 @@
     - name: Create molecule instance
       os_server:
         state: present
+        userdata: "{{ lookup('file', '../../../packer/scripts/user_data.sh') }}"
         name: "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ item.role }}-{{ item.name }}"
         image: "{{ item.image }}"
         flavor: "{{ item.flavor }}"

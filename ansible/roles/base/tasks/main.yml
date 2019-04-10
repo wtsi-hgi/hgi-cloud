@@ -12,21 +12,41 @@
       - vim
       - python-pip
       - gpg
+      - collectd
+      - rsyslog
 
-- name: Install Collectd
-  apt:
-    name: "collectd={{ collectd_version }}"
-    state: present
-    install_recommends: "{{ collectd_install_recommends }}"
-
-- name: Install RsyslogD
-  apt:
-    name: "rsyslog={{ rsyslog_version }}"
-    state: present
-    install_recommends: "{{ rsyslog_install_recommends }}"
-
-- name: install testinfra python module
+- name: Install base python modules
   pip:
     state: present
     name:
       - testinfra
+
+- name: Create group account for base operation
+  group:
+    state: present
+    name: "{{ base_group_name }}"
+    gid: "{{ base_group_gid }}"
+  tags: ["base-group"]
+
+- name: Create extra group accounts for base operation
+  group:
+    state: present
+    name: "{{ extra_group.name }}"
+    gid: "{{ extra_group.gid }}"
+  loop: "{{ base_user_groups }}"
+  loop_control:
+    loop_var: extra_group
+  tags: ["extra-groups"]
+
+- name: Create user account for base operation
+  user:
+    state: present
+    name: "{{ base_user_name }}"
+    uid: "{{ base_user_uid }}"
+    group: "{{ base_group_name }}"
+    system: no
+    home: "{{ base_user_home }}"
+    create_home: no
+    shell: "{{ base_user_shell }}"
+    groups: "{{ base_user_groups | map(attribute='name') | list | join(',') }}"
+  tags: ["base-user"]

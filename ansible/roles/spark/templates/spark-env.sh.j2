@@ -49,14 +49,14 @@
 # - SPARK_IDENT_STRING  A string representing this instance of spark. (Default: $USER)
 # - SPARK_NICENESS      The scheduling priority for daemons. (Default: 0)
 
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/lib/hadoop/lib/native
+export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:{{ hadoop_home }}/lib/native"
 
-export HADOOP_CONF_DIR=${HADOOP_CONF_DIR:-/etc/hadoop/conf}
+export HADOOP_CONF_DIR="{{ hadoop_home }}/conf"
 
-export SPARK_LOG_DIR=${SPARK_LOG_DIR:-{{ spark_home }}/log
-export SPARK_PID_DIR=${SPARK_PID_DIR:-{{ spark_home }}/run
+export SPARK_LOG_DIR="${SPARK_LOG_DIR:-{{ spark_home }}/log"
+export SPARK_PID_DIR="${SPARK_PID_DIR:-{{ spark_home }}/run"
 {% if (spark_local_dirs | length) >0 %}
-export SPARK_LOCAL_DIRS="${SPARK_LOCAL_DIRS:-{{ spark_local_dirs|join(',') }}}"
+export SPARK_LOCAL_DIRS="{{ spark_local_dirs|join(',') }}"
 {% endif %}
 
 {% for key, value in spark_env_extras.items() | sort %}

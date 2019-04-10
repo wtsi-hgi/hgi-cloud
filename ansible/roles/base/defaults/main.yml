@@ -1,6 +1,15 @@
 ---
-collectd_version: 5.7.2-2ubuntu1
-collectd_install_recommends: true
+base_user_name: hgi
+base_user_uid: 10000
+base_user_home: "/opt/sanger.ac.uk/{{ base_user_name }}"
+base_user_groups:
+  - name: informatics
+    gid: 11000
+base_user_shell: /bin/false
 
-rsyslog_version: 8.32.0-1ubuntu4
-rsyslog_install_recommends: true
+base_group_name: "{{ base_user_name }}"
+base_group_gid: "{{ base_user_uid }}"
+
+base_source_dir: "{{ base_user_home }}/src"
+base_download_dir: "{{ base_user_home }}/download"
+base_bin_dir: "{{ base_user_home }}/bin"

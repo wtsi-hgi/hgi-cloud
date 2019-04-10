@@ -1,8 +1,4 @@
 ---
-- name: Set hadoop_version fact
-  set_fact:
-    hadoop_version: "{{ hadoop_version_major }}.{{ hadoop_version_minor }}.{{ hadoop_version_patch }}"
-
 - name: Set hadoop_home fact
   set_fact:
     hadoop_home: "{{ hadoop_install_dir }}/hadoop-{{ hadoop_version }}"
@@ -22,28 +18,16 @@
     group: "{{ hadoop_group_name }}"
     system: no
     home: "{{ hadoop_home }}"
+    create_home: no
     shell: "{{ hadoop_user_shell }}"
     groups: "{{ hadoop_user_groups | join(',') }}"
-    create_home: no
   tags: ["hadoop-user"]
-
-- name: Ensure JDK 8 is installed
-  apt:
-    state: present
-    name:
-      - openjdk-8-jdk
-
-- name: Set JAVA_HOME environment variable
-  copy:
-    dest: /etc/profile.d/openjdk.sh
-    content: |
-      export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
 
 - name: Ensure Hadoop download and install directories exist
   file:
     state: directory
     path: "{{ item }}"
-    mode: 0755
+    mode: 0775
     follow: true
   with_items:
     - "{{ hadoop_download_dir }}"
@@ -54,7 +38,7 @@
     url: "{{ hadoop_mirror }}/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz"
     dest: "{{ hadoop_download_dir }}/hadoop-{{ hadoop_version }}.tar.gz"
 
-# FIXME: This should really be implemented https://hadoop.apache.org/releases.html
+# TODO: This should really be implemented https://hadoop.apache.org/releases.html
 #
 # - name: Verify downloaded Hadoop distribution
 #   command: /bin/true
@@ -64,9 +48,9 @@
     src: "{{ hadoop_download_dir }}/hadoop-{{ hadoop_version }}.tar.gz"
     dest: "{{ hadoop_install_dir }}"
     copy: no
-    owner: "{{ hadoop_user_name }}"
-    group: "{{ hadoop_group_name }}"
-    creates: "{{ hadoop_home }}"
+    owner: "{{ hadoop_install_owner }}"
+    group: "{{ hadoop_install_group }}"
+    mode: "u+rw,go+r"
     list_files: yes
 
 - name: Ensure Hadoop runtime directories exist
@@ -86,12 +70,6 @@
     state: link
     path: "{{ hadoop_install_dir }}/hadoop"
     src: "{{ hadoop_home }}"
-
-- name: Set JAVA_HOME environment variable
-  copy:
-    dest: /etc/profile.d/openjdk.sh
-    content: |
-      export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
 
 - name: Set Hadoop profile variables
   template:

@@ -1,4 +1,41 @@
 ---
+base_user_name: hgi
+base_user_uid: 10000
+base_user_home: "/opt/sanger.ac.uk/{{ base_user_name }}"
+base_user_groups:
+  - name: informatics
+    gid: 11000
+base_user_shell: /bin/false
+
+base_group_name: "{{ base_user_name }}"
+base_group_gid: "{{ base_group_name }}"
+
+base_source_dir: "{{ base_user_home }}/src"
+base_download_dir: "{{ base_user_home }}/download"
+base_bin_dir: "{{ base_user_home }}/bin"
+
+hadoop_version: 2.9.2
+hadoop_mirror: https://archive.apache.org/dist/hadoop/common
+
+hadoop_user_name: hadoop
+hadoop_user_uid: 10001
+hadoop_user_groups:
+  - informatics
+hadoop_user_shell: /bin/false
+
+hadoop_group_name: hadoop
+hadoop_group_gid: 10001
+
+hadoop_group_name: "{{ hadoop_user_name }}"
+hadoop_group_gid: "{{ hadoop_user_uid }}"
+
+hadoop_download_dir: "{{ base_download_dir }}"
+hadoop_install_dir: "{{ base_user_home }}"
+
+hadoop_install_owner: hadoop
+hadoop_install_group: informatics
+hadoop_install_mode: u+rw,go+r
+
 spark_version: 2.4.1
 spark_mirror: https://archive.apache.org/dist/spark/
 
@@ -85,8 +122,7 @@ spark_sysctl_params:
   - name: net.ipv4.ip_local_port_range
     value: 8196 65535
   - name: net.ipv4.ip_local_reserved_ports
-    # TODO: ensure spark_master_port spark_master_backend_port are on this list
-    value: 7077,7337,8000-8088,8141,8188,8440-8485,8651-8670,8788,8983,9083,9898,10000-10033,10200,11000,13562,15000,19888,45454,50010,50020,50030,50060,50070,50075,50090,50091,50470,50475,50100,50105,50111,60010-60030
+    value: 7077,7337,8000-8088,8141,8188,8440-8485,8651-8670,8788,8983,9083,9898,10000-10033,10200,11000,13562,15000,19888,45454,50010,50020,50030,50060,50070,50075,50090,50091,50470,50475,50100,50105,50111,60010-60030 # TODO ensure spark_master_port spark_master_backend_port are on this list
   - name: net.ipv4.tcp_retries2
     value: 10
   - name: net.ipv4.tcp_rfc1337
