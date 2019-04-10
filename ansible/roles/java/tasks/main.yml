@@ -1,0 +1,13 @@
+---
+- name: "Ensure JDK {{ java_jdk_version }} is installed"
+  apt:
+    state: present
+    name:
+      - "openjdk-{{ java_jdk_version }}-jdk"
+    install_recommends: yes
+
+- name: Set JAVA_HOME in system-wide profile
+  copy:
+    dest: /etc/profile.d/java.sh
+    content: |
+      export JAVA_HOME="/usr/lib/jvm/java-{{ java_jdk_version }}-openjdk-amd64"
