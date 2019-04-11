@@ -5,7 +5,7 @@ base_user_home: "/opt/sanger.ac.uk/{{ base_user_name }}"
 base_user_groups:
   - name: informatics
     gid: 11000
-base_user_shell: /bin/false
+base_user_shell: /bin/bash
 
 base_group_name: "{{ base_user_name }}"
 base_group_gid: "{{ base_user_uid }}"
@@ -13,3 +13,7 @@ base_group_gid: "{{ base_user_uid }}"
 base_source_dir: "{{ base_user_home }}/src"
 base_download_dir: "{{ base_user_home }}/download"
 base_bin_dir: "{{ base_user_home }}/bin"
+
+base_dir_owner: "{{ base_user_name }}"
+base_dir_group: informatics
+base_dir_mode: 0775

@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: De Vitis, Luca
-  description: Installs and prepare base system
+  description: Installs and prepare Spark on the system
   company: Wellcome Sanger Institute, Genome Research Limited
 
   issue_tracker_url: https://gitlab.internal.sanger.ac.uk/hgi/hgi-systems-cluster-spark/issues
@@ -15,4 +15,5 @@ galaxy_info:
         - 18.04
 
   galaxy_tags: []
-dependencies: []
+dependencies:
+  - java_base

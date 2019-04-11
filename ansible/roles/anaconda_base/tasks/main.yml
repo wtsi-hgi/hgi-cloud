@@ -1,0 +1,21 @@
+---
+- name: Download Anaconda3 installer
+  get_url:
+    url: "{{ anaconda_mirror }}/Anaconda3-{{ anaconda_distribution }}.sh"
+    dest: "{{ anaconda_download_dir }}"
+
+- name: Install Anaconda3
+  command: |
+    /bin/bash {{ anaconda_download_dir }}/Anaconda3-{{ anaconda_distribution }}.sh \
+      -p {{ anaconda_install_dir }}/anaconda3 -b -s
+  args:
+    creates: "{{ anaconda_install_dir }}/anaconda3"
+
+- name: Fix ownership and permissions on anaconda installation
+  file:
+    state: directory
+    path: "{{ anaconda_install_dir }}/anaconda3"
+    recurse: yes
+    owner: "{{ anaconda_install_owner }}"
+    group: "{{ anaconda_install_group }}"
+    mode: "{{ anaconda_install_mode }}"

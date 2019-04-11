@@ -1,5 +1,13 @@
 ---
-# tasks file for base
+- name: Update packages
+  apt:
+    state: latest
+    update_cache: yes
+    upgrade: safe
+    autoremove: yes
+    autoclean: yes
+    force_apt_get: yes
+
 - name: Install base packages
   apt:
     state: present
@@ -14,6 +22,7 @@
       - gpg
       - collectd
       - rsyslog
+    install_recommends: yes
 
 - name: Install base python modules
   pip:
@@ -50,3 +59,20 @@
     shell: "{{ base_user_shell }}"
     groups: "{{ base_user_groups | map(attribute='name') | list | join(',') }}"
   tags: ["base-user"]
+
+- name: Ensure base directory structure is in place
+  file:
+    state: directory
+    path: "{{ base_dir }}"
+    owner: "{{ base_dir_owner }}"
+    group: "{{ base_dir_group }}"
+    mode: "{{ base_dir_mode }}"
+  loop:
+    - "{{ base_source_dir }}"
+    - "{{ base_download_dir }}"
+    - "{{ base_bin_dir }}"
+  loop_control:
+    loop_var: base_dir
+
+- name: Set proper sudo permissions
+  command: sed --in-place --expression '/^ubuntu/ s/(ALL)/(ALL:ALL)/' /etc/sudoers.d/90-cloud-init-users
