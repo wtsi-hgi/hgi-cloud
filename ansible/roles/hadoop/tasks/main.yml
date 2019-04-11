@@ -58,8 +58,8 @@
     state: directory
     path: "{{ item }}"
     mode: 0755
-    owner: "{{ hadoop_user_name }}"
-    group: "{{ hadoop_group_name }}"
+    owner: "{{ hadoop_install_owner }}"
+    group: "{{ hadoop_install_group }}"
   with_items:
     - "{{ hadoop_home }}/run"
     - "{{ hadoop_home }}/log"
