@@ -1,0 +1,17 @@
+---
+- name: "Ensure JDK {{ java_jdk_version }} is installed"
+  apt:
+    state: present
+    name:
+      - "openjdk-{{ java_jdk_version }}-jdk"
+    install_recommends: yes
+
+- name: Set java_home fact
+  set_fact:
+    java_home: "/usr/lib/jvm/java-{{ java_jdk_version }}-openjdk-amd64"
+
+- name: Configure system-wide environment variables
+  copy:
+    dest: /etc/profile.d/java.sh
+    content: |
+      export JAVA_HOME="{{ java_home }}"

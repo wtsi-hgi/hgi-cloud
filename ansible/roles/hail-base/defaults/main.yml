@@ -1,0 +1,9 @@
+---
+hail_repo: https://github.com/hail-is/hail.git
+hail_version: 0.2.12
+
+hail_install_dir: "{{ base_install_dir }}"
+
+hail_user_name: "{{ base_user_name }}"
+hail_group_name: "{{ base_group_name }}"
+hail_install_mode: u+rw,go+r

@@ -1,0 +1,17 @@
+---
+hadoop_version: 2.7.3
+hadoop_mirror: https://archive.apache.org/dist/hadoop/common
+
+hadoop_user_name: "{{ base_user_name }}"
+hadoop_user_uid: "{{ base_user_uid }}"
+hadoop_user_groups: "{{ base_user_groups | map(attribute='name') | list }}"
+hadoop_user_shell: /bin/false
+
+hadoop_group_name: "{{ hadoop_user_name }}"
+hadoop_group_gid: "{{ hadoop_user_uid }}"
+
+hadoop_download_dir: /opt/sanger.ac.uk/hgi/download
+hadoop_install_dir: /opt/sanger.ac.uk/hgi
+
+hadoop_install_owner: "{{ hadoop_user_name }}"
+hadoop_install_group: "{{ hadoop_group_name }}"

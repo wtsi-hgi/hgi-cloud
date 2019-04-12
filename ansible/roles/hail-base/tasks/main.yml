@@ -1,0 +1,45 @@
+---
+- name: Ensure dependencies are installed
+  apt:
+    state: present
+    name:
+      - g++
+      - liblz4-dev
+
+- name: Ensure Hail install directory exist
+  file:
+    state: directory
+    path: "{{ hail_build_dir }}"
+    owner: "{{ hail_user_name }}"
+    group: "{{ hail_group_name }}"
+    mode: 0775
+    follow: true
+  loop:
+    - "{{ hail_install_dir }}"
+  loop_control:
+    loop_var: hail_build_dir
+
+- name: Ensure Hail git repo has been chacked out
+  git:
+    repo: "{{ hail_repo }}"
+    dest: "{{ hail_install_dir }}/hail"
+    update: no
+    version: "{{ hail_version }}"
+
+- name: Ensure gradlew is executable
+  file:
+    state: file
+    path: "{{ hail_install_dir }}/hail/hail/gradlew"
+    mode: ugo+x
+
+- name: Build Hail
+  command: "JAVA_HOME={{ java_home }} ./gradlew -Dspark.version={{ spark_version }} shadowJar"
+  args:
+    chdir: "{{ hail_install_dir }}/hail/hail"
+
+- name: Fix ownership on Hail installation
+  file:
+    path: "{{ hail_install_dir }}"
+    owner: "{{ hail_user_name }}"
+    group: "{{ hail_group_name }}"
+    recursive: yes
