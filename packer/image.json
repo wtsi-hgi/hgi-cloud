@@ -5,8 +5,8 @@
     "env": "",
     "source_image_name": "",
     "network_id": "",
-    "role_name": "",
-    "role_version": ""
+    "role_name": "base",
+    "role_version": "0.0.0"
   },
   "builders": [
     {
@@ -24,7 +24,7 @@
         "most_recent": true
       },
       "networks": ["{{user `network_id`}}"],
-      "image_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-image-{{user `role_name`}}-{{user `role_version`}}",
+      "image_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-image-packer-{{user `role_name`}}-{{user `role_version`}}",
       "instance_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-instance-packer-{{user `role_name`}}-{{user `role_version`}}",
       "floating_ip_network": "public",
       "security_groups": [
@@ -33,6 +33,9 @@
         "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-secgroup-tcp-local",
         "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-secgroup-udp-local"
       ],
+      "use_blockstorage_volume": true,
+      "volume_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-volume-packer-{{user `role_name`}}-{{user `role_version`}}",
+      "volume_size": 32,
       "flavor": "o2.medium"
     }
   ],
