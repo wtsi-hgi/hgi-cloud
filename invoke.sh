@@ -21,7 +21,7 @@ SYNOPSIS
 
   ${0} --help
   ${0} --list
-  ${0} [image|deployment|env|environment] NAME-VERSION [invoke_options] [ [task_name] [task_options] ... ]
+  ${0} [image|deployment|env|environment] NAME:VERSION [invoke_options] [ [task_name] [task_options] ... ]
 
 DESCRIPTION
   Runs automation tasks on a specific types of objects within the
@@ -56,7 +56,7 @@ HELP
     else
       INVOKE_OBJECT_TYPE="${1}"
     fi
-    IFS="-" read INVOKE_OBJECT_NAME INVOKE_OBJECT_VERSION <<<"${2}"
+    IFS=":" read INVOKE_OBJECT_NAME INVOKE_OBJECT_VERSION <<<"${2}"
     export INVOKE_OBJECT_TYPE INVOKE_OBJECT_NAME INVOKE_OBJECT_VERSION
   ;;
   *)
