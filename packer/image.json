@@ -24,7 +24,7 @@
         "most_recent": true
       },
       "networks": ["{{user `network_id`}}"],
-      "image_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-image-packer-{{user `role_name`}}-{{user `role_version`}}",
+      "image_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-image-{{user `role_name`}}-{{user `role_version`}}",
       "instance_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-instance-packer-{{user `role_name`}}-{{user `role_version`}}",
       "floating_ip_network": "public",
       "security_groups": [
