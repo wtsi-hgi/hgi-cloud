@@ -1,4 +1,4 @@
-export HAIL_HOME="{{ hail_install_dir}}/hail/hail"
+export HAIL_HOME="{{ hail_home }}"
 export PYTHONPATH="${PYTHONPATH}:${HAIL_HOME}/python:${SPARK_HOME}/python:$(echo "${SPARK_HOME}/python/lib/py4j*-src.zip")"
 export HAIL_JAR="${HAIL_HOME}/build/libs/hail-all-spark.jar"
 export PYSPARK_SUBMIT_ARGS="--conf spark.driver.extraClassPath=$HAIL_JAR --conf spark.executor.extraClassPath=$HAIL_JAR --driver-memory 8G pyspark-shell"

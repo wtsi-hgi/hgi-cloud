@@ -2,30 +2,42 @@
 spark_version: 2.2.0
 spark_mirror: https://archive.apache.org/dist/spark/
 
-spark_user_name: spark
-spark_user_uid: 10002
-spark_user_groups:
-  - informatics
-spark_user_shell: /bin/false
+spark_user_name: "{{ base_user_name }}"
+# spark_user_uid: 10002
+# spark_user_groups:
+#   - informatics
+# spark_user_shell: /bin/false
 
-spark_group_name: "{{ spark_user_name }}"
-spark_group_gid: "{{ spark_user_uid }}"
+spark_group_name: "{{ base_group_name }}"
+# spark_group_gid: "{{ spark_user_uid }}"
 
 spark_source_dir: "{{ base_source_dir }}"
 spark_download_dir: "{{ base_download_dir }}"
 spark_install_dir: "{{ base_user_home }}"
 
+spark_install_owner: "{{ base_install_owner }}"
+spark_install_group: "{{ base_install_group }}"
+spark_install_mode: "ug+rw,o+r"
+
 spark_hadoop_version: 2.7.3
 spark_hadoop_profile: hadoop-2.7
 
+spark_distribution_name: "hgi-hadoop{{ spark_hadoop_version }}"
+spark_home: "{{ spark_install_dir }}/spark-{{ spark_version }}-bin-{{ spark_distribution_name }}"
+
 spark_local_owner: "{{ spark_user_name }}"
 spark_local_group: "{{ spark_group_name }}"
-spark_local_mode: ug+rw,o+r
+spark_local_mode: "ug+rw,o+r,+t"
 spark_local_dirs: []
-spark_local_dir_mode: "1777"
 
 spark_env_extras: {}
 spark_defaults_extras: {}
+
+spark_pid_dir: "{{ spark_home }}/run"
+spark_log_dir: "{{ spark_home }}/log"
+spark_temp_dir: "{{ spark_home }}/temp"
+spark_work_dir: "{{ spark_home }}/work"
+spark_conf_dir: "{{ spark_home }}/conf"
 
 # Logger levels set to the official defaults
 # Ref: https://github.com/apache/spark/blob/master/conf/log4j.properties.template

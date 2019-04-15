@@ -1,34 +1,31 @@
 ---
 - name: Set hadoop_home fact
   set_fact:
-    hadoop_home: "{{ hadoop_install_dir }}/hadoop-{{ hadoop_version }}"
 
-- name: Create group account for Hadoop
+- name: Ensure group account for Hadoop exist
   group:
     state: present
     name: "{{ hadoop_group_name }}"
-    gid: "{{ hadoop_group_gid }}"
-  tags: ["hadoop-group"]
+#    gid: "{{ hadoop_group_gid }}"
+#  tags: ["hadoop-group"]
 
-- name: Create user account for Hadoop
+- name: Ensure user account for Hadoop exist
   user:
     state: present
     name: "{{ hadoop_user_name }}"
-    uid: "{{ hadoop_user_uid }}"
-    group: "{{ hadoop_group_name }}"
-    system: no
-    home: "{{ hadoop_home }}"
-    create_home: no
-    shell: "{{ hadoop_user_shell }}"
-    groups: "{{ hadoop_user_groups | join(',') }}"
-  tags: ["hadoop-user"]
+#     uid: "{{ hadoop_user_uid }}"
+#     group: "{{ hadoop_group_name }}"
+#     system: no
+#     home: "{{ hadoop_home }}"
+#     create_home: no
+#     shell: "{{ hadoop_user_shell }}"
+#     groups: "{{ hadoop_user_groups | join(',') }}"
+#   tags: ["hadoop-user"]
 
 - name: Ensure Hadoop download and install directories exist
   file:
     state: directory
     path: "{{ item }}"
-    mode: 0775
-    follow: true
   with_items:
     - "{{ hadoop_download_dir }}"
     - "{{ hadoop_install_dir }}"
@@ -50,20 +47,21 @@
     copy: no
     owner: "{{ hadoop_install_owner }}"
     group: "{{ hadoop_install_group }}"
-    mode: "u+rw,go+r"
+    mode: "{{ hadoop_install_mode }}"
     list_files: yes
+    creates: "{{ hadoop_install_dir }}/hadoop-{{ hadoop_version }}/README.txt"
 
 - name: Ensure Hadoop runtime directories exist
   file:
     state: directory
     path: "{{ item }}"
-    mode: 0755
     owner: "{{ hadoop_install_owner }}"
     group: "{{ hadoop_install_group }}"
+    mode: "{{ hadoop_install_mode }}"
   with_items:
-    - "{{ hadoop_home }}/run"
-    - "{{ hadoop_home }}/log"
-    - "{{ hadoop_home }}/tmp"
+    - "{{ hadoop_pid_dir }}"
+    - "{{ hadoop_log_dir }}"
+    - "{{ hadoop_tmp_dir }}"
 
 - name: Create symlink to Hadoop versioned installation directory
   file:

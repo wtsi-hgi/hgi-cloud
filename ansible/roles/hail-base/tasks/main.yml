@@ -9,15 +9,11 @@
 - name: Ensure Hail install directory exist
   file:
     state: directory
-    path: "{{ hail_build_dir }}"
-    owner: "{{ hail_user_name }}"
-    group: "{{ hail_group_name }}"
-    mode: 0775
+    path: "{{ hail_install_dir }}"
+    owner: "{{ hail_install_owner }}"
+    group: "{{ hail_install_group }}"
+    mode: "{{ hail_install_mode }}"
     follow: true
-  loop:
-    - "{{ hail_install_dir }}"
-  loop_control:
-    loop_var: hail_build_dir
 
 - name: Ensure Hail git repo has been chacked out
   git:
@@ -30,16 +26,23 @@
   file:
     state: file
     path: "{{ hail_install_dir }}/hail/hail/gradlew"
-    mode: ugo+x
+    mode: "+x"
 
 - name: Build Hail
-  command: "JAVA_HOME={{ java_home }} ./gradlew -Dspark.version={{ spark_version }} shadowJar"
+  shell: "JAVA_HOME={{ java_home }} ./gradlew -Dspark.version={{ spark_version }} shadowJar"
   args:
     chdir: "{{ hail_install_dir }}/hail/hail"
+    creates: "{{ hail_home }}/build/libs/hail-all-spark.jar"
 
 - name: Fix ownership on Hail installation
   file:
     path: "{{ hail_install_dir }}"
-    owner: "{{ hail_user_name }}"
-    group: "{{ hail_group_name }}"
-    recursive: yes
+    owner: "{{ hail_install_owner }}"
+    group: "{{ hail_install_group }}"
+    mode: "{{ hail_install_mode }}"
+    recurse: yes
+
+- name: Configure system-wide environment variables
+  template:
+    src: profile.sh.j2
+    dest: /etc/profile.d/hail.sh

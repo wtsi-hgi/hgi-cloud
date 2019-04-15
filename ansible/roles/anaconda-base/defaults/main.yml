@@ -8,6 +8,6 @@ anaconda_install_dir: "{{ base_install_dir }}"
 
 anaconda_install_owner: "{{ base_install_owner }}"
 anaconda_install_group: "{{ base_install_group }}"
-anaconda_install_mode: u+rw,go+r
+anaconda_install_mode: "u+rw,go+r"
 
 anaconda_extra_modules: []

@@ -11,7 +11,7 @@
   args:
     creates: "{{ anaconda_install_dir }}/anaconda3/bin/conda"
 
-- name: Fix ownership and permissions on anaconda installation
+- name: Fix Anaconda3 installation ownership and permissions
   file:
     state: directory
     path: "{{ anaconda_install_dir }}/anaconda3"
@@ -23,22 +23,27 @@
 - name: Update anaconda packages
   become: yes
   become_user: "{{ anaconda_install_owner }}"
-  command: "{{ anaconda_install_dir }}/anaconda3/bin/conda update --yes --all"
+  shell: "{{ anaconda_install_dir }}/anaconda3/bin/conda update --yes --all || true"
+  tags:
+    - molecule-notest
 
 - name: Remove Anaconda3's curl
   become: yes
   become_user: "{{ anaconda_install_owner }}"
-  command: "{{ anaconda_install_dir }}/anaconda3/bin/conda remove --yes curl"
-  ignore_errors: yes
+  shell: "{{ anaconda_install_dir }}/anaconda3/bin/conda remove --yes curl || true"
+  tags:
+    - molecule-notest
 
 - name: Install extra Anaconda3's modules
   become: yes
   become_user: "{{ anaconda_install_owner }}"
-  command: "{{ anaconda_install_dir }}/anaconda3/bin/conda install --yes {{ anaconda_extra_modules | join(' ') }}"
+  shell: "{{ anaconda_install_dir }}/anaconda3/bin/conda install --yes {{ anaconda_extra_modules | join(' ') }} || true"
   when: anaconda_extra_modules != []
+  tags:
+    - molecule-notest
 
 - name: Set up system-wide environment variables
   template:
-    src: profile.sh.tpl
+    src: profile.sh.j2
     dest: /etc/profile.d/anaconda3.sh
     mode: 0644
