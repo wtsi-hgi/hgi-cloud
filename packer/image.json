@@ -49,14 +49,9 @@
       "type": "ansible-local",
       "playbook_dir": "../ansible",
       "playbook_file": "../ansible/image.yml",
-      "role_paths": [ "../ansible/roles" ],
       "extra_arguments": [ "--extra-vars \"role_name={{user `role_name`}} role_version={{user `role_version`}}\"" ],
-      "staging_directory": "/opt/sanger.ac.uk/ansible",
-      "clean_staging_directory": false
-    },
-    {
-      "type": "shell",
-      "script": "scripts/validate.sh"
+      "role_paths": [ "../ansible/roles" ]
+
     },
     {
       "type": "shell",
