@@ -25,6 +25,7 @@ data "template_file" "user_data" {
     role_name           = "${local.metadata["role_name"]}"
     role_version        = "${local.metadata["role_version"]}"
     count               = "00"
+    vault_password      = "${var.vault_password}"
   }
 }
 
