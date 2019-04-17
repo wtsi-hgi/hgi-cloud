@@ -12,6 +12,9 @@ platforms:
     role: spark-base
 provisioner:
   name: ansible
+  options:
+    vault-id: ../../../../vault_password.txt
+    extra-vars: "../../../../molecule/default/metadata.yml,@../../../../vars/eta-hgi-dev.yml"
   lint:
     name: ansible-lint
   playbooks:

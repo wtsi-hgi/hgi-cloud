@@ -1,2 +1,12 @@
 ---
-# handlers file for spark-master
+- name: reload systemd
+  become: yes
+  command: systemctl daemon-reload
+
+- name: restart spark-master
+  become: yes
+  systemd:
+    name: spark-master
+    state: restarted
+    daemon_reload: yes
+  listen: restart spark

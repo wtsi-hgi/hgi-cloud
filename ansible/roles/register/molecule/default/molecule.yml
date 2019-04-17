@@ -7,9 +7,9 @@ lint:
   name: yamllint
 platforms:
   - name: default
-    image: bionic-server
+    image: uk-sanger-internal-openstack-eta-hgi-dev-image-hail-base-0.0.1
     flavor: o2.medium
-    role: anaconda-base
+    role: register
 provisioner:
   name: ansible
   options:
@@ -20,7 +20,6 @@ provisioner:
   playbooks:
     create: ../../../../molecule/default/create.yml
     destroy: ../../../../molecule/default/destroy.yml
-    prepare: ../../../../molecule/default/prepare_image.yml
     converge: ../../../../molecule/default/converge.yml
 verifier:
   name: testinfra

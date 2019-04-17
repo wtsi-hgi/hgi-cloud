@@ -1,1 +1,18 @@
 ---
+- name: Install systemd spark-master service
+  become: yes
+  template:
+    src: spark-master.service.j2
+    dest: /etc/systemd/system/spark-master.service
+    owner: root
+  notify:
+    - reload systemd
+    - restart spark
+
+- name: Enable and start spark-master service
+  become: yes
+  service:
+    name: spark-master
+    enabled: yes
+    state: started
+    daemon_reload: yes

@@ -80,3 +80,9 @@
     line: ubuntu ALL=(ALL:ALL) NOPASSWD:ALL
     path: /etc/sudoers.d/90-cloud-init-users
     regexp: ^ubuntu
+
+- name: Disable cloud-init network config
+  file:
+    state: file
+    path: /etc/cloud/cloud.cfg.d/99-custom-networking.cfg
+    content: "network: {config: disabled}"

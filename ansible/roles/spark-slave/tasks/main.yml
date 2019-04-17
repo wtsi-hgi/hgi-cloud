@@ -1,2 +1,18 @@
 ---
-# tasks file for spark-slave
+- name: Install systemd spark-slave service
+  become: yes
+  template:
+    src: spark-slave.service.j2
+    dest: /etc/systemd/system/spark-slave.service
+    owner: root
+  notify:
+    - reload systemd
+    - restart spark
+
+- name: Enable and start spark-slave service
+  become: yes
+  systemd:
+    name: spark-slave
+    enabled: yes
+    state: started
+    daemon_reload: yes
