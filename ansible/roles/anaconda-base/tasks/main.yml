@@ -25,14 +25,14 @@
   become_user: "{{ anaconda_install_owner }}"
   shell: "{{ anaconda_install_dir }}/anaconda3/bin/conda update --yes --all || true"
   tags:
-    - molecule-notest
+    - molecule-idempotence-notest
 
 - name: Remove Anaconda3's curl
   become: yes
   become_user: "{{ anaconda_install_owner }}"
   shell: "{{ anaconda_install_dir }}/anaconda3/bin/conda remove --yes curl || true"
   tags:
-    - molecule-notest
+    - molecule-idempotence-notest
 
 - name: Install extra Anaconda3's modules
   become: yes
@@ -40,7 +40,7 @@
   shell: "{{ anaconda_install_dir }}/anaconda3/bin/conda install --yes {{ anaconda_extra_modules | join(' ') }} || true"
   when: anaconda_extra_modules != []
   tags:
-    - molecule-notest
+    - molecule-idempotence-notest
 
 - name: Set up system-wide environment variables
   template:

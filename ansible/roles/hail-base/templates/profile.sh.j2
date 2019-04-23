@@ -1,5 +1,18 @@
 export HAIL_HOME="{{ hail_home }}"
-export PYTHONPATH="${PYTHONPATH}:${HAIL_HOME}/python:${SPARK_HOME}/python:$(echo "${SPARK_HOME}/python/lib/py4j*-src.zip")"
 export HAIL_JAR="${HAIL_HOME}/build/libs/hail-all-spark.jar"
-export PYSPARK_SUBMIT_ARGS="--conf spark.driver.extraClassPath=$HAIL_JAR --conf spark.executor.extraClassPath=$HAIL_JAR --driver-memory 8G pyspark-shell"
 
+PYTHONPATH="${PYTHONPATH}:${HAIL_HOME}/python"
+PYTHONPATH="${PYTHONPATH}:${HAIL_HOME}/build/distributions/hail-python.zip"
+PYTHONPATH="${PYTHONPATH}:${SPARK_HOME}/python"
+PYTHONPATH="${PYTHONPATH}:$(echo "${SPARK_HOME}/python/lib/py4j*-src.zip")"
+
+export PYTHONPATH
+
+## PYSPARK_SUBMIT_ARGS is used by ipython and jupyter
+export PYSPARK_SUBMIT_ARGS="\
+  --jars ${HAIL_JAR} \
+  --conf spark.driver.extraClassPath=\"${HAIL_JAR}\" \
+  --conf spark.executor.extraClassPath=\"${HAIL_JAR}\" \
+  --conf spark.serializer=org.apache.spark.serializer.KryoSerializer \
+  --conf spark.kryo.registrator=is.hail.kryo.HailKryoRegistrator
+  pyspark-shell"

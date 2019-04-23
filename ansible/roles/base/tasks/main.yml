@@ -82,7 +82,6 @@
     regexp: ^ubuntu
 
 - name: Disable cloud-init network config
-  file:
-    state: file
-    path: /etc/cloud/cloud.cfg.d/99-custom-networking.cfg
+  copy:
+    dest: /etc/cloud/cloud.cfg.d/99-custom-networking.cfg
     content: "network: {config: disabled}"
