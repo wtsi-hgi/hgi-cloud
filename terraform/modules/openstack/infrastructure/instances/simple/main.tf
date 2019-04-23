@@ -42,7 +42,7 @@ resource "openstack_compute_servergroup_v2" "servergroup" {
 resource "openstack_compute_instance_v2" "instance" {
   name                = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-instance-${var.deployment_name}-${var.deployment_color}-${var.role_name}-${format("%02d", count.index + 1)}"
   count               = "${var.count}"
-  image_id            = "${data.openstack_images_image_v2.base_image.id}"
+  # image_id            = "${data.openstack_images_image_v2.base_image.id}"
   flavor_name         = "${var.flavor_name}"
   key_pair            = "${var.key_pair}"
   stop_before_destroy = true
@@ -52,7 +52,17 @@ resource "openstack_compute_instance_v2" "instance" {
   user_data           = "${data.template_file.user_data.rendered}"
 # user_data           = "${templatefile("${path.module}/user_data.sh.tpl", merge(local.metadata, map("count", format("%02d", count.index + 1))))}"
 
-  scheduler_hints {
-    group = "${openstack_compute_servergroup_v2.servergroup.id}"
+#   scheduler_hints {
+#     group = "${openstack_compute_servergroup_v2.servergroup.id}"
+#   }
+
+  block_device {
+    uuid                  = "${data.openstack_images_image_v2.base_image.id}"
+    source_type           = "image"
+    volume_size           = "${var.volume_size}"
+    boot_index            = 0
+    destination_type      = "volume"
+    delete_on_termination = true
+
   }
 }

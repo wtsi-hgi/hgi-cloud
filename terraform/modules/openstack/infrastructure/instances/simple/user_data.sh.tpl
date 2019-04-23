@@ -27,9 +27,7 @@ VARS
 # Created the default password file for ansible-vault
 # This should be replaced by Openstack's barbican:
 # https://docs.openstack.org/security-guide/secrets-management.html
-cat > vault_password.txt <<VAULT
-${vault_password}
-VAULT
+echo "${vault_password}" > vault_password.txt
 chmod 0600 vault_password.txt
 
 ansible-playbook instance.yml \

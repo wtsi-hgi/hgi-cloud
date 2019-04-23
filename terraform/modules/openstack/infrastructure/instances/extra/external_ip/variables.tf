@@ -1,3 +1,3 @@
-variable "count" {}
 variable "floating_ip_pool" {}
-variable "instance_id" { type = "list" }
+variable "instance_ids" { type = "list" }
+variable "instances_count" {}

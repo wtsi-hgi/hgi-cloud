@@ -45,7 +45,8 @@
           - "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-udp-local"
         network: "{{ metadata['datacentre'] }}-{{ metadata['os_release'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-network-build"
         meta: "{{ metadata | combine({ 'molecule_platform': item.name, 'molecule_scenario': molecule_yml.scenario['name'], 'role_name': item.role }) }}"
-        boot_from_volume: True
+        boot_from_volume: yes
+        terminate_volume: yes
         volume_size: 32
 
       register: instance

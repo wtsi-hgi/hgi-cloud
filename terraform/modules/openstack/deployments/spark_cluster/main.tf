@@ -7,11 +7,11 @@ provider "template" {
 
 # Package-like metadata
 locals {
-  deployment_version = "0.0.0"
+  deployment_version = "0.0.1"
   dependency = {
-    spark_master_image_name = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-base-0.0.0"
+    spark_master_image_name = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.1"
     spark_master_role_version = "0.0.0"
-    spark_slave_image_name =  "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-base-0.0.0"
+    spark_slave_image_name =  "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.1"
     spark_slave_role_version = "0.0.0"
   }
 }
@@ -24,7 +24,7 @@ locals {
   spark_masters_network = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-network-main"
 }
 
-module "spark_master" {
+module "spark_masters" {
   source              = "../../infrastructure/instances/simple/"
   os_release          = "${var.os_release}"
   programme           = "${var.programme}"
@@ -70,5 +70,19 @@ module "spark_slaves" {
   flavor_name         = "${var.spark_slaves_flavor_name}"
   affinity            = "${var.spark_slaves_affinity}"
   networks            = [{ name = "${ var.spark_slaves_network != "" ? var.spark_slaves_network : local.spark_slaves_network }" }]
-  depends_on          = [ "module.spark_master.instance_id" ]
+  depends_on          = [ "module.spark_masters.instance_id" ]
 }
+
+# module "spark_masters_external_ip" {
+#   source            = "../../infrastructure/instances/extra/external_ip/"
+#   instances_count   = "${var.spark_masters_count}"
+#   floating_ip_pool  = "public"
+#   instance_ids      = "${module.spark_masters.instance_ids}"
+# }
+# 
+# module "spark_slaves_external_ip" {
+#   source            = "../../infrastructure/instances/extra/external_ip/"
+#   instances_count   = "${var.spark_slaves_count}"
+#   floating_ip_pool  = "public"
+#   instance_ids      = "${module.spark_slaves.instance_ids}"
+# }

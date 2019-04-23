@@ -39,6 +39,8 @@ spark_temp_dir: "{{ spark_home }}/temp"
 spark_work_dir: "{{ spark_home }}/work"
 spark_conf_dir: "{{ spark_home }}/conf"
 
+spark_master_port: 7077
+
 # Logger levels set to the official defaults
 # Ref: https://github.com/apache/spark/blob/master/conf/log4j.properties.template
 spark_log4j_extras:
