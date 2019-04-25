@@ -70,7 +70,7 @@
         --name {{ spark_distribution_name }} \
         --tgz \
         -B \
-        -Dhadoop.version={{ spark_hadoop_version }} \
+        -Dhadoop.version={{ hadoop_version }} \
         -Pnetlib-lgpl \
         -Psparkr \
         -Pyarn \
@@ -130,7 +130,7 @@
 - name: Configure system-wide environment variables
   template:
     src: profile.sh.j2
-    dest: /etc/profile.d/spark.sh
+    dest: /etc/profile.d/30-spark.sh
 
 - name: Configure Spark environment
   template:

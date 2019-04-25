@@ -14,6 +14,7 @@ locals {
 
 data "template_file" "user_data" {
   template = "${file("${path.module}/user_data.sh.tpl")}"
+  count = "${var.count}"
   vars = {
     datacentre          = "${local.metadata["datacentre"]}"
     os_release          = "${local.metadata["os_release"]}"
@@ -24,7 +25,7 @@ data "template_file" "user_data" {
     deployment_color    = "${local.metadata["deployment_color"]}"
     role_name           = "${local.metadata["role_name"]}"
     role_version        = "${local.metadata["role_version"]}"
-    count               = "00"
+    count               = "${count.index + 1}"
     vault_password      = "${var.vault_password}"
   }
 }
@@ -52,9 +53,9 @@ resource "openstack_compute_instance_v2" "instance" {
   user_data           = "${data.template_file.user_data.rendered}"
 # user_data           = "${templatefile("${path.module}/user_data.sh.tpl", merge(local.metadata, map("count", format("%02d", count.index + 1))))}"
 
-#   scheduler_hints {
-#     group = "${openstack_compute_servergroup_v2.servergroup.id}"
-#   }
+  scheduler_hints {
+    group = "${openstack_compute_servergroup_v2.servergroup.id}"
+  }
 
   block_device {
     uuid                  = "${data.openstack_images_image_v2.base_image.id}"

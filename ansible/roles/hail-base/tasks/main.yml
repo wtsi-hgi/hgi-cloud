@@ -50,7 +50,7 @@
 - name: Configure system-wide environment variables
   template:
     src: profile.sh.j2
-    dest: /etc/profile.d/hail.sh
+    dest: /etc/profile.d/40-hail.sh
 
 - name: Install Hail in anaconda3
   pip:

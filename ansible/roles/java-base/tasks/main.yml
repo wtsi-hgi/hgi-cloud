@@ -12,6 +12,6 @@
 
 - name: Configure system-wide environment variables
   copy:
-    dest: /etc/profile.d/java.sh
+    dest: /etc/profile.d/10-java.sh
     content: |
       export JAVA_HOME="{{ java_home }}"

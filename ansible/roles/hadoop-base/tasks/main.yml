@@ -72,4 +72,4 @@
 - name: Configure system-wide environment variables
   template:
     src: profile.sh.j2
-    dest: /etc/profile.d/hadoop.sh
+    dest: /etc/profile.d/20-hadoop.sh

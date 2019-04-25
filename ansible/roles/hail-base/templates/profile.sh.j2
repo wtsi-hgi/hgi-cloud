@@ -1,18 +1,21 @@
-export HAIL_HOME="{{ hail_home }}"
+export HAIL_HOME="/opt/sanger.ac.uk/hgi/hail/hail"
 export HAIL_JAR="${HAIL_HOME}/build/libs/hail-all-spark.jar"
+export SPARK_CLASSPATH="${HAIL_JAR}"
 
-PYTHONPATH="${PYTHONPATH}:${HAIL_HOME}/python"
+PYTHONPATH="${HAIL_HOME}/python"
 PYTHONPATH="${PYTHONPATH}:${HAIL_HOME}/build/distributions/hail-python.zip"
 PYTHONPATH="${PYTHONPATH}:${SPARK_HOME}/python"
-PYTHONPATH="${PYTHONPATH}:$(echo "${SPARK_HOME}/python/lib/py4j*-src.zip")"
+PYTHONPATH="${PYTHONPATH}:$(echo ${SPARK_HOME}/python/lib/py4j*-src.zip)"
 
 export PYTHONPATH
 
-## PYSPARK_SUBMIT_ARGS is used by ipython and jupyter
-export PYSPARK_SUBMIT_ARGS="\
+## PYSPARK_ARGS wants to make command line pyspark easier
+export PYSPARK_ARGS="\
   --jars ${HAIL_JAR} \
-  --conf spark.driver.extraClassPath=\"${HAIL_JAR}\" \
-  --conf spark.executor.extraClassPath=\"${HAIL_JAR}\" \
+  --conf spark.driver.extraClassPath=${HAIL_JAR} \
+  --conf spark.executor.extraClassPath=${HAIL_JAR} \
   --conf spark.serializer=org.apache.spark.serializer.KryoSerializer \
-  --conf spark.kryo.registrator=is.hail.kryo.HailKryoRegistrator
-  pyspark-shell"
+  --conf spark.kryo.registrator=is.hail.kryo.HailKryoRegistrator"
+
+## PYSPARK_SUBMIT_ARGS is used by ipython and jupyter
+export PYSPARK_SUBMIT_ARGS="${PYSPARK_ARGS} pyspark-shell"

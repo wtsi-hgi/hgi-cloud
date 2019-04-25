@@ -2,6 +2,8 @@
 # Security Groups
 ###############################################################################
 
+# FIXME: port all the rules to openstack_networking_secgroup_v2 + openstack_networking_secgroup_rule_v2
+
 resource "openstack_compute_secgroup_v2" "ping" {
   name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ping"
   description = "ICMP ping"
@@ -132,6 +134,25 @@ resource "openstack_compute_secgroup_v2" "ssh" {
   rule {
     from_port   = 22
     to_port     = 22
+    ip_protocol = "tcp"
+    cidr        = "0.0.0.0/0"
+  }
+}
+
+resource "openstack_compute_secgroup_v2" "spark-master" {
+  name        = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-spark-master"
+  description = "Incoming ssh access"
+
+  rule {
+    from_port   = 7077
+    to_port     = 7077
+    ip_protocol = "tcp"
+    cidr        = "0.0.0.0/0"
+  }
+
+  rule {
+    from_port   = 8080
+    to_port     = 8080
     ip_protocol = "tcp"
     cidr        = "0.0.0.0/0"
   }

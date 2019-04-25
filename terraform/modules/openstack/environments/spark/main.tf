@@ -52,8 +52,8 @@ module "spark_cluster" {
   deployment_name           = "primary"
   spark_masters_count       = 1
   spark_slaves_count        = 1
-  spark_masters_flavor_name = "o2.small"
-  spark_slaves_flavor_name  = "o2.small"
+  spark_masters_flavor_name = "o2.large"
+  spark_slaves_flavor_name  = "o2.large"
   spark_masters_affinity    = "soft-anti-affinity"
   spark_slaves_affinity     = "soft-anti-affinity"
   spark_masters_network     = "${module.spark_network.network_name}"
