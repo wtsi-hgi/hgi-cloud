@@ -19,6 +19,16 @@ variable "subnet_cidr" {
   description = "The CIDR of the main and only subnet"
 }
 
+variable "subnet_pool_start" {
+  description = "The IP pool index to start from"
+  default     = "2"
+}
+
+variable "subnet_pool_end" {
+  description = "The IP pool index to end with"
+  default     = "-2"
+}
+
 variable "dns_nameservers" {
   type        = "list"
   description = "The list of the DNS servers"

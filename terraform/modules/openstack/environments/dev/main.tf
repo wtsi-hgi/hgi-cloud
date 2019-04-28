@@ -24,6 +24,7 @@ module "spark_environment" {
   workstations_subnet_cidr  = "${var.workstations_subnet_cidr}"
   management_subnet_cidr    = "${var.management_subnet_cidr}"
   consensus_subnet_cidr     = "${var.consensus_subnet_cidr}"
+  pet_subnet_cidr           = "${var.pet_subnet_cidr}"
   dns_nameservers           = "${var.dns_nameservers}"
 }
 

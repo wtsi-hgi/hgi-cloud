@@ -60,6 +60,26 @@ module "spark_cluster" {
   spark_slaves_network      = "${module.spark_network.network_name}"
 }
 
+module "pet_cluster" {
+  source                    = "../../deployments/pet_1"
+  os_release                = "${var.os_release}"
+  programme                 = "${var.programme}"
+  env                       = "${var.env}"
+  key_pair                  = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-keypair-mercury"
+  deployment_name           = "primary"
+  pet_subnet_cidr           = "${var.pet_subnet_cidr}"
+  pet_masters_count         = 1
+  pet_slaves_count          = 1
+  pet_masters_flavor_name   = "o2.large"
+  pet_slaves_flavor_name    = "o2.large"
+  pet_masters_affinity      = "soft-anti-affinity"
+  pet_slaves_affinity       = "soft-anti-affinity"
+  pet_masters_network       = "${module.spark_network.network_name}"
+  pet_slaves_network        = "${module.spark_network.network_name}"
+  dns_nameservers           = "${var.dns_nameservers}"
+  external_network_name     = "${var.external_network_name}"
+}
+
 # module "spark_cluster2" {
 #   source                    = "../../deployments/spark_cluster"
 #   os_release                = "${var.os_release}"

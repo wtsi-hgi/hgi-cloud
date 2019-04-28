@@ -28,6 +28,11 @@ variable "consensus_subnet_cidr" {
   description = "The CIDR of the main and only subnet"
 }
 
+variable "pet_subnet_cidr" {
+  type        = "string"
+  description = "The CIDR of the main and only subnet"
+}
+
 variable "management_subnet_cidr" {
   type        = "string"
   description = "The CIDR of the main and only subnet"
