@@ -41,12 +41,14 @@ resource "openstack_compute_servergroup_v2" "servergroup" {
 }
 
 module "network_port" {
-  source          = "../extra/standard_ip_port/"
+  source          = "../extra/fixed_ip_port/"
   os_release      = "${var.os_release}"
   programme       = "${var.programme}"
   env             = "${var.env}"
   port_name       = "${var.network_name}"
   network_id      = "${var.network_id}"
+  subnet_id       = "${var.subnet_id}"
+  ip_addresses    = "${var.ip_addresses}"
   deployment_name = "${var.deployment_name}"
   role_name       = "${var.role_name}"
   security_groups = "${var.security_groups}"

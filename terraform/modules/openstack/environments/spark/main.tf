@@ -69,6 +69,7 @@ module "pet_cluster" {
   deployment_name           = "primary"
   pet_subnet_cidr           = "${var.pet_subnet_cidr}"
   pet_masters_count         = 1
+  pet_master_address        = "${var.pet_master_address}"
   pet_slaves_count          = 1
   pet_masters_flavor_name   = "o2.large"
   pet_slaves_flavor_name    = "o2.large"

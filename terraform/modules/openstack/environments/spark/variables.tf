@@ -30,7 +30,12 @@ variable "consensus_subnet_cidr" {
 
 variable "pet_subnet_cidr" {
   type        = "string"
-  description = "The CIDR of the main and only subnet"
+  description = "the cidr of the main and only subnet"
+}
+
+variable "pet_master_address" {
+  type        = "string"
+  description = "the cidr of the main and only subnet"
 }
 
 variable "management_subnet_cidr" {

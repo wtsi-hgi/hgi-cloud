@@ -1,14 +1,16 @@
 variable "os_release" {}
 variable "programme" {}
 variable "env" {}
-variable "network_name" {}
-variable "subnet_name" {}
-variable "count" {}
-variable "ip_addesses" {
+variable "port_name" {}
+variable "network_id" {}
+variable "subnet_id" {}
+variable "count" {
+  default = 1
+}
+variable "ip_addresses" {
   type = "list"
 }
 variable "deployment_name" {}
-variable "deployment_version" {}
 variable "deployment_color" {
   default = "blue"
 }

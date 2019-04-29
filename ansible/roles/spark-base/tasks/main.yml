@@ -165,12 +165,14 @@
 - name: Install Spark services
   template:
     src: "spark.service.j2"
-    dest: "/etc/systemd/system/spark-{{ service }}.service"
+    dest: "/etc/systemd/system/spark-{{ service.name }}.service"
     owner: root
   become: yes
   loop:
-    - master
-    - slave
+    - name: master
+      arg: ""
+    - name: slave
+      arg: "spark://pet-master:{{ spark_master_port }}"
   loop_control:
     loop_var: service
 
@@ -185,3 +187,8 @@
     - slave
   loop_control:
     loop_var: service
+
+- name: Ensure pet-master address is set
+  lineinfile:
+    path: /etc/hosts
+    line: "192.168.225.7 pet-master"

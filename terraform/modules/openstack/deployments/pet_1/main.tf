@@ -9,9 +9,9 @@ provider "template" {
 locals {
   deployment_version = "0.0.1"
   dependency = {
-    pet_master_image_name = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.2"
+    pet_master_image_name = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.3"
     pet_master_role_version = "0.0.0"
-    pet_slave_image_name =  "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.2"
+    pet_slave_image_name =  "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.3"
     pet_slave_role_version = "0.0.0"
   }
 }
@@ -32,12 +32,12 @@ module "pet_network" {
   external_network_name = "${var.external_network_name}"
   network_name          = "pet"
   subnet_cidr           = "${var.pet_subnet_cidr}"
-  subnet_pool_start     = "2"
+  subnet_pool_start     = "8"
   dns_nameservers       = "${var.dns_nameservers}"
 }
 
 module "pet_masters" {
-  source              = "../../infrastructure/instances/standard/"
+  source              = "../../infrastructure/instances/fixed/"
   os_release          = "${var.os_release}"
   programme           = "${var.programme}"
   env                 = "${var.env}"
@@ -55,11 +55,13 @@ module "pet_masters" {
     "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-tcp-local",
     "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-udp-local"
   ]
-  count               = "${var.pet_masters_count}"
+  count               = 1
   flavor_name         = "${var.pet_masters_flavor_name}"
   affinity            = "${var.pet_masters_affinity}"
   network_name        = "pet"
   network_id          = "${module.pet_network.network_id}"
+  subnet_id           = "${module.pet_network.subnet_id}"
+  ip_addresses        = ["${var.pet_master_address}"]
   depends_on          = ["${module.pet_network.network_id}"]
 }
 

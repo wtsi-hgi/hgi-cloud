@@ -14,6 +14,7 @@ build_subnet_cidr         = "192.168.224.64/27"
 consensus_subnet_cidr     = "192.168.224.96/27"
 management_subnet_cidr    = "192.168.224.128/27"
 pet_subnet_cidr           = "192.168.225.0/24"
+pet_master_address        = "192.168.225.7"
 dns_nameservers           = ["172.18.255.1", "172.18.255.2", "172.18.255.3"]
 count                     = 3
 flavor_name               = "o2.small"

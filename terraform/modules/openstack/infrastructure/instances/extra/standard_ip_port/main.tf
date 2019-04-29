@@ -8,7 +8,7 @@ data "openstack_networking_secgroup_v2" "secgroup" {
 # }
 
 resource "openstack_networking_port_v2" "port" {
-  name                = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-port-${var.deployment_name}-${var.role_name}-${var.port_name}"
+  name                = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-port-${var.deployment_name}-${var.role_name}-${var.port_name}-${format("%02d", count.index + 1)}"
   count               = "${var.count}"
 #   network_id          = "${data.openstack_networking_network_v2.network.id}"
   network_id          = "${var.network_id}"

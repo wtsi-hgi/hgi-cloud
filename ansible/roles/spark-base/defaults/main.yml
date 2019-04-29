@@ -48,23 +48,23 @@ spark_driver_extra_classpath:
 
 spark_defaults_extras:
   # SparkContext Configuration
-  spark.master: "spark://spark-master:{{ spark_master_port }}"
+  spark.master: "spark://pet-master:{{ spark_master_port }}"
   spark.sql.files.maxPartitionBytes: "102400"
   spark.sql.files.openCostInBytes: "102400"
 
   spark.driver.memory: 1g
   spark.executor.memory: 1g
 
-  # spark.jars: "{{ spark_jars }}"
+  # spark.jars: "{# spark_jars #}"
   # spark.ui.reverseProxy: true
-  # spark.ui.reverseProxyUrl: "https://{{ spark_master_external_hostname }}.{{ spark_master_external_domain }}/{{ spark_master_external_path }}"
+  # spark.ui.reverseProxyUrl: "https://{# spark_master_external_hostname #}.{# spark_master_external_domain #}/{# spark_master_external_path #}"
 
   spark.serializer: "org.apache.spark.serializer.KryoSerializer"
   spark.kryo.registrator: "is.hail.kryo.HailKryoRegistrator"
   spark.local.dir: /tmp
 
   # {% if spark_executor_instances is defined %}
-  # spark.executor.instances: "{{ spark_executor_instances }}"
+  # spark.executor.instances: "{# spark_executor_instances #}"
   # {% endif %}
   spark.driver.maxResultSize: 100
 
@@ -76,7 +76,7 @@ spark_defaults_extras:
   spark.hadoop.fs.s3a.impl: "org.apache.hadoop.fs.s3a.S3AFileSystem"
   spark.hadoop.fs.s3a.endpoint: cog.sanger.ac.uk
   # {% for bucket in spark_hadoop_anonymous_buckets %}
-  # spark.hadoop.fs.s3a.bucket.{{ bucket }}.aws.credentials.provider  org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider
+  # spark.hadoop.fs.s3a.bucket.{# bucket #}.aws.credentials.provider  org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider
   # {% endfor %}
   spark.hadoop.fs.s3a.connection.maximum: 100
 

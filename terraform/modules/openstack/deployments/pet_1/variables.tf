@@ -33,6 +33,11 @@ variable "pet_subnet_cidr" {
   type        = "string"
 }
 
+variable "pet_master_address" {
+  description = "The number of Spark masters to deploy"
+  type        = "string"
+}
+
 variable "pet_masters_count" {
   description = "The number of Spark masters to deploy"
   type        = "string"
