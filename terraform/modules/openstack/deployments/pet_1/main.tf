@@ -10,9 +10,9 @@ locals {
   deployment_version = "0.0.1"
   dependency = {
     pet_master_image_name = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.3"
-    pet_master_role_version = "pet_1"
+    pet_master_role_version = "pet-1"
     pet_slave_image_name =  "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.3"
-    pet_slave_role_version = "pet_1"
+    pet_slave_role_version = "pet-1"
   }
 }
 
