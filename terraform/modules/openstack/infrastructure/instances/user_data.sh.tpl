@@ -32,7 +32,10 @@ VARS
 # Created the default password file for ansible-vault
 # This should be replaced by Openstack's barbican:
 # https://docs.openstack.org/security-guide/secrets-management.html
-echo "${vault_password}" > vault_password.txt
+#
+# This usage of cat does not print the password in the log file
+cat > vault_password.txt <<<"${vault_password}"
+
 chmod 0600 vault_password.txt
 
 ansible-playbook instance.yml \
