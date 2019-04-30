@@ -1,9 +1,8 @@
 variable "os_release" {}
 variable "programme" {}
 variable "env" {}
-variable "port_name" {}
-variable "network_id" {}
-variable "subnet_id" {}
+variable "network_name" {}
+variable "subnet_name" {}
 variable "count" {
   default = 1
 }

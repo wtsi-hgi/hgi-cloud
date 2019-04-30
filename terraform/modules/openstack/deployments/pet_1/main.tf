@@ -10,9 +10,9 @@ locals {
   deployment_version = "0.0.1"
   dependency = {
     pet_master_image_name = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.3"
-    pet_master_role_version = "0.0.0"
+    pet_master_role_version = "pet_1"
     pet_slave_image_name =  "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.3"
-    pet_slave_role_version = "0.0.0"
+    pet_slave_role_version = "pet_1"
   }
 }
 
@@ -20,20 +20,10 @@ locals {
 # of other default input values.
 locals {
   key_pair = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-keypair-mercury"
-  pet_slaves_network = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-network-pet"
-  pet_masters_network = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-network-pet"
-}
-
-module "pet_network" {
-  source                = "../../infrastructure/networks/routed"
-  os_release            = "${var.os_release}"
-  programme             = "${var.programme}"
-  env                   = "${var.env}"
-  external_network_name = "${var.external_network_name}"
-  network_name          = "pet"
-  subnet_cidr           = "${var.pet_subnet_cidr}"
-  subnet_pool_start     = "8"
-  dns_nameservers       = "${var.dns_nameservers}"
+  pet_slaves_network = "pet"
+  pet_masters_network = "pet"
+  pet_slaves_subnet = "pet"
+  pet_masters_subnet = "pet"
 }
 
 module "pet_masters" {
@@ -49,20 +39,17 @@ module "pet_masters" {
   image_name          = "${local.dependency["pet_master_image_name"]}"
   key_pair            = "${ var.key_pair != "" ? var.key_pair : local.key_pair }"
   security_groups     = [
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ping",
+    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-base",
     "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ssh",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-spark-master",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-tcp-local",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-udp-local"
+    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-spark-master"
   ]
   count               = 1
   flavor_name         = "${var.pet_masters_flavor_name}"
   affinity            = "${var.pet_masters_affinity}"
-  network_name        = "pet"
-  network_id          = "${module.pet_network.network_id}"
-  subnet_id           = "${module.pet_network.subnet_id}"
+  network_name        = "${local.pet_masters_network}"
+  subnet_name         = "${local.pet_masters_subnet}"
   ip_addresses        = ["${var.pet_master_address}"]
-  depends_on          = ["${module.pet_network.network_id}"]
+  vault_password      = "${var.vault_password}"
 }
 
 module "pet_slaves" {
@@ -78,17 +65,16 @@ module "pet_slaves" {
   image_name          = "${local.dependency["pet_slave_image_name"]}"
   key_pair            = "${ var.key_pair != "" ? var.key_pair : local.key_pair }"
   security_groups     = [
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ping",
+    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-base",
     "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ssh",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-tcp-local",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-udp-local"
+    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-spark-slave"
   ]
   count               = "${var.pet_slaves_count}"
   flavor_name         = "${var.pet_slaves_flavor_name}"
   affinity            = "${var.pet_slaves_affinity}"
-  network_name        = "pet"
-  network_id          = "${module.pet_network.network_id}"
-  depends_on          = ["${module.pet_network.network_id}", "${module.pet_masters.instance_ids}" ]
+  network_name        = "${local.pet_slaves_network}"
+  vault_password      = "${var.vault_password}"
+  depends_on          = ["${module.pet_masters.instance_ids}" ]
 }
 
 # module "spark_masters_external_ip" {

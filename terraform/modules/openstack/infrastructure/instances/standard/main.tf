@@ -1,3 +1,10 @@
+provider "openstack" {
+  version = "~> 1.16"
+}
+provider "template" {
+  version = "~> 2.1"
+}
+
 locals {
   metadata = {
     datacentre          = "uk-sanger-internal-openstack"
@@ -13,7 +20,7 @@ locals {
 }
 
 data "template_file" "user_data" {
-  template = "${file("${path.module}/user_data.sh.tpl")}"
+  template = "${file("${path.module}/../user_data.sh.tpl")}"
   count = "${var.count}"
   vars = {
     datacentre          = "${local.metadata["datacentre"]}"
@@ -45,8 +52,7 @@ module "network_port" {
   os_release      = "${var.os_release}"
   programme       = "${var.programme}"
   env             = "${var.env}"
-  port_name       = "${var.network_name}"
-  network_id      = "${var.network_id}"
+  network_name    = "${var.network_name}"
   deployment_name = "${var.deployment_name}"
   role_name       = "${var.role_name}"
   security_groups = "${var.security_groups}"

@@ -1,3 +1,10 @@
+provider "openstack" {
+  version = "~> 1.16"
+}
+provider "template" {
+  version = "~> 2.1"
+}
+
 resource "openstack_compute_floatingip_v2" "pool" {
   pool  = "${var.floating_ip_pool}"
   count = "${var.instances_count}"

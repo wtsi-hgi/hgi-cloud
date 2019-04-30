@@ -10,16 +10,13 @@ variable "role_name" {
   default = "vanilla"
 }
 variable "role_version" {
-  default = "0.0.0"
+  default = "HEAD"
 }
 
 variable "count" {
   default = 1
 }
 variable "network_name" {}
-variable "network_id" {
-  default = ""
-}
 variable "key_pair" {}
 
 variable "security_groups" {
@@ -38,9 +35,7 @@ variable "depends_on" {
   type = "list"
   default = []
 }
-variable "vault_password" {
-  default = ""
-}
+variable "vault_password" {}
 variable "volume_size" {
   default = 64
 }

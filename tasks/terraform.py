@@ -25,7 +25,7 @@ def clean(context):
 @invoke.task(pre=[clean])
 def init(context):
   var_file = tfvars_path(context)
-  context.run('terraform init -var-file={} {}'.format(var_file, iac_path(context)))
+  context.run('env terraform init -var-file={} {}'.format(var_file, iac_path(context)))
 
 @invoke.task(init)
 def validate(context):

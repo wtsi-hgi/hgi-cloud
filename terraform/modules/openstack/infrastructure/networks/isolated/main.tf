@@ -1,3 +1,10 @@
+provider "openstack" {
+  version = "~> 1.16"
+}
+provider "template" {
+  version = "~> 2.1"
+}
+
 resource "openstack_networking_network_v2" "isolated" {
   name           = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-network-${var.network_name}"
   admin_state_up = "true"

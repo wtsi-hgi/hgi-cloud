@@ -3,11 +3,16 @@
 # Log everything in /var/log/user_data.log
 exec >> /var/log/user_data.log 2>&1
 
-git clone https://gitlab.internal.sanger.ac.uk/hgi/hgi-systems-cluster-spark.git /usr/src/provisioning
-cp --archive /usr/src/provisioning/ansible /opt/sanger.ac.uk
-rm --recursive /usr/src/provisioning
+if [ ! -d "/usr/src/provisioning/ansible" ] ; then
+  git clone https://gitlab.internal.sanger.ac.uk/hgi/hgi-systems-cluster-spark.git /usr/src/provisioning
+fi
 
-cd /opt/sanger.ac.uk/ansible
+# cp --archive /usr/src/provisioning/ansible /opt/sanger.ac.uk
+# rm --recursive /usr/src/provisioning
+# cd /opt/sanger.ac.uk/ansible
+
+cd /usr/src/provisioning/ansible
+git checkout ${role_version}
 
 # Create the extra vars for the playbook
 cat > metadata.yml <<VARS

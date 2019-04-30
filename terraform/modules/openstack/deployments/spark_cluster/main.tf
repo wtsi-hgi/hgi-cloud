@@ -10,9 +10,9 @@ locals {
   deployment_version = "0.0.1"
   dependency = {
     spark_master_image_name = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.2"
-    spark_master_role_version = "0.0.0"
+    spark_master_role_version = "HEAD"
     spark_slave_image_name =  "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.2"
-    spark_slave_role_version = "0.0.0"
+    spark_slave_role_version = "HEAD"
   }
 }
 
@@ -64,6 +64,7 @@ module "spark_slaves" {
   security_groups     = [
     "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ping",
     "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ssh",
+    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-spark-slave",
     "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-tcp-local",
     "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-udp-local"
   ]

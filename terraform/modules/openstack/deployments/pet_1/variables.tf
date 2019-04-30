@@ -74,25 +74,10 @@ variable "pet_slaves_affinity" {
   default     = "soft-anti-affinity"
 }
 
-variable "pet_masters_network" {
-  description = "The name of the network where to deply the Spark masters"
-  type        = "string"
-  default     = ""
-}
-
-variable "pet_slaves_network" {
-  description = "The name of the network where to deply the Spark slaves"
-  type        = "string"
-  default     = ""
-}
-
 variable "key_pair" {
   description = "The name of the default SSH key pair"
   type        = "string"
   default     = ""
 }
 
-variable "external_network_name" {}
-variable "dns_nameservers" {
-  type        = "list"
-}
+variable "vault_password" {}

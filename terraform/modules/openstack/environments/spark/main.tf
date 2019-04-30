@@ -10,37 +10,8 @@ locals {
   dependency = {}
 }
 
-module "spark_network" {
-  source                = "../../infrastructure/networks/routed"
-  os_release            = "${var.os_release}"
-  programme             = "${var.programme}"
-  env                   = "${var.env}"
-  external_network_name = "${var.external_network_name}"
-  network_name          = "main"
-  subnet_cidr           = "${var.spark_subnet_cidr}"
-  dns_nameservers       = "${var.dns_nameservers}"
-}
-
-module "workstations_network" {
-  source                = "../../infrastructure/networks/extra/network/"
-  os_release            = "${var.os_release}"
-  programme             = "${var.programme}"
-  env                   = "${var.env}"
-  subnet_cidr           = "${var.workstations_subnet_cidr}"
-  network_name          = "workstations"
-  router_id             = "${module.spark_network.router_id}"
-  dns_nameservers       = "${var.dns_nameservers}"
-}
-
-module "management_network" {
-  source                = "../../infrastructure/networks/extra/network/"
-  os_release            = "${var.os_release}"
-  programme             = "${var.programme}"
-  env                   = "${var.env}"
-  subnet_cidr           = "${var.management_subnet_cidr}"
-  network_name          = "management"
-  router_id             = "${module.spark_network.router_id}"
-  dns_nameservers       = "${var.dns_nameservers}"
+data "openstack_networking_network_v2" "spark_network" {
+  name = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-network-main"
 }
 
 module "spark_cluster" {
@@ -56,8 +27,8 @@ module "spark_cluster" {
   spark_slaves_flavor_name  = "o2.large"
   spark_masters_affinity    = "soft-anti-affinity"
   spark_slaves_affinity     = "soft-anti-affinity"
-  spark_masters_network     = "${module.spark_network.network_name}"
-  spark_slaves_network      = "${module.spark_network.network_name}"
+  spark_masters_network     = "${data.openstack_networking_network_v2.spark_network.name}"
+  spark_slaves_network      = "${data.openstack_networking_network_v2.spark_network.name}"
 }
 
 module "pet_cluster" {
@@ -75,8 +46,6 @@ module "pet_cluster" {
   pet_slaves_flavor_name    = "o2.large"
   pet_masters_affinity      = "soft-anti-affinity"
   pet_slaves_affinity       = "soft-anti-affinity"
-  pet_masters_network       = "${module.spark_network.network_name}"
-  pet_slaves_network        = "${module.spark_network.network_name}"
   dns_nameservers           = "${var.dns_nameservers}"
   external_network_name     = "${var.external_network_name}"
 }
