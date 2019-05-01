@@ -132,47 +132,15 @@
     src: profile.sh.j2
     dest: /etc/profile.d/30-spark.sh
 
-- name: Configure Spark environment
-  template:
-    src: spark-env.sh.j2
-    dest: "{{ spark_home }}/conf/spark-env.sh"
-  tags: ["config"]
-
-- name: Configure Spark defaults
-  template:
-    src: spark-defaults.conf.j2
-    dest: "{{ spark_home }}/conf/spark-defaults.conf"
-  tags: ["config"]
-
-- name: Configure Spark log4j properties
-  template:
-    src: log4j.properties.j2
-    dest: "{{ spark_home }}/conf/log4j.properties"
-    owner: "{{ spark_user_name }}"
-    group: "{{ spark_group_name }}"
-
-- name: Tune sysctl parameters for Spark
-  become: yes
-  sysctl:
-    state: present
-    name: "{{ param.name }}"
-    value: "{{ param.value }}"
-    sysctl_file: /etc/sysctl.conf
-  loop: "{{ spark_sysctl_params }}"
-  loop_control:
-    loop_var: param
-
 - name: Install Spark services
   template:
     src: "spark.service.j2"
-    dest: "/etc/systemd/system/spark-{{ service.name }}.service"
+    dest: "/etc/systemd/system/spark-{{ service }}.service"
     owner: root
   become: yes
   loop:
-    - name: master
-      arg: ""
-    - name: slave
-      arg: "spark://pet-master:{{ spark_master_port }}"
+    - master
+    - slave
   loop_control:
     loop_var: service
 
@@ -187,8 +155,3 @@
     - slave
   loop_control:
     loop_var: service
-
-- name: Ensure pet-master address is set
-  lineinfile:
-    path: /etc/hosts
-    line: "192.168.225.7 pet-master"

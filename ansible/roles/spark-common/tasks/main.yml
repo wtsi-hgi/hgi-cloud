@@ -1,0 +1,31 @@
+---
+
+- name: Configure Spark environment
+  template:
+    src: spark-env.sh.j2
+    dest: "{{ spark_home }}/conf/spark-env.sh"
+  tags: ["config"]
+
+- name: Configure Spark defaults
+  template:
+    src: spark-defaults.conf.j2
+    dest: "{{ spark_home }}/conf/spark-defaults.conf"
+  tags: ["config"]
+
+- name: Configure Spark log4j properties
+  template:
+    src: log4j.properties.j2
+    dest: "{{ spark_home }}/conf/log4j.properties"
+    owner: "{{ spark_user_name }}"
+    group: "{{ spark_group_name }}"
+
+- name: Tune sysctl parameters for Spark
+  become: yes
+  sysctl:
+    state: present
+    name: "{{ param.name }}"
+    value: "{{ param.value }}"
+    sysctl_file: /etc/sysctl.conf
+  loop: "{{ spark_sysctl_params }}"
+  loop_control:
+    loop_var: param

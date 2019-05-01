@@ -1,5 +1,5 @@
 [Unit]
-Description=Apache Spark ({{ service.name }})
+Description=Apache Spark ({{ service }})
 After=network.target
 After=systemd-user-sessions.service
 After=network-online.target
@@ -7,7 +7,11 @@ After=network-online.target
 [Service]
 User={{ spark_user_name }}
 Type=forking
-ExecStart={{ spark_home }}/sbin/start-{{ service.name }}.sh {{ service.arg }}
+{% if service == "master" %}
+ExecStart={{ spark_home }}/sbin/start-{{ service }}.sh spark://{{ spark_master_host }}:{{ spark_master_port }}
+{% else %}
+ExecStart={{ spark_home }}/sbin/start-{{ service }}.sh
+{% endif %}
 ExecStop={{ spark_home }}/sbin/stop-{{ service }}.sh
 TimeoutSec=30
 Restart=on-failure

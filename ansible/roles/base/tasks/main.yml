@@ -81,7 +81,7 @@
     path: /etc/sudoers.d/90-cloud-init-users
     regexp: ^ubuntu
 
-# - name: Disable cloud-init network config
-#   copy:
-#     dest: /etc/cloud/cloud.cfg.d/99-custom-networking.cfg
-#     content: "network: {config: disabled}"
+- name: Ensure pet-master address is set in /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "192.168.255.254 pet-master"
