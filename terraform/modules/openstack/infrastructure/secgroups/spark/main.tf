@@ -17,7 +17,7 @@ resource "openstack_networking_secgroup_v2" "spark-slave" {
   delete_default_rules  = true
 }
 
-resource "openstack_networking_secgroup_rule_v2" "spark-master-main" {
+resource "openstack_networking_secgroup_rule_v2" "spark-master-main-in" {
   direction         = "ingress"
   ethertype         = "IPv4"
   description       = "Allows inbound connections to Spark Master"
@@ -28,7 +28,7 @@ resource "openstack_networking_secgroup_rule_v2" "spark-master-main" {
   security_group_id = "${openstack_networking_secgroup_v2.spark-master.id}"
 }
 
-resource "openstack_networking_secgroup_rule_v2" "spark-master-web" {
+resource "openstack_networking_secgroup_rule_v2" "spark-master-web-in" {
   direction         = "ingress"
   ethertype         = "IPv4"
   description       = "Allows inbound connections to Spark Master web interface"
@@ -39,24 +39,20 @@ resource "openstack_networking_secgroup_rule_v2" "spark-master-web" {
   security_group_id = "${openstack_networking_secgroup_v2.spark-master.id}"
 }
 
-# resource "openstack_networking_secgroup_rule_v2" "spark-slaves-all" {
-#   direction         = "ingress"
-#   ethertype         = "IPv4"
-#   description       = "Allows inbound connections from any Spark Slave"
-#   protocol          = "tcp"
-#   port_range_min    = 1
-#   port_range_max    = 65535
-#   remote_group_id   = "${openstack_networking_secgroup_v2.spark-slave.id}"
-#   security_group_id = "${openstack_networking_secgroup_v2.spark-master.id}"
-# }
-# 
-# resource "openstack_networking_secgroup_rule_v2" "spark-slaves-all" {
-#   direction         = "egress"
-#   ethertype         = "IPv4"
-#   description       = "Allows outbound connections to any Spark Master"
-#   protocol          = "tcp"
-#   port_range_min    = 1
-#   port_range_max    = 65535
-#   remote_group_id   = "${openstack_networking_secgroup_v2.spark-master.id}"
-#   security_group_id = "${openstack_networking_secgroup_v2.spark-slave.id}"
-# }
+resource "openstack_networking_secgroup_rule_v2" "spark-master-slaves-in" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  description       = "Allows inbound connections from any Spark Slave"
+  protocol          = "tcp"
+  remote_group_id   = "${openstack_networking_secgroup_v2.spark-slave.id}"
+  security_group_id = "${openstack_networking_secgroup_v2.spark-master.id}"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "spark-slaves-master-in" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  description       = "Allows inbound connections from any Spark Master"
+  protocol          = "tcp"
+  remote_group_id   = "${openstack_networking_secgroup_v2.spark-master.id}"
+  security_group_id = "${openstack_networking_secgroup_v2.spark-slave.id}"
+}

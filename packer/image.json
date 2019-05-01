@@ -28,10 +28,8 @@
       "instance_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-instance-packer-{{user `role_name`}}-{{user `role_version`}}",
       "floating_ip_network": "public",
       "security_groups": [
-        "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-secgroup-ping",
-        "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-secgroup-ssh",
-        "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-secgroup-tcp-local",
-        "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-secgroup-udp-local"
+        "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-secgroup-base",
+        "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-secgroup-ssh"
       ],
       "use_blockstorage_volume": true,
       "volume_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-volume-packer-{{user `role_name`}}-{{user `role_version`}}",
