@@ -39,13 +39,24 @@ resource "openstack_networking_secgroup_rule_v2" "spark-master-web" {
   security_group_id = "${openstack_networking_secgroup_v2.spark-master.id}"
 }
 
-resource "openstack_networking_secgroup_rule_v2" "spark-slaves-all" {
-  direction         = "ingress"
-  ethertype         = "IPv4"
-  description       = "Allows inbound connections from any Spark Slave"
-  protocol          = "tcp"
-  port_range_min    = 1
-  port_range_max    = 65535
-  remote_group_id   = "${openstack_networking_secgroup_v2.spark-slave.id}"
-  security_group_id = "${openstack_networking_secgroup_v2.spark-master.id}"
-}
+# resource "openstack_networking_secgroup_rule_v2" "spark-slaves-all" {
+#   direction         = "ingress"
+#   ethertype         = "IPv4"
+#   description       = "Allows inbound connections from any Spark Slave"
+#   protocol          = "tcp"
+#   port_range_min    = 1
+#   port_range_max    = 65535
+#   remote_group_id   = "${openstack_networking_secgroup_v2.spark-slave.id}"
+#   security_group_id = "${openstack_networking_secgroup_v2.spark-master.id}"
+# }
+# 
+# resource "openstack_networking_secgroup_rule_v2" "spark-slaves-all" {
+#   direction         = "egress"
+#   ethertype         = "IPv4"
+#   description       = "Allows outbound connections to any Spark Master"
+#   protocol          = "tcp"
+#   port_range_min    = 1
+#   port_range_max    = 65535
+#   remote_group_id   = "${openstack_networking_secgroup_v2.spark-master.id}"
+#   security_group_id = "${openstack_networking_secgroup_v2.spark-slave.id}"
+# }
