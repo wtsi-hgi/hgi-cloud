@@ -10,5 +10,5 @@
 # spark.executor.extraJavaOptions  -XX:+PrintGCDetails -Dkey=value -Dnumbers="one two three"
 
 {% for key, value in spark_defaults_extras.items() | sort %}
-{{ key }} {{ value }}
+{{ "%-50s%s" | format(key, value) }}
 {% endfor %}
