@@ -29,7 +29,7 @@ module "build_network" {
   external_network_name = "${var.external_network_name}"
   network_name          = "build"
   subnet_cidr           = "${var.build_subnet_cidr}"
-  dns_nameservers       = "${var.local_dns_nameservers}"
+  dns_nameservers       = "${var.external_dns_nameservers}"
 }
 
 module "workstations_network" {
