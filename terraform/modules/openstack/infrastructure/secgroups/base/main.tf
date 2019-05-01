@@ -8,7 +8,6 @@ provider "template" {
 resource "openstack_networking_secgroup_v2" "base" {
   name                  = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-base"
   description           = "Base set of secgroups"
-  delete_default_rules  = true
 }
 
 resource "openstack_networking_secgroup_rule_v2" "icmp-in" {
