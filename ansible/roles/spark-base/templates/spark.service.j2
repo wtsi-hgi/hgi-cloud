@@ -8,9 +8,9 @@ After=network-online.target
 User={{ spark_user_name }}
 Type=forking
 {% if service == "master" %}
-ExecStart={{ spark_home }}/sbin/start-{{ service }}.sh spark://{{ spark_master_host }}:{{ spark_master_port }}
-{% else %}
 ExecStart={{ spark_home }}/sbin/start-{{ service }}.sh
+{% else %}
+ExecStart={{ spark_home }}/sbin/start-{{ service }}.sh spark://{{ spark_master_host }}:{{ spark_master_port }}
 {% endif %}
 ExecStop={{ spark_home }}/sbin/stop-{{ service }}.sh
 TimeoutSec=30
