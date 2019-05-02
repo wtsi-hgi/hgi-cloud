@@ -1,0 +1,9 @@
+[Unit]
+Description=Hail Jupyter Notebook
+
+[Service]
+ExecStart=/bin/bash -l -c 'exec "$@"' _ {{ hail_install_dir }}/hail/hail/scripts/jhail --config={{ hail_install_dir }}/jupiter/conf/service.py
+User={{ hail_install_owner }}
+
+[Install]
+WantedBy=multi-user.target
