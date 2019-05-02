@@ -5,3 +5,10 @@
     name: spark-master
     enabled: yes
     state: started
+
+- name: Enable and start hail service
+  become: yes
+  service:
+    name: jupiter-notebook
+    enabled: yes
+    state: started
