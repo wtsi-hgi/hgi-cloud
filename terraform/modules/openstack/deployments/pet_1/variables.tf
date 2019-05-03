@@ -1,7 +1,7 @@
 variable "deployment_name" {
   description = "The name of the deployment"
   type        = "string"
-  default     = "primary"
+  default     = "main"
 }
 
 variable "deployment_color" {

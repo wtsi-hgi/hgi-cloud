@@ -4,15 +4,22 @@
 
 set -e
 
+test -f .invokerc && source .invokerc
+
 # These variables will describe the exact cloud / project in which to operate
-export INVOKE_META_ENV="${META_ENV:-dev}"
 export INVOKE_META_RELEASE="${META_RELEASE:-eta}"
 export INVOKE_META_PROGRAMME="${META_PROGRAMME:-hgi}"
+export INVOKE_META_ENV="${META_ENV:-dev}"
 
 die() {
   echo -e "$2" >&2
   exit $1
 }
+
+declare -A COLLECTION
+COLLECTION[image]="packer"
+COLLECTION[role]="molecule"
+COLLECTION[deployment]="terraform"
 
 case "${1}" in
   --help)
@@ -20,8 +27,7 @@ case "${1}" in
 SYNOPSIS
 
   ${0} --help
-  ${0} --list
-  ${0} [image|deployment|env|environment] NAME:VERSION [invoke_options] [ [task_name] [task_options] ... ]
+  ${0} [image|role|deployment] NAME/VERSION [invoke_options] [ [task_name] [task_options] ... ]
 
 DESCRIPTION
   Runs automation tasks on a specific types of objects within the
@@ -29,35 +35,19 @@ DESCRIPTION
 
   --help                          Prints this help message. Any other argument
                                   will be discarded.
-  --list                          Prints the list of available tasks
-                                  collection. Any other argument will be
-                                  discarded.
-  [image|deployment|environment]  Tells invoke the kind of object to automate.
-  NAME                            Tells invoke which object to automate.
-  VERSION                         Tells invoke which version of the object to
-                                  automate.
-
 EXAMPLES
 
-  $ bash invoke.sh env spark-1.0.0 up
-  $ bash invoke.sh environment build-1.2.3 plan --to destroy
-  $ bash invoke.sh image base-0.1.0 build
-  $ bash invoke.sh deployment spark-1.1.0-ld14-test1 down
+  $ bash invoke.sh deployment consul/defalut up
+  $ bash invoke.sh deployment spark-cluster/vvi plan --to update
+  $ bash invoke.sh role hail-base/HEAD test
+  $ bash invoke.sh image base/0.1.0 build
 HELP
     exit 0
   ;;
-  --list)
-    ls -1 tasks/*.py | sed "s#tasks/\\(.*\\).py#\\1#"
-    exit 0
-  ;;
-  image|role|deployment|env|environment)
-    if [ "${1}" == "env" ] ; then
-      INVOKE_OBJECT_TYPE="environment"
-    else
-      INVOKE_OBJECT_TYPE="${1}"
-    fi
-    IFS=":" read INVOKE_OBJECT_NAME INVOKE_OBJECT_VERSION <<<"${2}"
-    export INVOKE_OBJECT_TYPE INVOKE_OBJECT_NAME INVOKE_OBJECT_VERSION
+  image|role|deployment)
+    TYPE="${1}"
+    IFS="/" read INVOKE_OBJECT_NAME INVOKE_OBJECT_VERSION <<<"${2}"
+    export INVOKE_OBJECT_NAME INVOKE_OBJECT_VERSION
   ;;
   *)
     die 1 "Sorry, cannot automate \`${1}'"
@@ -65,18 +55,6 @@ HELP
 esac
 
 shift 2
-
-case "${INVOKE_OBJECT_TYPE}" in
-  image)
-    COLLECTION=packer
-  ;;
-  role)
-    COLLECTION=molecule
-  ;;
-  *)
-    COLLECTION=terraform
-  ;;
-esac
 
 # Reads openrc.sh
 # It is boring to input your Openstack password over and over...
@@ -116,10 +94,16 @@ if [ -z "${VIRTUAL_ENV}" ] ; then
   fi
 fi
 
-# Install all modules
+# Install all python modules
 pip install --requirement requirements.txt
 
 echo
 
+export TF_VAR_os_release="${INVOKE_META_RELEASE}"
+export TF_VAR_programme="${INVOKE_META_PROGRAMME}"
+export TF_VAR_env="${INVOKE_META_ENV}"
+export TF_VAR_deployment_name="${INVOKE_OBJECT_NAME}"
+export TF_VAR_deployment_version="${INVOKE_OBJECT_VERSION}"
+
 # Runs the actual invoke command
-invoke --collection "tasks/${COLLECTION}" "${@}"
+invoke --collection "tasks/${COLLECTION[${TYPE}]}" "${@}"
