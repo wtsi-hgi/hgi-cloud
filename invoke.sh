@@ -99,6 +99,7 @@ pip install --requirement requirements.txt
 
 echo
 
+# FIXME: find a way to move these variables into the terraform tasks
 export TF_VAR_os_release="${INVOKE_META_RELEASE}"
 export TF_VAR_programme="${INVOKE_META_PROGRAMME}"
 export TF_VAR_env="${INVOKE_META_ENV}"
