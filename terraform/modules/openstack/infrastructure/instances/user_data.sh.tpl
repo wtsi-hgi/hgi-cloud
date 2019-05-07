@@ -15,7 +15,7 @@ cd /usr/src/provisioning/ansible
 git checkout ${role_version}
 
 # Create the extra vars for the playbook
-cat > metadata.yml <<VARS
+cat > vars/metadata.yml <<VARS
 ---
 datacentre: "${datacentre}"
 os_release: "${os_release}"
@@ -40,5 +40,7 @@ chmod 0600 vault_password.txt
 
 ansible-playbook instance.yml \
   --vault-id vault_password.txt \
-  --extra-vars @metadata.yml \
-  --extra-vars @vars/${os_release}-${programme}-${env}.yml
+  --extra-vars @vars/metadata.yml \
+  --extra-vars @vars/${os_release}.yml \
+  --extra-vars @vars/${os_release}/${programme}.yml \
+  --extra-vars @vars/${os_release}/${programme}/${env}.yml

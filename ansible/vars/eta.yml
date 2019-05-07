@@ -1,0 +1,5 @@
+---
+anaconda_mirror: https://repo.anaconda.com/archive
+hail_repo: https://github.com/hail-is/hail.git
+hadoop_mirror: https://archive.apache.org/dist/hadoop/common
+spark_mirror: https://archive.apache.org/dist/spark/
