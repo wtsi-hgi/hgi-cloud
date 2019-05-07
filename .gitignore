@@ -2,6 +2,7 @@ py3/
 *openrc.sh
 .terraform
 *.tfplan
+tfstate
 *.tfstate
 *.tfstate.*
 *manifest.json
