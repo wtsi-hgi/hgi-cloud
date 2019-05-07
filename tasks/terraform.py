@@ -27,7 +27,7 @@ def var_files(context):
 def tfstate_file(context):
   return [
     os.path.join(
-      'terraform', 'deployments',
+      'terraform', 'deployments', 'openstack',
       context.config['meta']['release'],
       context.config['meta']['programme'],
       context.config['meta']['env'],
@@ -39,7 +39,7 @@ def tfstate_file(context):
 def tfplan_file(context, to):
   return [
     os.path.join(
-      'terraform', 'deployments',
+      'terraform', 'deployments', 'openstack',
       context.config['meta']['release'],
       context.config['meta']['programme'],
       context.config['meta']['env'],
