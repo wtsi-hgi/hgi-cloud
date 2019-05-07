@@ -2,9 +2,9 @@ py3/
 *openrc.sh
 .terraform
 *.tfplan
-tfstate
 *.tfstate
 *.tfstate.*
+terraform/deployments/
 *manifest.json
 .yamllint
 __pycache__/
