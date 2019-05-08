@@ -47,9 +47,13 @@
       "type": "ansible-local",
       "playbook_dir": "../ansible",
       "playbook_file": "../ansible/image.yml",
-      "extra_arguments": [ "--extra-vars \"role_name={{user `role_name`}} role_version={{user `role_version`}}\"" ],
+      "extra_arguments": [
+        "--extra-vars \"role_name={{user `role_name`}} role_version={{user `role_version`}}\"",
+        "--extra-vars @vars/{{user `os_release`}}.yml",
+        "--extra-vars @vars/{{user `os_release`}}/{{user `programme`}}.yml",
+        "--extra-vars @vars/{{user `os_release`}}/{{user `programme`}}/{{user `env`}}.yml"
+      ],
       "role_paths": [ "../ansible/roles" ]
-
     },
     {
       "type": "shell",

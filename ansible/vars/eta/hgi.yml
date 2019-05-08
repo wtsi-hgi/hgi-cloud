@@ -91,39 +91,39 @@ spark_driver_extra_classpath:
   - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-s3-1.7.4.jar"
   - "{{ hadoop_home }}/share/hadoop/tools/lib/hadoop-aws-2.7.3.jar"
 
+spark_hadoop_anonymous_buckets: []
+
 spark_defaults_extras:
   # SparkContext Configuration
   spark.master: "spark://pet-master:{{ spark_master_port }}"
-  spark.sql.files.maxPartitionBytes: "102400"
-  spark.sql.files.openCostInBytes: "102400"
+  spark.sql.files.maxPartitionBytes: "42949672960"
+  spark.sql.files.openCostInBytes: "42949672960"
 
-  spark.driver.memory: 1g
-  spark.executor.memory: 1g
+  spark.driver.memory: 48g
+  spark.driver.maxResultSize: 0
+  spark.driver.extraClassPath: "{{ spark_driver_extra_classpath | join(':') }}"
 
-  # spark.jars: "{# spark_jars #}"
+  spark.executor.memory: 48g
+  spark.executor.instances: 2
+  spark.executor.extraClassPath: "{{ spark_executor_extra_classpath | join(':') }}"
+
+  spark.jars: "{{ hail_home }}/build/libs/hail-all-spark.jar"
+
   # spark.ui.reverseProxy: true
   # spark.ui.reverseProxyUrl: "https://{# spark_master_external_hostname #}.{# spark_master_external_domain #}/{# spark_master_external_path #}"
 
   spark.serializer: "org.apache.spark.serializer.KryoSerializer"
   spark.kryo.registrator: "is.hail.kryo.HailKryoRegistrator"
+
   spark.local.dir: /tmp
 
-  # {% if spark_executor_instances is defined %}
-  # spark.executor.instances: "{# spark_executor_instances #}"
-  # {% endif %}
-  spark.driver.maxResultSize: 100
-
-  # Extra classpaths (instead of using deprecated SPARK_CLASSPATH)
-  spark.executor.extraClassPath: "{{ spark_executor_extra_classpath | join(':') }}"
-  spark.driver.extraClassPath: "{{ spark_driver_extra_classpath | join(':') }}"
-  
   # Hadoop Configuration for S3
   spark.hadoop.fs.s3a.impl: "org.apache.hadoop.fs.s3a.S3AFileSystem"
   spark.hadoop.fs.s3a.endpoint: cog.sanger.ac.uk
-  # {% for bucket in spark_hadoop_anonymous_buckets %}
-  # spark.hadoop.fs.s3a.bucket.{# bucket #}.aws.credentials.provider  org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider
-  # {% endfor %}
   spark.hadoop.fs.s3a.connection.maximum: 100
+  {% for bucket in spark_hadoop_anonymous_buckets %}
+  "spark.hadoop.fs.s3a.bucket.{{ bucket }}.aws.credentials.provider":  org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider
+  {% endfor %}
 
 spark_pid_dir: "{{ spark_home }}/run"
 spark_log_dir: "{{ spark_home }}/log"
