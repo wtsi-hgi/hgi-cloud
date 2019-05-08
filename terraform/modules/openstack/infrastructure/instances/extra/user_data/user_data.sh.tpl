@@ -38,9 +38,10 @@ cat > vault_password.txt <<<"${vault_password}"
 
 chmod 0600 vault_password.txt
 
-ansible-playbook instance.yml \
+ansible-playbook \
   --vault-id vault_password.txt \
   --extra-vars @vars/metadata.yml \
   --extra-vars @vars/${os_release}.yml \
   --extra-vars @vars/${os_release}/${programme}.yml \
-  --extra-vars @vars/${os_release}/${programme}/${env}.yml
+  --extra-vars @vars/${os_release}/${programme}/${env}.yml \
+  instance.yml
