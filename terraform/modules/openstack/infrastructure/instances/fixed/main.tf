@@ -19,10 +19,20 @@ locals {
   }
 }
 
-data "template_file" "user_data" {
-  template = "${file("${path.module}/../user_data.sh.tpl")}"
-  count = "${var.count}"
-  vars = {
+data "openstack_images_image_v2" "base_image" {
+  name = "${var.image_name}"
+  most_recent = true
+}
+
+resource "openstack_compute_servergroup_v2" "servergroup" {
+  name      = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-servergroup-${var.deployment_name}-${var.role_name}"
+  policies  = ["${var.affinity}"]
+}
+
+module "user_data" {
+  source        = "../extra/user_data/"
+  count         = "${var.count}"
+  template_vars = {
     datacentre          = "${local.metadata["datacentre"]}"
     os_release          = "${local.metadata["os_release"]}"
     programme           = "${local.metadata["programme"]}"
@@ -32,19 +42,8 @@ data "template_file" "user_data" {
     deployment_color    = "${local.metadata["deployment_color"]}"
     role_name           = "${local.metadata["role_name"]}"
     role_version        = "${local.metadata["role_version"]}"
-    count               = "${count.index + 1}"
     vault_password      = "${var.vault_password}"
   }
-}
-
-data "openstack_images_image_v2" "base_image" {
-  name = "${var.image_name}"
-  most_recent = true
-}
-
-resource "openstack_compute_servergroup_v2" "servergroup" {
-  name      = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-servergroup-${var.deployment_name}-${var.role_name}"
-  policies  = ["${var.affinity}"]
 }
 
 module "network_port" {
@@ -69,8 +68,7 @@ resource "openstack_compute_instance_v2" "instance" {
   stop_before_destroy = true
   security_groups     = "${var.security_groups}"
   metadata            = "${local.metadata}"
-  user_data           = "${data.template_file.user_data.rendered}"
-# user_data           = "${templatefile("${path.module}/user_data.sh.tpl", merge(local.metadata, map("count", format("%02d", count.index + 1))))}"
+  user_data           = "${element(module.user_data.rendered, count.index)}"
 
   scheduler_hints {
     group = "${openstack_compute_servergroup_v2.servergroup.id}"

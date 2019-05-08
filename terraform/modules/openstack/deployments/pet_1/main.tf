@@ -77,16 +77,7 @@ module "pet_slaves" {
   depends_on          = ["${module.pet_masters.instance_ids}" ]
 }
 
-# module "spark_masters_external_ip" {
-#   source            = "../../infrastructure/instances/extra/external_ip/"
-#   instances_count   = "${var.spark_masters_count}"
-#   floating_ip_pool  = "public"
-#   instance_ids      = "${module.spark_masters.instance_ids}"
-# }
-# 
-# module "spark_slaves_external_ip" {
-#   source            = "../../infrastructure/instances/extra/external_ip/"
-#   instances_count   = "${var.spark_slaves_count}"
-#   floating_ip_pool  = "public"
-#   instance_ids      = "${module.spark_slaves.instance_ids}"
-# }
+resource "openstack_compute_floatingip_associate_v2" "public_ip" {
+  floating_ip = "${var.pet_master_external_address}"
+  instance_id = "${module.pet_masters.instance_ids[0]}"
+}

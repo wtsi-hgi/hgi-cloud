@@ -63,6 +63,8 @@ module "pet_network" {
   external_network_name = "${var.external_network_name}"
   network_name          = "pet"
   subnet_cidr           = "${var.pet_subnet_cidr}"
-  subnet_pool_end       = "-3"
+  # The "+ 2" is because the pool range is inclusive, and you have to exclude
+  # the broadcast address as well. 
+  subnet_pool_end       = "${-1 * (var.pet_clusters + 2)}"
   dns_nameservers       = "${var.external_dns_nameservers}"
 }

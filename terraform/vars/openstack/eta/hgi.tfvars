@@ -9,3 +9,6 @@ consensus_subnet_cidr     = "192.168.225.0/27"
 
 main_subnet_cidr          = "192.168.226.0/23"
 pet_subnet_cidr           = "192.168.255.0/24"
+pet_clusters              = 1
+# The pet_1 deployment works with one master only, at the moment
+pet_masters_count         = 1
