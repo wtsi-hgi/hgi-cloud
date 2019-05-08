@@ -4,6 +4,8 @@ py3/
 *.tfplan
 *.tfstate
 *.tfstate.*
+terraform/deployments/
 *manifest.json
 .yamllint
 __pycache__/
+.invokerc

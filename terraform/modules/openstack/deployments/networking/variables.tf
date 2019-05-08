@@ -14,7 +14,6 @@ variable "build_subnet_cidr" {}
 variable "management_subnet_cidr" {}
 variable "consensus_subnet_cidr" {}
 variable "pet_subnet_cidr" {}
-variable "pet_master_address" {}
 variable "external_dns_nameservers" {
   type = "list"
 }

@@ -4,7 +4,9 @@
   become: yes
   gather_facts: yes
   vars_files:
-    - ../../vars/eta-hgi-dev.yml
+    - ../../vars/eta.yml
+    - ../../vars/eta/hgi.yml
+    - ../../vars/eta/hgi/dev.yml
     - ../../molecule/default/metadata.yml
   tasks:
     - name: Run platform's role
