@@ -91,8 +91,6 @@ spark_driver_extra_classpath:
   - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-s3-1.7.4.jar"
   - "{{ hadoop_home }}/share/hadoop/tools/lib/hadoop-aws-2.7.3.jar"
 
-spark_hadoop_anonymous_buckets: []
-
 spark_defaults_extras:
   # SparkContext Configuration
   spark.master: "spark://pet-master:{{ spark_master_port }}"
@@ -121,9 +119,7 @@ spark_defaults_extras:
   spark.hadoop.fs.s3a.impl: "org.apache.hadoop.fs.s3a.S3AFileSystem"
   spark.hadoop.fs.s3a.endpoint: cog.sanger.ac.uk
   spark.hadoop.fs.s3a.connection.maximum: 100
-  {% for bucket in spark_hadoop_anonymous_buckets %}
-  "spark.hadoop.fs.s3a.bucket.{{ bucket }}.aws.credentials.provider":  org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider
-  {% endfor %}
+  # spark.hadoop.fs.s3a.bucket.<bucket_name>.aws.credentials.provider:  org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider
 
 spark_pid_dir: "{{ spark_home }}/run"
 spark_log_dir: "{{ spark_home }}/log"
@@ -207,4 +203,3 @@ spark_sysctl_params:
     value: 10
   - name: fs.file-max
     value: 5049800
-
