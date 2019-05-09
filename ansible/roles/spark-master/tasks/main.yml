@@ -33,6 +33,14 @@
     group: root
     mode: "0644"
 
+- name: Create Spark local directory
+  file:
+    path: "{{ spark_home }}/local"
+    state: directory
+    owner: "{{ spark_install_owner }}"
+    group: "{{ spark_install_group }}"
+    mode: "{{ spark_install_mode }}"
+
 - name: Ensure Spark local directory is exported
   become: yes
   lineinfile:
@@ -41,10 +49,4 @@
     regexp: "^{{ spark_home }}/local"
     # Security groups will take care of the connection restrictions
     line: "{{ spark_home }}/local *(rw,sync,no_root_squash,no_subtree_check)"
-
-- name: Start NFS server
-  become: yes
-  service:
-    name: nfs-kernel-server
-    enabled: yes
-    state: started
+  notify: Restart NFS Server

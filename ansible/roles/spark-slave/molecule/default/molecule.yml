@@ -7,7 +7,7 @@ lint:
   name: yamllint
 platforms:
   - name: default
-    image: uk-sanger-internal-openstack-eta-hgi-dev-image-hail-base-0.0.6
+    image: uk-sanger-internal-openstack-eta-hgi-dev-image-hail-base-0.0.7
     flavor: o2.medium
     role: spark-slave
 provisioner:
@@ -20,7 +20,7 @@ provisioner:
   playbooks:
     create: ../../../../molecule/default/create.yml
     destroy: ../../../../molecule/default/destroy.yml
-    converge: ../../../../molecule/default/converge.yml
+    converge: converge.yml
 verifier:
   name: testinfra
   lint:

@@ -1,16 +1,9 @@
 ---
-- name: Create Spark local directory
-  file:
-    path: "{{ spark_home }}/local"
-    state: directory
-    owner: "{{ spark_install_owner }}"
-    group: "{{ spark_install_group }}"
-    mode: "{{ spark_install_mode }}"
-
 - name: Ensure pet-master address is set in /etc/hosts
   lineinfile:
     path: /etc/hosts
     line: "{{ pet_master_address }} pet-master"
+  when: pet_master_address is defined and pet_master_address != ''
 
 - name: Configure Spark environment
   template:

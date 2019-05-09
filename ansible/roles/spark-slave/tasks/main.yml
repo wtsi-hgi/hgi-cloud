@@ -9,7 +9,7 @@
 
 - name: Mount Spark local directory
   mount:
-    path: "{{ spark_home }}/local"
+    path: "{{ spark_temp_dir }}"
     state: mounted
     src: "pet-master:{{ spark_home }}/local"
     boot: no

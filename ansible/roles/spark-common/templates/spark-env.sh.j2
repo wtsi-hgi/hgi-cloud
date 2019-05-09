@@ -55,6 +55,7 @@ export HADOOP_CONF_DIR="{{ hadoop_home }}/conf"
 
 export SPARK_LOG_DIR="{{ spark_home }}/log"
 export SPARK_PID_DIR="{{ spark_home }}/run"
+export SPARK_MASTER_HOST="0.0.0.0"
 {% if (spark_local_dirs | length) >0 %}
 export SPARK_LOCAL_DIRS="{{ spark_local_dirs|join(',') }}"
 {% endif %}
