@@ -49,4 +49,4 @@
     regexp: "^{{ spark_home }}/local"
     # Security groups will take care of the connection restrictions
     line: "{{ spark_home }}/local *(rw,sync,no_root_squash,no_subtree_check)"
-  notify: Restart NFS Server
+  notify: Restart NFS server
