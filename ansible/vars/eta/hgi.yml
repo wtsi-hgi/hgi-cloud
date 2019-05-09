@@ -77,19 +77,17 @@ spark_local_dirs: []
 spark_master_port: 7077
 
 spark_env_extras: {}
-spark_executor_extra_classpath:
+
+spark_extra_classpath:
   - "{{ hail_home }}/build/libs/hail-all-spark.jar"
   - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-core-1.7.4.jar"
   - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-kms-1.7.4.jar"
   - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-s3-1.7.4.jar"
   - "{{ hadoop_home }}/share/hadoop/tools/lib/hadoop-aws-7.3.2.jar"
 
-spark_driver_extra_classpath:
-  - "{{ hail_home }}/build/libs/hail-all-spark.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-core-1.7.4.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-kms-1.7.4.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-s3-1.7.4.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/hadoop-aws-2.7.3.jar"
+# spark_executor_extra_classpath: "{{ spark_extra_classpath }}"
+# spark_driver_extra_classpath: "{{ spark_extra_classpath }}"
+# spark_jars: "{{ spark_extra_classpath }}"
 
 spark_defaults_extras:
   # SparkContext Configuration
@@ -97,15 +95,15 @@ spark_defaults_extras:
   spark.sql.files.maxPartitionBytes: "42949672960"
   spark.sql.files.openCostInBytes: "42949672960"
 
-  spark.driver.memory: 48g
+  spark.driver.memory: 60g
   spark.driver.maxResultSize: 0
-  spark.driver.extraClassPath: "{{ spark_driver_extra_classpath | join(':') }}"
+  spark.driver.extraClassPath: "{{ spark_extra_classpath | join(':') }}"
 
-  spark.executor.memory: 48g
-  spark.executor.instances: 2
-  spark.executor.extraClassPath: "{{ spark_executor_extra_classpath | join(':') }}"
+  spark.executor.memory: 60g
+  spark.executor.instances: 1
+  spark.executor.extraClassPath: "{{ spark_extra_classpath | join(':') }}"
 
-  spark.jars: "{{ hail_home }}/build/libs/hail-all-spark.jar"
+  spark.jars: "{{ spark_extra_classpath | join(':') }}"
 
   # spark.ui.reverseProxy: true
   # spark.ui.reverseProxyUrl: "https://{# spark_master_external_hostname #}.{# spark_master_external_domain #}/{# spark_master_external_path #}"
