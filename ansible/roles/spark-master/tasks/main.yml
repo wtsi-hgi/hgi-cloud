@@ -12,3 +12,39 @@
     name: jupiter-notebook
     enabled: yes
     state: started
+
+- name: Install web / nfs prerequisites
+  become: yes
+  apt:
+    name: "{{ package }}"
+    state: present
+    update_cache: yes
+  loop:
+    - nginx
+    - nfs-kernel-server
+  loop_control:
+    loop_var: package
+
+- name: Ensure /etc/exports exists
+  become: yes
+  file:
+    path: /etc/exports
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Ensure Spark local directory is exported
+  become: yes
+  lineinfile:
+    path: /etc/exports
+    state: present
+    regexp: "^{{ spark_home }}/local"
+    # Security groups will take care of the connection restrictions
+    line: "{{ spark_home }}/local *(rw,sync,no_root_squash,no_subtree_check)"
+
+- name: Start NFS server
+  become: yes
+  service:
+    name: nfs-kernel-server
+    enabled: yes
+    state: started
