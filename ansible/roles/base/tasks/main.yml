@@ -80,8 +80,3 @@
     line: ubuntu ALL=(ALL:ALL) NOPASSWD:ALL
     path: /etc/sudoers.d/90-cloud-init-users
     regexp: ^ubuntu
-
-- name: Ensure pet-master address is set in /etc/hosts
-  lineinfile:
-    path: /etc/hosts
-    line: "192.168.255.254 pet-master"
