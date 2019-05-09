@@ -3,10 +3,18 @@
   apt:
     state: present
     name:
+      - g++
+      - cmake
+      - make
+      - build-essential
       - scala
       - r-base
       - r-recommended
       - libopenblas-base
+      - libatlas3-base
+      - libnetlib-java
+      - liblz4-dev
+      - nfs-common
     install_recommends: yes
 
 - name: Ensure group account for Spark exists
