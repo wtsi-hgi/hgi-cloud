@@ -9,3 +9,4 @@ terraform/deployments/
 .yamllint
 __pycache__/
 .invokerc
+vault_password.txt
