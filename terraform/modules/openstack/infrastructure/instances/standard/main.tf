@@ -16,7 +16,6 @@ locals {
     deployment_color    = "${var.deployment_color}"
     role_name           = "${var.role_name}"
     role_version        = "${var.role_version}"
-    pet_master_address  = "${var.pet_master_address}"
   }
 }
 
@@ -33,19 +32,7 @@ resource "openstack_compute_servergroup_v2" "servergroup" {
 module "user_data" {
   source        = "../extra/user_data/"
   count         = "${var.count}"
-  template_vars = {
-    datacentre          = "${local.metadata["datacentre"]}"
-    os_release          = "${local.metadata["os_release"]}"
-    programme           = "${local.metadata["programme"]}"
-    env                 = "${local.metadata["env"]}"
-    deployment_name     = "${local.metadata["deployment_name"]}"
-    deployment_version  = "${local.metadata["deployment_version"]}"
-    deployment_color    = "${local.metadata["deployment_color"]}"
-    role_name           = "${local.metadata["role_name"]}"
-    role_version        = "${local.metadata["role_version"]}"
-    pet_master_address  = "${local.metadata["pet_master_address"]}"
-    vault_password      = "${var.vault_password}"
-  }
+  template_vars = "${merge(local.metadata, map("extra_user_data", jsonencode(var.extra_user_data), "vault_password", var.vault_password))}"
 }
 
 module "network_port" {

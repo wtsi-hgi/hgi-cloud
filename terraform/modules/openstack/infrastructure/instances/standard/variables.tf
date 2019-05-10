@@ -40,6 +40,7 @@ variable "volume_size" {
   default = 64
 }
 
-variable "pet_master_address" {
-  default = ""
+variable "extra_user_data" {
+  type = "map"
+  default = {}
 }

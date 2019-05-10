@@ -27,7 +27,7 @@ deployment_color: "${deployment_color}"
 role_name: "${role_name}"
 role_version: "${role_version}"
 count: "${count}"
-pet_master_address: "${pet_master_address}"
+extra_user_data: ${extra_user_data}
 VARS
 
 # Created the default password file for ansible-vault
