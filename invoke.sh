@@ -21,6 +21,8 @@ COLLECTION[image]="packer"
 COLLECTION[role]="molecule"
 COLLECTION[deployment]="terraform"
 
+OPENRC="${PWD}/${META_ENV}-openrc.sh"
+
 case "${1}" in
   --help)
     cat <<HELP
@@ -58,14 +60,10 @@ shift 2
 
 # Reads openrc.sh
 # It is boring to input your Openstack password over and over...
-if [ -z "${OS_PASSWORD}" ] ; then
-  if [ -f "${PWD}/openrc.sh" ] ; then
-    echo
-    echo "If you are going to run ${0} multiple times, you may want to source openrc.sh first."
-    . "${PWD}/openrc.sh"
-  else
-    die 1 "Cannot find openrc.sh\n\tPlease, download an \`Openstack RC File' from the \`API Access' web interface, write one or manually export the shell environment variables"
-  fi
+if [ -f "${OPENRC}" ] ; then
+  . "${OPENRC}"
+else
+  die 1 "Cannot find ${OPENRC}\n\tPlease, download an \`Openstack RC File' from the \`API Access' web interface, write one or manually export the shell environment variables"
 fi
 
 echo
