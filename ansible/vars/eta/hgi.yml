@@ -111,8 +111,6 @@ spark_defaults_extras:
   spark.serializer: "org.apache.spark.serializer.KryoSerializer"
   spark.kryo.registrator: "is.hail.kryo.HailKryoRegistrator"
 
-  spark.local.dir: /tmp
-
   # Hadoop Configuration for S3
   spark.hadoop.fs.s3a.impl: "org.apache.hadoop.fs.s3a.S3AFileSystem"
   spark.hadoop.fs.s3a.endpoint: cog.sanger.ac.uk

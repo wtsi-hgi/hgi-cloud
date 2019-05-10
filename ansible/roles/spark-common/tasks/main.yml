@@ -9,12 +9,16 @@
   template:
     src: spark-env.sh.j2
     dest: "{{ spark_home }}/conf/spark-env.sh"
+    owner: "{{ spark_user_name }}"
+    group: "{{ spark_group_name }}"
   tags: ["config"]
 
 - name: Configure Spark defaults
   template:
     src: spark-defaults.conf.j2
     dest: "{{ spark_home }}/conf/spark-defaults.conf"
+    owner: "{{ spark_user_name }}"
+    group: "{{ spark_group_name }}"
   tags: ["config"]
 
 - name: Configure Spark log4j properties
