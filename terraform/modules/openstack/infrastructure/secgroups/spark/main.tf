@@ -67,3 +67,12 @@ resource "openstack_networking_secgroup_rule_v2" "spark-slaves-master-in" {
   remote_group_id   = "${openstack_networking_secgroup_v2.spark-master.id}"
   security_group_id = "${openstack_networking_secgroup_v2.spark-slave.id}"
 }
+
+resource "openstack_networking_secgroup_rule_v2" "spark-slaves-slaves-in" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  description       = "Allows inbound connections from any Spark Slave"
+  protocol          = "tcp"
+  remote_group_id   = "${openstack_networking_secgroup_v2.spark-slave.id}"
+  security_group_id = "${openstack_networking_secgroup_v2.spark-slave.id}"
+}

@@ -16,6 +16,7 @@ locals {
     deployment_color    = "${var.deployment_color}"
     role_name           = "${var.role_name}"
     role_version        = "${var.role_version}"
+    pet_master_address  = "${var.pet_master_address}"
   }
 }
 
@@ -42,6 +43,7 @@ module "user_data" {
     deployment_color    = "${local.metadata["deployment_color"]}"
     role_name           = "${local.metadata["role_name"]}"
     role_version        = "${local.metadata["role_version"]}"
+    pet_master_address  = "${local.metadata["pet_master_address"]}"
     vault_password      = "${var.vault_password}"
   }
 }

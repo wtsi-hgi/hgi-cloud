@@ -9,9 +9,9 @@ provider "template" {
 locals {
   deployment_version = "0.0.1"
   dependency = {
-    pet_master_image_name = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.6"
+    pet_master_image_name = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.7"
     pet_master_role_version = "pet-1"
-    pet_slave_image_name =  "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.6"
+    pet_slave_image_name =  "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.7"
     pet_slave_role_version = "pet-1"
   }
 }
@@ -37,6 +37,7 @@ module "pet_masters" {
   role_name           = "spark-master"
   role_version        = "${local.dependency["pet_master_role_version"]}"
   image_name          = "${local.dependency["pet_master_image_name"]}"
+  pet_master_address  = "${var.pet_master_address}"
   key_pair            = "${ var.key_pair != "" ? var.key_pair : local.key_pair }"
   security_groups     = [
     "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-base",
@@ -63,6 +64,7 @@ module "pet_slaves" {
   role_name           = "spark-slave"
   role_version        = "${local.dependency["pet_slave_role_version"]}"
   image_name          = "${local.dependency["pet_slave_image_name"]}"
+  pet_master_address  = "${var.pet_master_address}"
   key_pair            = "${ var.key_pair != "" ? var.key_pair : local.key_pair }"
   security_groups     = [
     "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-base",
