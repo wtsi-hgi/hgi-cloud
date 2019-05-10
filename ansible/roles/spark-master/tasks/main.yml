@@ -18,41 +18,41 @@
 # started; Once the slave detects the nfs-kernel-server is up and running, it
 # will mount the filesystem, and fail, because the exports are not yet
 # configured.
-- name: Ensure /etc/exports exists
-  become: yes
-  file:
-    path: /etc/exports
-    state: touch
-    owner: root
-    group: root
-    mode: "0644"
-
-- name: Create Spark local directory
-  file:
-    path: "{{ hail_shared_dir }}"
-    state: directory
-    owner: "{{ spark_install_owner }}"
-    group: "{{ spark_install_group }}"
-    mode: "{{ spark_install_mode }}"
-
-- name: Ensure Hail shared directory is exported
-  become: yes
-  lineinfile:
-    path: /etc/exports
-    state: present
-    regexp: "^{{ hail_shared_dir }}"
-    # Security groups will take care of the connection restrictions
-    line: "{{ hail_shared_dir }} *(rw,sync,no_root_squash,no_subtree_check)"
-  notify: Restart NFS server
-
-- name: Install web / nfs prerequisites
-  become: yes
-  apt:
-    name: "{{ package }}"
-    state: present
-    update_cache: yes
-  loop:
-    - nginx
-    - nfs-kernel-server
-  loop_control:
-    loop_var: package
+# - name: Ensure /etc/exports exists
+#   become: yes
+#   file:
+#     path: /etc/exports
+#     state: touch
+#     owner: root
+#     group: root
+#     mode: "0644"
+# 
+# - name: Create Spark local directory
+#   file:
+#     path: "{{ hail_shared_dir }}"
+#     state: directory
+#     owner: "{{ spark_install_owner }}"
+#     group: "{{ spark_install_group }}"
+#     mode: "{{ spark_install_mode }}"
+# 
+# - name: Ensure Hail shared directory is exported
+#   become: yes
+#   lineinfile:
+#     path: /etc/exports
+#     state: present
+#     regexp: "^{{ hail_shared_dir }}"
+#     # Security groups will take care of the connection restrictions
+#     line: "{{ hail_shared_dir }} *(rw,sync,no_root_squash,no_subtree_check)"
+#   notify: Restart NFS server
+# 
+# - name: Install web / nfs prerequisites
+#   become: yes
+#   apt:
+#     name: "{{ package }}"
+#     state: present
+#     update_cache: yes
+#   loop:
+#     - nginx
+#     - nfs-kernel-server
+#   loop_control:
+#     loop_var: package
