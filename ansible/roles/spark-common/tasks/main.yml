@@ -3,7 +3,7 @@
   lineinfile:
     path: /etc/hosts
     line: "{{ extra_user_data['pet_master_address'] }} pet-master"
-  when: pet_master_address is defined and pet_master_address != ''
+  when: extra_user_data["pet_master_address"] is defined and extra_user_data["pet_master_address"] != ''
 
 - name: Configure Spark environment
   template:
