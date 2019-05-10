@@ -30,13 +30,6 @@ anaconda_install_owner: "{{ base_install_owner }}"
 anaconda_install_group: "{{ base_install_group }}"
 anaconda_install_mode: "u+rw,go+r"
 
-hail_install_dir: "{{ base_install_dir }}"
-hail_install_owner: "{{ base_install_owner }}"
-hail_install_group: "{{ base_install_group }}"
-hail_install_mode: "ug+rw,o+r"
-
-hail_home: "{{ hail_install_dir }}/hail/hail"
-
 hadoop_user_name: "{{ base_user_name }}"
 hadoop_group_name: "{{ hadoop_user_name }}"
 
@@ -202,3 +195,11 @@ spark_sysctl_params:
     value: 10
   - name: fs.file-max
     value: 5049800
+
+hail_install_dir: "{{ base_install_dir }}"
+hail_install_owner: "{{ base_install_owner }}"
+hail_install_group: "{{ base_install_group }}"
+hail_install_mode: "ug+rw,o+r"
+
+hail_home: "{{ hail_install_dir }}/hail/hail"
+hail_shared_dir: "{{ spark_home }}/local"
