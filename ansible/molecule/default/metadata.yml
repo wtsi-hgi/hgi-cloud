@@ -1,6 +1,5 @@
 ---
-datacentre: uk-sanger-internal-openstack
-os_release: eta
+datacentre: uk-sanger-internal-openstack-eta
 programme: hgi
 env: dev
 deployment_name: molecule
