@@ -14,13 +14,13 @@ data "openstack_networking_network_v2" "external" {
 }
 
 resource "openstack_networking_router_v2" "main" {
-  name                = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-router-${var.network_name}"
+  name                = "${var.datacenter}-${var.programme}-${var.env}-router-${var.network_name}"
   external_network_id = "${data.openstack_networking_network_v2.external.id}"
 }
 
 module "main_network" {
   source                = "../extra/network/"
-  os_release            = "${var.os_release}"
+  datacenter            = "${var.datacenter}"
   programme             = "${var.programme}"
   env                   = "${var.env}"
   subnet_cidr           = "${var.subnet_cidr}"
@@ -29,4 +29,5 @@ module "main_network" {
   network_name          = "${var.network_name}"
   router_id             = "${openstack_networking_router_v2.main.id}"
   dns_nameservers       = "${var.dns_nameservers}"
+  deployment_owner      = "${var.deployment_owner}"
 }

@@ -6,13 +6,13 @@ provider "template" {
 }
 
 resource "openstack_networking_secgroup_v2" "spark-master" {
-  name                  = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-spark-master"
+  name                  = "${var.datacenter}-${var.programme}-${var.env}-secgroup-spark-master"
   description           = "Spark Master's Access"
   delete_default_rules  = true
 }
 
 resource "openstack_networking_secgroup_v2" "spark-slave" {
-  name                  = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-spark-slave"
+  name                  = "${var.datacenter}-${var.programme}-${var.env}-secgroup-spark-slave"
   description           = "Spark Slave's Access"
   delete_default_rules  = true
 }

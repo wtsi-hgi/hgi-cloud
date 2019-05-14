@@ -18,11 +18,10 @@ git checkout ${role_version}
 cat > vars/metadata.yml <<VARS
 ---
 datacentre: "${datacentre}"
-os_release: "${os_release}"
 programme: "${programme}"
 env: "${env}"
 deployment_name: "${deployment_name}"
-deployment_version: "${deployment_version}"
+deployment_owner: "${deployment_owner}"
 deployment_color: "${deployment_color}"
 role_name: "${role_name}"
 role_version: "${role_version}"
@@ -42,7 +41,7 @@ chmod 0600 vault_password.txt
 ansible-playbook \
   --vault-id vault_password.txt \
   --extra-vars @vars/metadata.yml \
-  --extra-vars @vars/${os_release}.yml \
-  --extra-vars @vars/${os_release}/${programme}.yml \
-  --extra-vars @vars/${os_release}/${programme}/${env}.yml \
+  --extra-vars @vars/${datacenter}.yml \
+  --extra-vars @vars/${datacenter}/${programme}.yml \
+  --extra-vars @vars/${datacenter}/${programme}/${env}.yml \
   instance.yml

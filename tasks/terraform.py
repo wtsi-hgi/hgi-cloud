@@ -5,18 +5,19 @@ import os.path
 import sys
 
 def iac_path(context):
-  path = 'terraform/modules/openstack/deployments/{}'
-  return path.format(context.config['object']['name'])
+  path = 'terraform/modules/{}/deployments/{}'
+  return path.format(context.config['meta']['provider'],
+                     context.config['deployment']['name'])
 
 def var_files(context):
   order = [
-    context.config['meta']['release'],
+    context.config['meta']['datacenter'],
     context.config['meta']['programme'],
     context.config['meta']['env'],
-    context.config['object']['name'],
-    context.config['object']['version']
+    context.config['deployment']['name'],
+    context.config['deployment']['owner']
   ]
-  basename = os.path.join('terraform', 'vars', 'openstack')
+  basename = os.path.join('terraform', 'vars')
   paths = []
   for path in order:
     basename = os.path.join(basename, path)
@@ -27,26 +28,36 @@ def var_files(context):
 def tfstate_file(context):
   return [
     os.path.join(
-      'terraform', 'deployments', 'openstack',
-      context.config['meta']['release'],
+      'terraform', 'deployments',
+      context.config['meta']['datacenter'],
       context.config['meta']['programme'],
       context.config['meta']['env'],
-      context.config['object']['name'],
-      context.config['object']['version']),
+      context.config['deployment']['name'],
+      context.config['deployment']['owner']),
     'tfstate'
   ]
 
 def tfplan_file(context, to):
   return [
     os.path.join(
-      'terraform', 'deployments', 'openstack',
-      context.config['meta']['release'],
+      'terraform', 'deployments',
+      context.config['meta']['datacenter'],
       context.config['meta']['programme'],
       context.config['meta']['env'],
-      context.config['object']['name'],
-      context.config['object']['version']),
+      context.config['deployment']['name'],
+      context.config['deployment']['owner']),
     '{}.tfplan'.format(to)
   ]
+
+def run_terraform(context, args):
+  env = {
+    'TF_VAR_datacenter': context.config['meta']['datacenter'],
+    'TF_VAR_programme': context.config['meta']['programme'],
+    'TF_VAR_env': context.config['meta']['env'],
+    'TF_VAR_deployment_name': context.config['deployment']['name'],
+    'TF_VAR_deployment_owner': context.config['deployment']['owner'],
+  }
+  context.run('terraform {}'.format(args), env=env)
 
 @invoke.task
 def clean(context):
@@ -59,12 +70,12 @@ def clean(context):
 def init(context):
   # options = ' '.join(['-var-file={}'.format(f) for f in var_files(context)])
   options = ''
-  context.run('terraform init {} {}'.format(options, iac_path(context)))
+  run_terraform(context, 'init {} {}'.format(options, iac_path(context)))
 
 @invoke.task(init)
 def validate(context):
   options = ' '.join(['-var-file={}'.format(f) for f in var_files(context)])
-  context.run('terraform validate {} {}'.format(options, iac_path(context)))
+  run_terraform(context, 'validate {} {}'.format(options, iac_path(context)))
 
 @invoke.task(validate)
 def plan(context, to='create'):
@@ -82,14 +93,14 @@ def plan(context, to='create'):
   if to == 'destroy':
     options.append('-destroy')
 
-  context.run('terraform plan {} {}'.format(' '.join(options), iac_path(context)))
+  run_terraform(context, 'plan {} {}'.format(' '.join(options), iac_path(context)))
 
 def apply_plan(context, to=None):
   tfplan = os.path.join(*tfplan_file(context, to))
   _state_out = '-state-out={}'.format(os.path.join(*tfstate_file(context)))
 
   if os.path.isfile(tfplan):
-    context.run('terraform apply {} {}'.format(_state_out, tfplan))
+    run_terraform(context, 'apply {} {}'.format(_state_out, tfplan))
   else:
     error = (
       '{} does not exist or is not a regular file. '

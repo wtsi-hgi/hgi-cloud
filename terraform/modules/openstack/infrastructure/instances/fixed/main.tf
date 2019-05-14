@@ -8,11 +8,11 @@ provider "template" {
 locals {
   metadata = {
     datacentre          = "uk-sanger-internal-openstack"
-    os_release          = "${var.os_release}"
+    datacenter          = "${var.datacenter}"
     programme           = "${var.programme}"
     env                 = "${var.env}"
     deployment_name     = "${var.deployment_name}"
-    deployment_version  = "${var.deployment_version}"
+    deployment_owner    = "${var.deployment_owner}"
     deployment_color    = "${var.deployment_color}"
     role_name           = "${var.role_name}"
     role_version        = "${var.role_version}"
@@ -26,7 +26,7 @@ data "openstack_images_image_v2" "base_image" {
 }
 
 resource "openstack_compute_servergroup_v2" "servergroup" {
-  name      = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-servergroup-${var.deployment_name}-${var.role_name}"
+  name      = "${var.datacenter}-${var.programme}-${var.env}-servergroup-${var.deployment_name}-${var.deployment_owner}-${var.role_name}"
   policies  = ["${var.affinity}"]
 }
 
@@ -35,11 +35,11 @@ module "user_data" {
   count         = "${var.count}"
   template_vars = {
     datacentre          = "${local.metadata["datacentre"]}"
-    os_release          = "${local.metadata["os_release"]}"
+    datacenter          = "${local.metadata["datacenter"]}"
     programme           = "${local.metadata["programme"]}"
     env                 = "${local.metadata["env"]}"
     deployment_name     = "${local.metadata["deployment_name"]}"
-    deployment_version  = "${local.metadata["deployment_version"]}"
+    deployment_owner    = "${local.metadata["deployment_owner"]}"
     deployment_color    = "${local.metadata["deployment_color"]}"
     role_name           = "${local.metadata["role_name"]}"
     role_version        = "${local.metadata["role_version"]}"
@@ -50,7 +50,7 @@ module "user_data" {
 
 module "network_port" {
   source          = "../extra/fixed_ip_port/"
-  os_release      = "${var.os_release}"
+  datacenter      = "${var.datacenter}"
   programme       = "${var.programme}"
   env             = "${var.env}"
   network_name    = "${var.network_name}"
@@ -63,7 +63,7 @@ module "network_port" {
 }
 
 resource "openstack_compute_instance_v2" "instance" {
-  name                = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-instance-${var.deployment_name}-${var.deployment_color}-${var.role_name}-${format("%02d", count.index + 1)}"
+  name                = "${var.datacenter}-${var.programme}-${var.env}-instance-${var.deployment_name}-${var.deployment_owner}-${var.role_name}-${format("%02d", count.index + 1)}"
   count               = "${var.count}"
   flavor_name         = "${var.flavor_name}"
   key_pair            = "${var.key_pair}"

@@ -1,10 +1,14 @@
-variable "os_release" {}
+variable "datacenter" {}
 
 variable "programme" {}
 
 variable "env" {
   type        = "string"
   description = "The name of environment"
+}
+
+variable "deployment_owner" {
+  default = ""
 }
 
 variable "network_name" {

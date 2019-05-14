@@ -5,7 +5,10 @@ variable "env" {
 
 variable "programme" {}
 
-variable "os_release" {
+variable "datacenter" {}
+
+variable "deployment_owner" {
+  default = ""
 }
 
 variable "network_name" {}

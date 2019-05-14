@@ -12,20 +12,20 @@ def packer_options(context):
                             password=os.environ['OS_PASSWORD'],
                             region_name=os.environ['OS_REGION_NAME'],
                             app_name='invoke')
-  network_template = 'uk-sanger-internal-openstack-{}-{}-{}-network-build'
-  network_name = network_template.format(context.config['meta']['release'],
+  network_template = '{}-{}-{}-network-mercury-main'
+  network_name = network_template.format(context.config['meta']['datacenter'],
                                          context.config['meta']['programme'],
                                          context.config['meta']['env'])
   network_id = cloud.network.find_network(network_name).id
-
-  options = '-var "network_id={}" -var "role_name={}" -var "role_version={}" -var-file=vars/{}-{}-{}.json'
-
-  return options.format(network_id,
-                        context.config['object']['name'],
-                        context.config['object']['version'],
-                        context.config['meta']['release'],
-                        context.config['meta']['programme'],
-                        context.config['meta']['env'])
+  var_file = 'vars/{}-{}-{}.json'.format(context.config['meta']['datacenter'],
+                                         context.config['meta']['programme'],
+                                         context.config['meta']['env'])
+  return ' '.join([
+    '-var "network_id={}"'.format(network_id),
+    '-var "role_name={}"'.format(context.config['role']['name']),
+    '-var "role_version={}"'.format(context.config['role']['version']),
+    '-var-file={}'.format(var_file)
+  ])
 
 @invoke.task()
 def validate(context):

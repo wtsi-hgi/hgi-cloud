@@ -4,10 +4,14 @@ run:
 
 meta:
   env: default
-  release: default
+  datacenter: default
   programme: default
+  provider: default
 
-object:
-  type: default
+role:
   name: default
   version: 0.0.0
+
+deployment:
+  name: default
+  owner: default

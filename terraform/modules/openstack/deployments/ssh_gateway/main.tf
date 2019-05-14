@@ -8,7 +8,7 @@ provider "template" {
 locals {
   deployment_version = "0.0.0"
   dependency = {
-    ssh_gateway_image_name = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-base-0.0.0"
+    ssh_gateway_image_name = "${var.datacenter}-${var.programme}-${var.env}-image-base-0.0.0"
     ssh_gateway_role_version = "0.0.0"
   }
 }
@@ -17,19 +17,19 @@ module "ssh_gateway" {
   source              = "../../infrastructure/instances/simple/"
   env                 = "${var.env}"
   programme           = "${var.programme}"
-  os_release          = "${var.os_release}"
+  datacenter          = "${var.datacenter}"
   deployment_name     = "${var.deployment_name}"
   deployment_color    = "${var.deployment_color}"
-  deployment_version  = "${local.deployment_version}"
+  deployment_owner    = "${local.deployment_owner}"
   role_name           = "ssh-gateway"
   role_version        = "${local.dependency["ssh_gateway_role_version"]}"
   image_name          = "${local.dependency["ssh_gateway_image_name"]}"
   key_pair            = "${var.key_pair}"
   security_groups     = [
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ping",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ssh",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-tcp-local",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-udp-local"
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-ping",
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-ssh",
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-tcp-local",
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-udp-local"
   ]
   count               = "${var.count}"
   flavor_name         = "${var.flavor_name}"

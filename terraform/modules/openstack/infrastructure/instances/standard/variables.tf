@@ -1,8 +1,8 @@
-variable "os_release" {}
+variable "datacenter" {}
 variable "programme" {}
 variable "env" {}
 variable "deployment_name" {}
-variable "deployment_version" {}
+variable "deployment_owner" {}
 variable "deployment_color" {
   default = "blue"
 }

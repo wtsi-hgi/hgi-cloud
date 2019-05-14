@@ -5,16 +5,13 @@ variable "env" {
 
 variable "programme" {}
 
-variable "os_release" {}
+variable "datacenter" {}
+
+variable "deployment_owner" {}
 
 variable "external_network_name" {}
 variable "main_subnet_cidr" {}
-variable "workstations_subnet_cidr" {}
-variable "build_subnet_cidr" {}
 variable "management_subnet_cidr" {}
-variable "consensus_subnet_cidr" {}
-variable "pet_subnet_cidr" {}
-variable "pet_clusters" {}
 variable "external_dns_nameservers" {
   type = "list"
 }

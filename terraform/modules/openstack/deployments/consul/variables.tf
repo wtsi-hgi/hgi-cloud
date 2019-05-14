@@ -1,6 +1,6 @@
 variable "env" {}
 variable "programme" {}
-variable "os_release" {}
+variable "datacenter" {}
 variable "networks" {
   type = "list"
 }

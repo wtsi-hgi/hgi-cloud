@@ -18,7 +18,7 @@ variable "programme" {
   type        = "string"
   default     = "hgi"
 }
-variable "os_release" {
+variable "datacenter" {
   description = "The name of the Openstack's release"
   type        = "string"
   default     = "eta"

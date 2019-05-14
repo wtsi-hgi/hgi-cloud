@@ -1,6 +1,6 @@
 {
   "variables": {
-    "os_release": "",
+    "datacenter": "",
     "programme": "",
     "env": "",
     "source_image_name": "",
@@ -13,7 +13,7 @@
       "type": "openstack",
       "user_data_file": "scripts/user_data.sh",
       "ssh_username": "ubuntu",
-      "ssh_keypair_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-keypair-mercury",
+      "ssh_keypair_name": "{{user `datacenter`}}-{{user `programme`}}-{{user `env`}}-keypair-mercury",
       "ssh_private_key_file": "~/.ssh/id_rsa",
       "source_image_filter": {
         "filters": {
@@ -23,18 +23,19 @@
         },
         "most_recent": true
       },
+      "image_name": "{{user `datacenter`}}-{{user `programme`}}-image-{{user `role_name`}}-{{user `role_version`}}",
+      "image_visibility": "community",
+      "instance_name": "{{user `datacenter`}}-{{user `programme`}}-{{user `env`}}-instance-packer-{{user `role_name`}}-{{user `role_version`}}",
+      "volume_name": "{{user `datacenter`}}-{{user `programme`}}-{{user `env`}}-volume-packer-{{user `role_name`}}-{{user `role_version`}}",
+      "volume_size": 32,
+      "use_blockstorage_volume": true,
+      "flavor": "o2.medium",
       "networks": ["{{user `network_id`}}"],
-      "image_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-image-{{user `role_name`}}-{{user `role_version`}}",
-      "instance_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-instance-packer-{{user `role_name`}}-{{user `role_version`}}",
       "floating_ip_network": "public",
       "security_groups": [
-        "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-secgroup-base",
-        "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-secgroup-ssh"
-      ],
-      "use_blockstorage_volume": true,
-      "volume_name": "uk-sanger-internal-openstack-{{user `os_release`}}-{{user `programme`}}-{{user `env`}}-volume-packer-{{user `role_name`}}-{{user `role_version`}}",
-      "volume_size": 32,
-      "flavor": "o2.medium"
+        "{{user `datacenter`}}-{{user `programme`}}-{{user `env`}}-secgroup-base",
+        "{{user `datacenter`}}-{{user `programme`}}-{{user `env`}}-secgroup-ssh"
+      ]
     }
   ],
   "provisioners" : [
@@ -49,9 +50,9 @@
       "playbook_file": "../ansible/image.yml",
       "extra_arguments": [
         "--extra-vars \"role_name={{user `role_name`}} role_version={{user `role_version`}}\"",
-        "--extra-vars @vars/{{user `os_release`}}.yml",
-        "--extra-vars @vars/{{user `os_release`}}/{{user `programme`}}.yml",
-        "--extra-vars @vars/{{user `os_release`}}/{{user `programme`}}/{{user `env`}}.yml"
+        "--extra-vars @vars/{{user `datacenter`}}.yml",
+        "--extra-vars @vars/{{user `datacenter`}}/{{user `programme`}}.yml",
+        "--extra-vars @vars/{{user `datacenter`}}/{{user `programme`}}/{{user `env`}}.yml"
       ],
       "role_paths": [ "../ansible/roles" ]
     },

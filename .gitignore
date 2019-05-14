@@ -8,5 +8,5 @@ terraform/deployments/
 *manifest.json
 .yamllint
 __pycache__/
-.invokerc
+*.rc
 vault_password.txt

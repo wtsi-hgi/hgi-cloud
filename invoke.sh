@@ -4,13 +4,6 @@
 
 set -e
 
-test -f .invokerc && source .invokerc
-
-# These variables will describe the exact cloud / project in which to operate
-export INVOKE_META_RELEASE="${META_RELEASE:-eta}"
-export INVOKE_META_PROGRAMME="${META_PROGRAMME:-hgi}"
-export INVOKE_META_ENV="${META_ENV:-dev}"
-
 die() {
   echo -e "$2" >&2
   exit $1
@@ -21,15 +14,17 @@ COLLECTION[image]="packer"
 COLLECTION[role]="molecule"
 COLLECTION[deployment]="terraform"
 
-OPENRC="${PWD}/${META_ENV}-openrc.sh"
+TYPE="${1}"
+shift
 
-case "${1}" in
+case "${TYPE}" in
   --help)
     cat <<HELP
 SYNOPSIS
 
   ${0} --help
-  ${0} [image|role|deployment] NAME/VERSION [invoke_options] [ [task_name] [task_options] ... ]
+  ${0} image|role NAME/VERSION [invoke_options] [ [task_name] [task_options] ... ]
+  ${0} deployment NAME/OWNER [invoke_options] [ [task_name] [task_options] ... ]
 
 DESCRIPTION
   Runs automation tasks on a specific types of objects within the
@@ -46,27 +41,20 @@ EXAMPLES
 HELP
     exit 0
   ;;
-  image|role|deployment)
-    TYPE="${1}"
-    IFS="/" read INVOKE_OBJECT_NAME INVOKE_OBJECT_VERSION <<<"${2}"
-    export INVOKE_OBJECT_NAME INVOKE_OBJECT_VERSION
+  image|role)
+    IFS="/" read INVOKE_ROLE_NAME INVOKE_ROLE_VERSION <<<"${1}"
+    export INVOKE_ROLE_NAME INVOKE_ROLE_VERSION
+  ;;
+  deployment)
+    IFS="/" read INVOKE_DEPLOYMENT_NAME INVOKE_DEPLOYMENT_OWNER <<<"${1}"
+    export INVOKE_DEPLOYMENT_NAME INVOKE_DEPLOYMENT_OWNER
   ;;
   *)
-    die 1 "Sorry, cannot automate \`${1}'"
+    die 1 "Sorry, cannot automate \`${TYPE}'"
   ;;
 esac
 
-shift 2
-
-# Reads openrc.sh
-# It is boring to input your Openstack password over and over...
-if [ -f "${OPENRC}" ] ; then
-  . "${OPENRC}"
-else
-  die 1 "Cannot find ${OPENRC}\n\tPlease, download an \`Openstack RC File' from the \`API Access' web interface, write one or manually export the shell environment variables"
-fi
-
-echo
+shift
 
 # Creates python3's virtualenv
 if [ ! -d "${PWD}/py3" ] ; then
@@ -95,14 +83,18 @@ fi
 # Install all python modules
 pip install --requirement requirements.txt
 
-echo
+# User needs to source the right openrc.sh file.
+if [ -z "${OS_PROJECT_NAME}" ] ; then
+  die 1 "OS_PROJECT_NAME is empty: you need to source the right openrc.sh file"
+fi
 
-# FIXME: find a way to move these variables into the terraform tasks
-export TF_VAR_os_release="${INVOKE_META_RELEASE}"
-export TF_VAR_programme="${INVOKE_META_PROGRAMME}"
-export TF_VAR_env="${INVOKE_META_ENV}"
-export TF_VAR_deployment_name="${INVOKE_OBJECT_NAME}"
-export TF_VAR_deployment_version="${INVOKE_OBJECT_VERSION}"
+source "${OS_PROJECT_NAME}.rc"
+
+# These variables will describe the exact cloud / project in which to operate, in invoke
+export INVOKE_META_PROGRAMME="${META_PROGRAMME:-hgi}"
+export INVOKE_META_ENV="${META_ENV:-dev}"
+export INVOKE_META_PROVIDER="${META_PROVIDER:-openstack}"
+export INVOKE_META_DATACENTER="${META_DATACENTER:-eta}"
 
 # Runs the actual invoke command
 invoke --collection "tasks/${COLLECTION[${TYPE}]}" "${@}"

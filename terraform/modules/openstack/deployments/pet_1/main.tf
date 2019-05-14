@@ -9,9 +9,9 @@ provider "template" {
 locals {
   deployment_version = "0.0.1"
   dependency = {
-    pet_master_image_name = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.7"
+    pet_master_image_name = "${var.datacenter}-${var.programme}-image-hail-base-0.0.7"
     pet_master_role_version = "HEAD"
-    pet_slave_image_name =  "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.7"
+    pet_slave_image_name =  "${var.datacenter}-${var.programme}-image-hail-base-0.0.7"
     pet_slave_role_version = "HEAD"
   }
 }
@@ -19,29 +19,29 @@ locals {
 # Actual locals/defaults: you can't create default input values that are made
 # of other default input values.
 locals {
-  key_pair = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-keypair-mercury"
-  pet_slaves_network = "pet"
-  pet_masters_network = "pet"
-  pet_slaves_subnet = "pet"
-  pet_masters_subnet = "pet"
+  key_pair = "${var.datacenter}-${var.programme}-${var.env}-keypair-mercury"
+  pet_slaves_network = "main"
+  pet_masters_network = "main"
+  pet_slaves_subnet = "main"
+  pet_masters_subnet = "main"
 }
 
 module "pet_masters" {
   source              = "../../infrastructure/instances/standard/"
-  os_release          = "${var.os_release}"
+  datacenter          = "${var.datacenter}"
   programme           = "${var.programme}"
   env                 = "${var.env}"
   deployment_name     = "${var.deployment_name}"
   deployment_color    = "${var.deployment_color}"
-  deployment_version  = "${local.deployment_version}"
+  deployment_owner    = "${var.deployment_owner}"
   role_name           = "spark-master"
   role_version        = "${local.dependency["pet_master_role_version"]}"
   image_name          = "${local.dependency["pet_master_image_name"]}"
   key_pair            = "${ var.key_pair != "" ? var.key_pair : local.key_pair }"
   security_groups     = [
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-base",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ssh",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-spark-master"
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-base",
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-ssh",
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-spark-master"
   ]
   count               = 1
   flavor_name         = "${var.pet_masters_flavor_name}"
@@ -52,21 +52,21 @@ module "pet_masters" {
 
 module "pet_slaves" {
   source              = "../../infrastructure/instances/standard/"
-  os_release          = "${var.os_release}"
+  datacenter          = "${var.datacenter}"
   programme           = "${var.programme}"
   env                 = "${var.env}"
   deployment_name     = "${var.deployment_name}"
   deployment_color    = "${var.deployment_color}"
-  deployment_version  = "${local.deployment_version}"
+  deployment_owner    = "${var.deployment_owner}"
   role_name           = "spark-slave"
   role_version        = "${local.dependency["pet_slave_role_version"]}"
   image_name          = "${local.dependency["pet_slave_image_name"]}"
   extra_user_data     = "${map("pet_master_address", module.pet_masters.access_ip_v4s[0])}"
   key_pair            = "${ var.key_pair != "" ? var.key_pair : local.key_pair }"
   security_groups     = [
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-base",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ssh",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-spark-slave"
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-base",
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-ssh",
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-spark-slave"
   ]
   count               = "${var.pet_slaves_count}"
   flavor_name         = "${var.pet_slaves_flavor_name}"

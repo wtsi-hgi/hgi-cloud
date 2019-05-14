@@ -9,9 +9,9 @@ provider "template" {
 locals {
   deployment_version = "0.0.1"
   dependency = {
-    spark_master_image_name = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.2"
+    spark_master_image_name = "${var.datacenter}-${var.programme}-${var.env}-image-hail-base-0.0.2"
     spark_master_role_version = "HEAD"
-    spark_slave_image_name =  "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-image-hail-base-0.0.2"
+    spark_slave_image_name =  "${var.datacenter}-${var.programme}-${var.env}-image-hail-base-0.0.2"
     spark_slave_role_version = "HEAD"
   }
 }
@@ -19,29 +19,29 @@ locals {
 # Actual locals/defaults: you can't create default input values that are made
 # of other default input values.
 locals {
-  key_pair = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-keypair-mercury"
-  spark_slaves_network = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-network-main"
-  spark_masters_network = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-network-main"
+  key_pair = "${var.datacenter}-${var.programme}-${var.env}-keypair-mercury"
+  spark_slaves_network = "${var.datacenter}-${var.programme}-${var.env}-network-main"
+  spark_masters_network = "${var.datacenter}-${var.programme}-${var.env}-network-main"
 }
 
 module "spark_masters" {
   source              = "../../infrastructure/instances/simple/"
-  os_release          = "${var.os_release}"
+  datacenter          = "${var.datacenter}"
   programme           = "${var.programme}"
   env                 = "${var.env}"
   deployment_name     = "${var.deployment_name}"
   deployment_color    = "${var.deployment_color}"
-  deployment_version  = "${local.deployment_version}"
+  deployment_owner    = "${var.deployment_owner}"
   role_name           = "spark-master"
   role_version        = "${local.dependency["spark_master_role_version"]}"
   image_name          = "${local.dependency["spark_master_image_name"]}"
   key_pair            = "${ var.key_pair != "" ? var.key_pair : local.key_pair }"
   security_groups     = [
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ping",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ssh",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-spark-master",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-tcp-local",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-udp-local"
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-ping",
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-ssh",
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-spark-master",
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-tcp-local",
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-udp-local"
   ]
   count               = "${var.spark_masters_count}"
   flavor_name         = "${var.spark_masters_flavor_name}"
@@ -51,22 +51,22 @@ module "spark_masters" {
 
 module "spark_slaves" {
   source              = "../../infrastructure/instances/simple/"
-  os_release          = "${var.os_release}"
+  datacenter          = "${var.datacenter}"
   programme           = "${var.programme}"
   env                 = "${var.env}"
   deployment_name     = "${var.deployment_name}"
   deployment_color    = "${var.deployment_color}"
-  deployment_version  = "${local.deployment_version}"
+  deployment_owner    = "${var.deployment_owner}"
   role_name           = "spark-slave"
   role_version        = "${local.dependency["spark_slave_role_version"]}"
   image_name          = "${local.dependency["spark_slave_image_name"]}"
   key_pair            = "${ var.key_pair != "" ? var.key_pair : local.key_pair }"
   security_groups     = [
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ping",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ssh",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-spark-slave",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-tcp-local",
-    "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-udp-local"
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-ping",
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-ssh",
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-spark-slave",
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-tcp-local",
+    "${var.datacenter}-${var.programme}-${var.env}-secgroup-udp-local"
   ]
   count               = "${var.spark_slaves_count}"
   flavor_name         = "${var.spark_slaves_flavor_name}"

@@ -6,7 +6,7 @@ provider "template" {
 }
 
 resource "openstack_networking_secgroup_v2" "ssh" {
-  name                  = "uk-sanger-internal-openstack-${var.os_release}-${var.programme}-${var.env}-secgroup-ssh"
+  name                  = "${var.datacenter}-${var.programme}-${var.env}-secgroup-ssh"
   description           = "SSH Access"
   delete_default_rules  = true
 }

@@ -12,7 +12,7 @@ locals {
 
 module "consensus_network" {
   source          = "../../infrastructure/networks/isolated/"
-  os_release      = "${var.os_release}"
+  datacenter      = "${var.datacenter}"
   programme       = "${var.programme}"
   env             = "${var.env}"
   network_name    = "consul-consensus"
@@ -22,7 +22,7 @@ module "consensus_network" {
 
 module "consul_cluster" {
   source          = "../../infrastructure/instances/simple/"
-  os_release      = "${var.os_release}"
+  datacenter      = "${var.datacenter}"
   programme       = "${var.programme}"
   env             = "${var.env}"
   role            = "consul"

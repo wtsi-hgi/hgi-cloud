@@ -1,4 +1,4 @@
-variable "os_release" {}
+variable "datacenter" {}
 variable "programme" {}
 variable "env" {}
 variable "network_name" {}
