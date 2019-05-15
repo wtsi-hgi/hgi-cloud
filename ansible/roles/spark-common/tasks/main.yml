@@ -1,6 +1,6 @@
 ---
 - name: Ensure spark-master address is set in /etc/hosts
-  when: extra_user_data["spark_master_private_address"] is defined and extra_user_data["spark_master_private_address"] != ''
+  # when: extra_user_data["spark_master_private_address"] is defined and extra_user_data["spark_master_private_address"] != ''
   lineinfile:
     path: /etc/hosts
     line: "{{ extra_user_data['spark_master_private_address'] | default('127.0.0.1', true) }} spark-master"
