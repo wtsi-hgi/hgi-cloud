@@ -50,6 +50,17 @@ resource "openstack_networking_secgroup_rule_v2" "spark-master-jupiter-in" {
   security_group_id = "${openstack_networking_secgroup_v2.spark-master.id}"
 }
 
+resource "openstack_networking_secgroup_rule_v2" "spark-master-http-in" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  description       = "Allows inbound connections to the http server"
+  protocol          = "tcp"
+  port_range_min    = 80
+  port_range_max    = 80
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = "${openstack_networking_secgroup_v2.spark-master.id}"
+}
+
 resource "openstack_networking_secgroup_rule_v2" "spark-master-slaves-in" {
   direction         = "ingress"
   ethertype         = "IPv4"

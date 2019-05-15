@@ -1,4 +1,22 @@
 ---
+- name: Install nginx
+  become: yes
+  apt:
+    name: 
+      - nginx
+    state: present
+    update_cache: yes
+
+- name: Configure nginx
+  become: yes
+  template:
+    src: "hail.conf.j2"
+    dest: /etc/nginx/conf.d/hail.conf
+    mode: 0700
+    owner: www-data
+  notify:
+   - Restart nginx
+
 - name: Enable and start spark-master service
   become: yes
   service:
