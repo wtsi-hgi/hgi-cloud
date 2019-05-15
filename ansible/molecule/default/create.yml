@@ -41,7 +41,7 @@
         security_groups:
           - "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-base"
           - "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-ssh"
-        network: "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-network-build"
+        network: "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-network-mercury-main"
         meta: "{{ metadata | combine({ 'molecule_platform': item.name, 'molecule_scenario': molecule_yml.scenario['name'], 'role_name': item.role }) }}"
         boot_from_volume: yes
         terminate_volume: yes

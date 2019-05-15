@@ -7,7 +7,7 @@ lint:
   name: yamllint
 platforms:
   - name: default
-    image: uk-sanger-internal-openstack-eta-hgi-dev-image-hail-base-0.0.1
+    image: eta-hgi-image-hail-base-0.0.7
     flavor: o2.medium
     role: register
 provisioner:

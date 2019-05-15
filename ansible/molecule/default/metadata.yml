@@ -1,7 +1,7 @@
 ---
-datacentre: uk-sanger-internal-openstack-eta
+datacentre: eta
 programme: hgi
-env: dev
+env: ci
 deployment_name: molecule
 deployment_color: white
 count: '00'
