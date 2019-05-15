@@ -2,7 +2,7 @@
 # - name: Wait for master NFS Server to come up
 #   wait_for:
 #     state: started
-#     host: pet-master
+#     host: spark-master
 #     port: 111
 #     delay: 10
 #     sleep: 5
@@ -11,7 +11,7 @@
 #   mount:
 #     path: "{{ spark_temp_dir }}"
 #     state: mounted
-#     src: "pet-master:{{ spark_home }}/local"
+#     src: "spark-master:{{ spark_home }}/local"
 #     boot: no
 #     fstype: nfs4
 

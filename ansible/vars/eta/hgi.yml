@@ -91,7 +91,7 @@ spark_extra_classpath:
 
 spark_defaults_extras:
   # SparkContext Configuration
-  spark.master: "spark://pet-master:{{ spark_master_port }}"
+  spark.master: "spark://spark-master:{{ spark_master_port }}"
   spark.sql.files.maxPartitionBytes: "42949672960"
   spark.sql.files.openCostInBytes: "42949672960"
 

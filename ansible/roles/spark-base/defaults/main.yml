@@ -24,7 +24,7 @@ spark_local_mode: "ug+rw,o+r,+t"
 spark_local_dirs: []
 
 spark_master_port: 7077
-spark_master_host: pet-master
+spark_master_host: spark-master
 
 spark_env_extras: {}
 spark_executor_extra_classpath:
@@ -43,7 +43,7 @@ spark_driver_extra_classpath:
 
 spark_defaults_extras:
   # SparkContext Configuration
-  spark.master: "spark://pet-master:{{ spark_master_port }}"
+  spark.master: "spark://spark-master:{{ spark_master_port }}"
   spark.sql.files.maxPartitionBytes: "102400"
   spark.sql.files.openCostInBytes: "102400"
 
