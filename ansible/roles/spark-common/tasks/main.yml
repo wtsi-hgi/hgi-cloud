@@ -3,7 +3,7 @@
   when: extra_user_data["spark_master_private_address"] is defined and extra_user_data["spark_master_private_address"] != ''
   lineinfile:
     path: /etc/hosts
-    line: "{{ extra_user_data['spark_master_private_address'] }} spark-master"
+    line: "{{ extra_user_data['spark_master_private_address'] | default('127.0.0.1', true) }} spark-master"
 
 - name: Configure Spark environment
   template:
