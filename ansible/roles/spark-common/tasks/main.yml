@@ -38,3 +38,27 @@
   loop: "{{ spark_sysctl_params }}"
   loop_control:
     loop_var: param
+
+- name: Install Spark services
+  template:
+    src: "spark.service.j2"
+    dest: "/etc/systemd/system/spark-{{ service }}.service"
+    owner: root
+  become: yes
+  loop:
+    - master
+    - slave
+  loop_control:
+    loop_var: service
+
+- name: Ensure Spark services are disabled at this stage
+  service:
+    name: "spark-{{ service }}"
+    enabled: no
+    state: stopped
+  become: yes
+  loop:
+    - master
+    - slave
+  loop_control:
+    loop_var: service
