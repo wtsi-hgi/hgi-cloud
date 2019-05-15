@@ -9,9 +9,9 @@
     - ../../../../vars/eta/hgi/dev.yml
     - ../../../../molecule/default/metadata.yml
   tasks:
-    - name: Set spark_master_address fact
+    - name: Set spark_master_private_address fact
       set_fact:
-        spark_master_address: "127.0.0.1"
+        spark_master_private_address: "127.0.0.1"
 
     - name: Run platform's role
       include_role:
