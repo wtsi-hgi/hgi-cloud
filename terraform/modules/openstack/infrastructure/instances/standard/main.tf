@@ -7,7 +7,6 @@ provider "template" {
 
 locals {
   metadata = {
-    datacentre          = "uk-sanger-internal-openstack"
     datacenter          = "${var.datacenter}"
     programme           = "${var.programme}"
     env                 = "${var.env}"

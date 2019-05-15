@@ -17,7 +17,7 @@ git checkout ${role_version}
 # Create the extra vars for the playbook
 cat > vars/metadata.yml <<VARS
 ---
-datacentre: "${datacentre}"
+datacenter: "${datacenter}"
 programme: "${programme}"
 env: "${env}"
 deployment_name: "${deployment_name}"

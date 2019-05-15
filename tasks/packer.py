@@ -5,13 +5,15 @@ import sys
 import invoke
 import openstack
 
+cloud = openstack.connect(auth_url=os.environ['OS_AUTH_URL'],
+                          project_name=os.environ['OS_PROJECT_NAME'],
+                          username=os.environ['OS_USERNAME'],
+                          password=os.environ['OS_PASSWORD'],
+                          region_name=os.environ['OS_REGION_NAME'],
+                          app_name='invoke')
+
+
 def packer_options(context):
-  cloud = openstack.connect(auth_url=os.environ['OS_AUTH_URL'],
-                            project_name=os.environ['OS_PROJECT_NAME'],
-                            username=os.environ['OS_USERNAME'],
-                            password=os.environ['OS_PASSWORD'],
-                            region_name=os.environ['OS_REGION_NAME'],
-                            app_name='invoke')
   network_template = '{}-{}-{}-network-mercury-main'
   network_name = network_template.format(context.config['meta']['datacenter'],
                                          context.config['meta']['programme'],
@@ -27,6 +29,15 @@ def packer_options(context):
     '-var-file={}'.format(var_file)
   ])
 
+def get_image(context):
+  image_name = '-'.join([context.config['meta']['datacenter'],
+                         context.config['meta']['programme'],
+                         'image',
+                         context.config['role']['name'],
+                         context.config['role']['version']])
+  return cloud.image.find_image(image_name)
+
+
 @invoke.task()
 def validate(context):
   with context.cd('packer'):
@@ -34,10 +45,26 @@ def validate(context):
 
 @invoke.task(validate, optional=['force', 'on_error', 'debug'])
 def build(context, on_error='cleanup', force=False, debug=False):
-  options = '{} -on-error={}'.format(packer_options(context), on_error)
-  if force:
-    options += ' -force'
-  if debug:
-    options += ' -debug'
-  with context.cd('packer'):
-    context.run('packer build {} image.json'.format(options))
+  image = get_image(context)
+  if not image:
+    options = '{} -on-error={}'.format(packer_options(context), on_error)
+    if force:
+      options += ' -force'
+    if debug:
+      options += ' -debug'
+    with context.cd('packer'):
+      context.run('packer build {} image.json'.format(options))
+  else:
+    print("Skipping {}: image is already available".format(image.name))
+
+@invoke.task()
+def share(context):
+  pass
+
+@invoke.task()
+def accpet(context):
+  pass
+
+@invoke.task()
+def clean(context):
+  pass

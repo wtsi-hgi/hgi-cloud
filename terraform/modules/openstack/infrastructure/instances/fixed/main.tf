@@ -7,16 +7,14 @@ provider "template" {
 
 locals {
   metadata = {
-    datacentre          = "uk-sanger-internal-openstack"
-    datacenter          = "${var.datacenter}"
-    programme           = "${var.programme}"
-    env                 = "${var.env}"
-    deployment_name     = "${var.deployment_name}"
-    deployment_owner    = "${var.deployment_owner}"
-    deployment_color    = "${var.deployment_color}"
-    role_name           = "${var.role_name}"
-    role_version        = "${var.role_version}"
-    pet_master_address  = "${var.pet_master_address}"
+    datacenter            = "${var.datacenter}"
+    programme             = "${var.programme}"
+    env                   = "${var.env}"
+    deployment_name       = "${var.deployment_name}"
+    deployment_owner      = "${var.deployment_owner}"
+    deployment_color      = "${var.deployment_color}"
+    role_name             = "${var.role_name}"
+    role_version          = "${var.role_version}"
   }
 }
 
@@ -34,17 +32,15 @@ module "user_data" {
   source        = "../extra/user_data/"
   count         = "${var.count}"
   template_vars = {
-    datacentre          = "${local.metadata["datacentre"]}"
-    datacenter          = "${local.metadata["datacenter"]}"
-    programme           = "${local.metadata["programme"]}"
-    env                 = "${local.metadata["env"]}"
-    deployment_name     = "${local.metadata["deployment_name"]}"
-    deployment_owner    = "${local.metadata["deployment_owner"]}"
-    deployment_color    = "${local.metadata["deployment_color"]}"
-    role_name           = "${local.metadata["role_name"]}"
-    role_version        = "${local.metadata["role_version"]}"
-    pet_master_address  = "${local.metadata["pet_master_address"]}"
-    vault_password      = "${var.vault_password}"
+    datacenter            = "${local.metadata["datacenter"]}"
+    programme             = "${local.metadata["programme"]}"
+    env                   = "${local.metadata["env"]}"
+    deployment_name       = "${local.metadata["deployment_name"]}"
+    deployment_owner      = "${local.metadata["deployment_owner"]}"
+    deployment_color      = "${local.metadata["deployment_color"]}"
+    role_name             = "${local.metadata["role_name"]}"
+    role_version          = "${local.metadata["role_version"]}"
+    vault_password        = "${var.vault_password}"
   }
 }
 

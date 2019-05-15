@@ -10,6 +10,12 @@ variable "deployment_color" {
   default     = "blue"
 }
 
+variable "deployment_owner" {
+  description = "The owner of the deployment"
+  type        = "string"
+  default     = "mercury"
+}
+
 variable "env" {
   description = "The name of the environment for this deployment"
   type        = "string"
@@ -28,61 +34,45 @@ variable "datacenter" {
   default     = "eta"
 }
 
-variable "pet_subnet_cidr" {
+variable "spark_master_external_address" {
   description = "The number of Spark masters to deploy"
   type        = "string"
 }
 
-variable "pet_master_external_address" {
-  description = "The number of Spark masters to deploy"
-  type        = "string"
-}
-
-variable "pet_master_address" {
-  description = "The number of Spark masters to deploy"
-  type        = "string"
-}
-
-variable "pet_masters_count" {
+variable "spark_masters_count" {
   description = "The number of Spark masters to deploy"
   type        = "string"
   default     = "1"
 }
 
-variable "pet_slaves_count" {
+variable "spark_slaves_count" {
   description = "The number of Spark slaves to deploy"
   type        = "string"
   default     = 1
 }
 
-variable "pet_masters_flavor_name" {
+variable "spark_masters_flavor_name" {
   description = "The name of the flavour the Spark masters instances"
   type        = "string"
   default     = "o2.small"
 }
 
-variable "pet_slaves_flavor_name" {
+variable "spark_slaves_flavor_name" {
   description = "The name of the flavour the Spark slaves instances"
   type        = "string"
   default     = "o2.small"
 }
 
-variable "pet_masters_affinity" {
+variable "spark_masters_affinity" {
   description = "The type of affinity of the Spark masters instances"
   type        = "string"
   default     = "soft-anti-affinity"
 }
 
-variable "pet_slaves_affinity" {
+variable "spark_slaves_affinity" {
   description = "The type of affinity of the Spark slaves instances"
   type        = "string"
   default     = "soft-anti-affinity"
-}
-
-variable "key_pair" {
-  description = "The name of the default SSH key pair"
-  type        = "string"
-  default     = ""
 }
 
 variable "vault_password" {}

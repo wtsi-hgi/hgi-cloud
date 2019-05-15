@@ -43,6 +43,6 @@ variable "vault_password" {}
 variable "volume_size" {
   default = 64
 }
-variable "pet_master_address" {
+variable "spark_master_private_address" {
   default = ""
 }
