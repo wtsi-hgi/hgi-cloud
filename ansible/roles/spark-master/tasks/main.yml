@@ -10,7 +10,7 @@
 - name: Configure nginx
   become: yes
   template:
-    src: "hail.conf.j2"
+    src: "nginx.conf.j2"
     dest: /etc/nginx/conf.d/hail.conf
     mode: 0700
     owner: www-data
