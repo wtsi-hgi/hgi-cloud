@@ -1,0 +1,35 @@
+---
+- name: Creates Hail's Jupyter Notebook directories
+  file:
+    path: "{{ jupyter_dir }}"
+    state: directory
+    owner: "{{ jupyter_install_owner }}"
+    group: "{{ jupyter_install_group }}"
+  loop:
+    - "{{ jupyter_install_dir }}/jupyter"
+    - "{{ jupyter_install_dir }}/jupyter/conf"
+    - "{{ jupyter_install_dir }}/jupyter/data"
+  loop_control:
+    loop_var: jupyter_dir
+
+- name: Install Hail's Jupyter Notebook service
+  become: yes
+  template:
+    src: jupyter-notebook.service.j2
+    dest: /etc/systemd/system/jupyter-notebook.service
+
+- name: Install Hail's Jupyter Notebook configuration file
+  become: yes
+  template:
+    src: jupyter-conf-service.py.j2
+    dest: "{{ jupyter_install_dir }}/jupyter/conf/service.py"
+    owner: "{{ jupyter_install_owner }}"
+    group: "{{ jupyter_install_group }}"
+    mode: 0600
+
+- name: Enable and start Hail's Jupyter Notebook service
+  become: yes
+  service:
+    name: jupyter-notebook
+    enabled: yes
+    state: started

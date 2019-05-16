@@ -9,12 +9,12 @@ platforms:
   - name: default
     image: eta-hgi-image-hail-base-0.0.7
     flavor: o2.medium
-    role: spark-master
+    role: workstation
 provisioner:
   name: ansible
   options:
     vault-id: ../../../../vault_password.txt
-    extra-vars: "../../../../molecule/default/metadata.yml,@../../../../vars/eta-hgi-dev.yml"
+    extra-vars: "@../../../../molecule/default/metadata.yml,@../../../../vars/eta-hgi-dev.yml"
   lint:
     name: ansible-lint
   playbooks:

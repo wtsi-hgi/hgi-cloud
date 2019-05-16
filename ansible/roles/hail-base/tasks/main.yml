@@ -61,31 +61,3 @@
     executable: "{{ anaconda_install_dir }}/anaconda3/bin/pip"
   become: yes
   become_user: "{{ hail_install_owner }}"
-
-- name: Creates Hail's Jupiter Notebook directories
-  file:
-    path: "{{ jupiter_dir }}"
-    state: directory
-    owner: "{{ hail_install_owner }}"
-    group: "{{ hail_install_group }}"
-  loop:
-    - "{{ hail_install_dir }}/jupiter"
-    - "{{ hail_install_dir }}/jupiter/conf"
-    - "{{ hail_install_dir }}/jupiter/data"
-  loop_control:
-    loop_var: jupiter_dir
-
-- name: Install Hail's Jupiter Notebook service
-  become: yes
-  template:
-    src: jupiter-notebook.service.j2
-    dest: /etc/systemd/system/jupiter-notebook.service
-
-- name: Install Hail's Jupiter Notebook configuration file
-  become: yes
-  template:
-    src: jupiter-notebook-config.py.j2
-    dest: "{{ hail_install_dir }}/jupiter/conf/service.py"
-    owner: "{{ hail_install_owner }}"
-    group: "{{ hail_install_group }}"
-    mode: 0600

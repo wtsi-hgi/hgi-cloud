@@ -8,4 +8,3 @@ hail_install_group: "{{ base_install_group }}"
 hail_install_mode: "ug+rw,o+r"
 
 hail_home: "{{ hail_install_dir }}/hail/hail"
-hail_jupyter_token: ""

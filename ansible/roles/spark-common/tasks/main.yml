@@ -50,15 +50,3 @@
     - slave
   loop_control:
     loop_var: service
-
-- name: Ensure Spark services are disabled at this stage
-  service:
-    name: "spark-{{ service }}"
-    enabled: no
-    state: stopped
-  become: yes
-  loop:
-    - master
-    - slave
-  loop_control:
-    loop_var: service

@@ -1,4 +1,0 @@
----
-register_install_dir: "{{ base_install_dir }}/bin"
-register_install_owner: "{{ base_install_owner }}/bin"
-register_install_group: "{{ base_install_group }}/bin"

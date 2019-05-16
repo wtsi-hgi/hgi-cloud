@@ -7,20 +7,19 @@ lint:
   name: yamllint
 platforms:
   - name: default
-    image: bionic-server
+    image: eta-hgi-image-hail-base-0.0.7
     flavor: o2.medium
-    role: base
+    role: spark-master
 provisioner:
   name: ansible
   options:
     vault-id: ../../../../vault_password.txt
-    # extra-vars: "@../../../../../molecule/default/metadata.yml,@../../../../../vars/eta.yml,@../../../../../vars/eta/hgi.yml"
+    extra-vars: "{\"extra_user_data\": {\"spark_master_external_address\": \"127.0.0.1\"}}"
   lint:
     name: ansible-lint
   playbooks:
     create: ../../../../molecule/default/create.yml
     destroy: ../../../../molecule/default/destroy.yml
-    prepare: ../../../../molecule/default/prepare_image.yml
     converge: ../../../../molecule/default/converge.yml
 verifier:
   name: testinfra

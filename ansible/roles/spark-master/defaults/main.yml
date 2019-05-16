@@ -1,2 +1,2 @@
 ---
-hail_shared_dir: "{{ spark_home }}/local"
+notebook_app_base_url: /jupyter

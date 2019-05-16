@@ -3,6 +3,7 @@
   hosts: localhost
   connection: local
   gather_facts: false
+  no_log: false
   tasks:
     - name: Read metadata from file
       include_vars:
