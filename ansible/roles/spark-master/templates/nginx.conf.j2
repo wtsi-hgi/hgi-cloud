@@ -1,22 +1,6 @@
-map $http_upgrade $connection_upgrade {
-  default upgrade;
-  ''      close;
-}
-
 server {
   server_name {{ extra_user_data['spark_master_external_address'] }};
   client_max_body_size 0;
-  location /static/ {
-    proxy_pass http://localhost:8080;
-  }
-  location /spark/ {
-    proxy_pass http://localhost:8080;
-    proxy_set_header Accept-Encoding "";
-    sub_filter '="/proxy/' '="/spark/proxy/';
-    # Spark's reverse proxy management bug
-    sub_filter '="/spark/static/' '="/static/';
-    sub_filter_once off;
-  }
 
   location /notebook/ {
     proxy_pass        http://localhost:8888;
@@ -28,4 +12,23 @@ server {
     proxy_set_header  Upgrade $http_upgrade;
     proxy_set_header  Connection $connection_upgrade;
   }
+
+  location /spark/ {
+    proxy_pass       http://localhost:8080/;
+    proxy_set_header Accept-Encoding "";
+    sub_filter       "href=\"/\"" "href=\"/spark/\"";
+    sub_filter       "src=\"/static/" "src=\"/spark/static/";
+    sub_filter       "href=\"/static/" "href=\"/spark/static/";
+    sub_filter       "src=\"/history/" "src=\"/spark/history/";
+    sub_filter       "href=\"/history/" "href=\"/spark/history/";
+    sub_filter       "src=\"/proxy/" "src=\"/spark/proxy/";
+    sub_filter       "href=\"/proxy/" "href=\"/spark/proxy/";
+    sub_filter_once  off;
+  }
+
+  location / {
+    rewrite ^/$ /notebook/ redirect;
+  }
+
 }
+
