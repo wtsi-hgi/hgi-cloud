@@ -118,7 +118,6 @@ spark_defaults_extras:
   # spark.hadoop.fs.s3a.bucket.<bucket_name>.aws.credentials.provider:  org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider
   spark.ui.reverseProxy: true
   spark.ui.reverseProxyUrl: "http://{{ extra_user_data['spark_master_external_address'] }}/spark"
-  spark.ui.proxyBase: /spark
 
 
 # Logger levels set to the official defaults
