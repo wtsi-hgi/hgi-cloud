@@ -2,7 +2,7 @@
 Description=Hail Jupyter Notebook
 
 [Service]
-ExecStart=/bin/bash -l -c 'exec "$@"' _ {{ anaconda_install_dir }}/anaconda3/bin/jupiter notebook --config={{ hail_install_dir }}/jupiter/conf/service.py
+ExecStart=/bin/bash -l -c 'exec "$@"' _ {{ anaconda_install_dir }}/anaconda3/bin/jupyter notebook --config={{ hail_install_dir }}/jupyter/conf/service.py
 User={{ hail_install_owner }}
 
 [Install]
