@@ -61,3 +61,11 @@
     executable: "{{ anaconda_install_dir }}/anaconda3/bin/pip"
   become: yes
   become_user: "{{ hail_install_owner }}"
+
+- name: Ensure Derby database directory exists
+  file:
+    path: "{{ derby_home }}"
+    state: directory
+    owner: "{{ hail_install_owner }}"
+    group: "{{ hail_install_group }}"
+    mode: "{{ hail_install_mode }}"
