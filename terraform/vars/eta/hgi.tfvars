@@ -10,3 +10,5 @@ consensus_subnet_cidr     = "192.168.225.0/27"
 main_subnet_cidr          = "192.168.226.0/23"
 
 deployment_owner          = "mercury"
+spark_slaves_image_name   = "eta-hgi-image-hail-base-0.0.8"
+spark_masters_image_name  = "eta-hgi-image-hail-base-0.0.8"
