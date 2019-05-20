@@ -44,4 +44,7 @@ ansible-playbook \
   --extra-vars @vars/${datacenter}.yml \
   --extra-vars @vars/${datacenter}/${programme}.yml \
   --extra-vars @vars/${datacenter}/${programme}/${env}.yml \
+  --extra-vars @vars/${datacenter}/${programme}/${env}/${deployment_name}.yml \
+  --extra-vars @vars/${datacenter}/${programme}/${env}/${deployment_name}/${deployment_owner}.yml \
+  --extra-vars @vars/${datacenter}/${programme}/${env}/${deployment_name}/${deployment_owner}/${role_name}.yml \
   instance.yml
