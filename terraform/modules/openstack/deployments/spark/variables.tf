@@ -75,4 +75,28 @@ variable "spark_slaves_affinity" {
   default     = "soft-anti-affinity"
 }
 
+variable "spark_masters_image_name" {}
+variable "spark_masters_role_name" {
+  default     = "spark-master"
+}
+variable "spark_masters_role_version" {
+  default     = "HEAD"
+}
+
+variable "spark_slaves_image_name" {}
+variable "spark_slaves_role_name" {
+  default     = "spark-slave"
+}
+variable "spark_slaves_role_version" {
+  default     = "HEAD"
+}
+
+variable "spark_masters_network_name" {
+  default     = "main"
+}
+
+variable "spark_slaves_network_name" {
+  default     = "main"
+}
+
 variable "vault_password" {}
