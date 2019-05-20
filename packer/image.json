@@ -19,7 +19,7 @@
         "filters": {
           "name": "{{user `source_image_name`}}",
           "owner": "bd69a555635247bb94c23e02542c50ef",
-          "visibility": "public"
+          "visibility": "shared"
         },
         "most_recent": true
       },
