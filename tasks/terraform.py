@@ -95,12 +95,12 @@ def plan(context, to='create'):
 
   run_terraform(context, 'plan {} {}'.format(' '.join(options), iac_path(context)))
 
-def apply_plan(context, to=None):
+def apply_plan(context, to=None, parallelism=64):
   tfplan = os.path.join(*tfplan_file(context, to))
   _state_out = '-state-out={}'.format(os.path.join(*tfstate_file(context)))
-
+  _parallelism = '-parallelism={}'.format(parallelism)
   if os.path.isfile(tfplan):
-    run_terraform(context, 'apply {} {}'.format(_state_out, tfplan))
+    run_terraform(context, 'apply {} {} {}'.format(_parallelism, _state_out, tfplan))
   else:
     error = (
       '{} does not exist or is not a regular file. '
@@ -109,18 +109,18 @@ def apply_plan(context, to=None):
     sys.exit(1)
 
 @invoke.task(pre=[invoke.call(plan, to='create')])
-def up(context):
-  apply_plan(context, 'create')
+def up(context, parallelism=64):
+  apply_plan(context, 'create', parallelism)
 
 # Since both destruction and update are meant to modify an infrastructure, we
 # won't run them automatically at this stage.
 @invoke.task
-def down(context):
-  apply_plan(context, 'destroy')
+def down(context, parallelism=64):
+  apply_plan(context, 'destroy', parallelism)
 
 @invoke.task
-def update(context):
-  apply_plan(context, 'update')
+def update(context, parallelism=64):
+  apply_plan(context, 'update', parallelism)
 
 ns = invoke.Collection()
 ns.add_task(clean)
