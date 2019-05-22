@@ -55,18 +55,10 @@ resource "openstack_compute_instance_v2" "instance" {
   security_groups     = "${var.security_groups}"
   metadata            = "${local.metadata}"
   user_data           = "${element(module.user_data.rendered, count.index)}"
+  image_id            = "${data.openstack_images_image_v2.base_image.id}"
 
   scheduler_hints {
     group = "${openstack_compute_servergroup_v2.servergroup.id}"
-  }
-
-  block_device {
-    uuid                  = "${data.openstack_images_image_v2.base_image.id}"
-    source_type           = "image"
-    volume_size           = "${var.volume_size}"
-    boot_index            = 0
-    destination_type      = "volume"
-    delete_on_termination = true
   }
 
   network {
