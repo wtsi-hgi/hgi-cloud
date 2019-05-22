@@ -11,7 +11,6 @@
   "builders": [
     {
       "type": "openstack",
-      "user_data_file": "scripts/user_data.sh",
       "ssh_username": "ubuntu",
       "ssh_keypair_name": "{{user `datacenter`}}-{{user `programme`}}-{{user `env`}}-keypair-mercury",
       "ssh_private_key_file": "~/.ssh/id_rsa",
@@ -19,7 +18,7 @@
         "filters": {
           "name": "{{user `source_image_name`}}",
           "owner": "bd69a555635247bb94c23e02542c50ef",
-          "visibility": "shared"
+          "visibility": "public"
         },
         "most_recent": true
       },
