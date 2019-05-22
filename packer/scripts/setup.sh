@@ -7,7 +7,7 @@ apt-add-repository --yes ppa:ansible/ansible
 
 # Install Ansible.
 apt-get --assume-yes update
-apt-get --assume-yes install ansible
+apt-get --assume-yes install ansible python-apt
 mkdir --parents /opt/sanger.ac.uk/ansible/{log,facts.d}
 chown --recursive ubuntu:ubuntu /opt/sanger.ac.uk
 
