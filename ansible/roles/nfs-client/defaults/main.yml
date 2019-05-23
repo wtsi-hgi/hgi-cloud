@@ -1,0 +1,5 @@
+---
+# defaults file for nfs-client
+nfs_server: spark-master
+nfs_share_path: /tmp
+nfs_mount_point: /mnt

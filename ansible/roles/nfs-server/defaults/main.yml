@@ -1,0 +1,5 @@
+---
+nfs_share_path: /tmp
+nfs_share_owner: root
+nfs_share_group: root
+nfs_share_mode: "ug+rw,o+r"

@@ -1,0 +1,41 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: openstack
+lint:
+  name: yamllint
+platforms:
+  - name: default
+    image: eta-hgi-image-hail-base-0.0.7
+    flavor: o2.medium
+    role: hail-slave
+provisioner:
+  name: ansible
+  options:
+    vault-id: ../../../../vault_password.txt
+    extra-vars: "../../../../molecule/default/metadata.yml,@../../../../vars/eta-hgi-dev.yml"
+  lint:
+    name: ansible-lint
+  playbooks:
+    create: ../../../../molecule/default/create.yml
+    destroy: ../../../../molecule/default/destroy.yml
+    converge: converge.yml
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
+scenario:
+  name: default
+  test_sequence:
+    - lint
+    - destroy
+    - dependency
+    - syntax
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - side_effect
+    - verify
+    - destroy
