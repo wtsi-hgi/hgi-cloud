@@ -22,4 +22,3 @@
     src: "{{ nfs_server }}:{{ nfs_share_path }}"
     boot: no
     fstype: nfs4
-
