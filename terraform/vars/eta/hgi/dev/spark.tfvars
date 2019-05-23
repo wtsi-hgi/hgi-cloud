@@ -1,2 +1,2 @@
-spark_masters_role_name = "workstation"
-spark_slaves_role_name  = "spark-slave"
+spark_masters_role_name = "hail-master"
+spark_slaves_role_name  = "hail-slave"
