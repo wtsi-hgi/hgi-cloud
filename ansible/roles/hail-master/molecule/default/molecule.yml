@@ -9,7 +9,7 @@ platforms:
   - name: default
     image: eta-hgi-image-hail-base-0.0.7
     flavor: o2.medium
-    role: spark-master
+    role: hail-master
 provisioner:
   name: ansible
   options:

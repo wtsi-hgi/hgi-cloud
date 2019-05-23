@@ -203,4 +203,10 @@ hail_install_group: "{{ base_install_group }}"
 hail_install_mode: "ug+rw,o+r"
 
 hail_home: "{{ hail_install_dir }}/hail/hail"
-hail_shared_dir: "{{ spark_home }}/local"
+
+nfs_server: spark-master
+nfs_share_path: "{{ spark_home }}/local"
+nfs_mount_point: "{{ spark_home }}/temp"
+nfs_share_owner: "{{ base_user_name }}"
+nfs_share_group: "{{ base_group_name }}"
+nfs_share_mode: "ug+rw,o+r"
