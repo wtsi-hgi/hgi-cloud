@@ -6,46 +6,46 @@
       - g++
       - liblz4-dev
 
-- name: Ensure Hail install directory exist
+- name: Ensure Hail home directory exists
   file:
     state: directory
-    path: "{{ hail_install_dir }}"
+    path: "{{ hail_home }}"
     owner: "{{ hail_install_owner }}"
     group: "{{ hail_install_group }}"
     mode: "{{ hail_install_mode }}"
     follow: true
-
-- name: Ensure Hail source directory exist
-  file:
-    state: directory
-    path: "{{ hail_install_dir }}"
-
-- name: Ensure Hail git repo has been chacked out
-  git:
-    repo: "{{ hail_repo }}"
-    dest: "{{ hail_install_dir }}/hail"
-    update: no
-    version: "{{ hail_version }}"
-
-- name: Ensure gradlew is executable
-  file:
-    state: file
-    path: "{{ hail_install_dir }}/hail/hail/gradlew"
-    mode: "+x"
-
-- name: Build Hail
-  shell: "JAVA_HOME={{ java_home }} ./gradlew -Dspark.version={{ spark_version }} shadowJar"
-  args:
-    chdir: "{{ hail_install_dir }}/hail/hail"
-    creates: "{{ hail_install_dir }}/hail/hail/build/libs/hail-all-spark.jar"
-
-- name: Fix ownership on Hail installation
-  file:
-    path: "{{ hail_install_dir }}"
-    owner: "{{ hail_install_owner }}"
-    group: "{{ hail_install_group }}"
-    mode: "{{ hail_install_mode }}"
-    recurse: yes
+#
+# - name: Ensure Hail source directory exist
+#   file:
+#     state: directory
+#     path: "{{ hail_install_dir }}"
+#
+# - name: Ensure Hail git repo has been chacked out
+#   git:
+#     repo: "{{ hail_repo }}"
+#     dest: "{{ hail_install_dir }}/hail"
+#     update: no
+#     version: "{{ hail_version }}"
+#
+# - name: Ensure gradlew is executable
+#   file:
+#     state: file
+#     path: "{{ hail_install_dir }}/hail/hail/gradlew"
+#     mode: "+x"
+#
+# - name: Build Hail
+#   shell: "JAVA_HOME={{ java_home }} ./gradlew -Dspark.version={{ spark_version }} shadowJar"
+#   args:
+#     chdir: "{{ hail_install_dir }}/hail/hail"
+#     creates: "{{ hail_install_dir }}/hail/hail/build/libs/hail-all-spark.jar"
+#
+# - name: Fix ownership on Hail installation
+#   file:
+#     path: "{{ hail_install_dir }}"
+#     owner: "{{ hail_install_owner }}"
+#     group: "{{ hail_install_group }}"
+#     mode: "{{ hail_install_mode }}"
+#     recurse: yes
 
 - name: Configure system-wide environment variables
   template:
@@ -56,7 +56,7 @@
   pip:
     state: present
     name:
-      - hail
+      - "hail=={{ hail_version }}"
       - parsimonious==0.8.0
     executable: "{{ anaconda_install_dir }}/anaconda3/bin/pip"
   become: yes

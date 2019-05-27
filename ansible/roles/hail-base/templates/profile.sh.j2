@@ -1,35 +1,13 @@
 export HAIL_HOME="{{ hail_home }}"
 export DERBY_HOME="{{ derby_home }}"
-export HAIL_JAR="${HAIL_HOME}/build/libs/hail-all-spark.jar"
-
-# FIXME: I cannot tell what is still using this environment variable and if it
-# is safe to get rid of it (it's deprecated)
-export SPARK_CLASSPATH="${HAIL_JAR}"
-
-PYTHONPATH="${HAIL_HOME}/python"
-PYTHONPATH="${PYTHONPATH}:${HAIL_HOME}/build/distributions/hail-python.zip"
-PYTHONPATH="${PYTHONPATH}:${SPARK_HOME}/python"
-PYTHONPATH="${PYTHONPATH}:$(echo ${SPARK_HOME}/python/lib/py4j*-src.zip)"
-
-export PYTHONPATH
-
-declare -ax HAIL_JARS=(
-  "${HAIL_HOME}/build/libs/hail-all-spark.jar"
-  "${HADOOP_HOME}/share/hadoop/tools/lib/aws-java-sdk-core-1.10.6.jar"
-  "${HADOOP_HOME}/share/hadoop/tools/lib/aws-java-sdk-kms-1.10.6.jar"
-  "${HADOOP_HOME}/share/hadoop/tools/lib/aws-java-sdk-s3-1.10.6.jar"
-  "${HADOOP_HOME}/share/hadoop/tools/lib/hadoop-aws-2.8.2.jar"
-)
 
 ## PYSPARK_ARGS wants to make command line pyspark easier
-export PYSPARK_ARGS="\
-  --jars $(IFS=, ; echo "${HAIL_JARS[*]}") \
-  --conf spark.driver.extraClassPath=${HAIL_HOME}/build/libs/hail-all-spark.jar \
-  --conf spark.executor.extraClassPath=${HAIL_HOME}/build/libs/hail-all-spark.jar \
-  --conf spark.serializer=org.apache.spark.serializer.KryoSerializer \
-  --conf spark.kryo.registrator=is.hail.kryo.HailKryoRegistrator"
+_PYSPARK_ARGS="\
+  --jars "{{ spark_jars | join(',') }}" \
+  --conf "spark.serializer={{ spark_defaults_extras['spark.serializer'] }}" \
+  --conf "spark.kryo.registrator={{ spark_defaults_extras['spark.kryo.registrator'] }}"
 
-alias pyspark="pyspark ${PYSPARK_ARGS}"
+alias pyspark="pyspark ${_PYSPARK_ARGS}"
 
 ## PYSPARK_SUBMIT_ARGS is used by ipython and jupyter
-export PYSPARK_SUBMIT_ARGS="${PYSPARK_ARGS} pyspark-shell"
+export PYSPARK_SUBMIT_ARGS="${_PYSPARK_ARGS} pyspark-shell"

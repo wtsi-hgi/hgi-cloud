@@ -1,4 +1,15 @@
 ---
+anaconda_distribution: 2019.03-Linux-x86_64
+anaconda_extra_modules: []
+
+hail_version: 0.2.14
+
+java_jdk_version: 8
+
+hadoop_version: 2.8.2
+
+spark_version: 2.2.0
+
 base_user_name: hgi
 base_user_uid: 10000
 base_user_home: "/opt/sanger.ac.uk/{{ base_user_name }}"
@@ -21,6 +32,8 @@ base_dir_mode: 0775
 base_install_owner: "{{ base_user_name }}"
 base_install_group: "{{ base_group_name }}"
 base_install_dir: "{{ base_user_home }}"
+
+anaconda_python_version: "3.7"
 
 anaconda_source_dir: "{{ base_source_dir }}"
 anaconda_download_dir: "{{ base_download_dir }}"
@@ -78,16 +91,12 @@ spark_master_port: 7077
 
 spark_env_extras: {}
 
-spark_extra_classpath:
-  - "{{ hail_home }}/build/libs/hail-all-spark.jar"
+spark_jars:
+  - "{{ anaconda_install_dir }}/anaconda3/lib/python{{ anaconda_python_version }}/site-packages/hail/hail-all-spark.jar"
   - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-core-1.7.4.jar"
   - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-kms-1.7.4.jar"
   - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-s3-1.7.4.jar"
   - "{{ hadoop_home }}/share/hadoop/tools/lib/hadoop-aws-7.3.2.jar"
-
-# spark_executor_extra_classpath: "{{ spark_extra_classpath }}"
-# spark_driver_extra_classpath: "{{ spark_extra_classpath }}"
-# spark_jars: "{{ spark_extra_classpath }}"
 
 spark_defaults_extras:
   # SparkContext Configuration
@@ -97,13 +106,11 @@ spark_defaults_extras:
 
   spark.driver.memory: 60g
   spark.driver.maxResultSize: 0
-  spark.driver.extraClassPath: "{{ spark_extra_classpath | join(':') }}"
 
   spark.executor.memory: 60g
   spark.executor.instances: 1
-  spark.executor.extraClassPath: "{{ spark_extra_classpath | join(':') }}"
 
-  spark.jars: "{{ spark_extra_classpath | join(':') }}"
+  spark.jars: "{{ spark_jars | join(':') }}"
 
   # spark.ui.reverseProxy: true
   # spark.ui.reverseProxyUrl: "https://{# spark_master_external_hostname #}.{# spark_master_external_domain #}/{# spark_master_external_path #}"

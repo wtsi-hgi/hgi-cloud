@@ -1,4 +1,5 @@
 ---
+anaconda_python_version: "3.7"
 anaconda_distribution: 2019.03-Linux-x86_64
 anaconda_mirror: https://repo.anaconda.com/archive
 
