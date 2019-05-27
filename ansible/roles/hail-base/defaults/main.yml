@@ -1,11 +1,11 @@
 ---
 hail_repo: https://github.com/hail-is/hail.git
-hail_version: 0.2.12
+hail_version: 0.2.14
 
 hail_install_dir: "{{ base_install_dir }}"
 hail_install_owner: "{{ base_install_owner }}"
 hail_install_group: "{{ base_install_group }}"
 hail_install_mode: "ug+rw,o+r"
 
-hail_home: "{{ hail_install_dir }}/hail/hail"
+hail_home: "{{ hail_install_dir }}/hail"
 derby_home: "{{ hail_install_dir }}/derby"
