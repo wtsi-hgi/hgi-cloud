@@ -14,7 +14,7 @@
     group: "{{ hail_install_group }}"
     mode: "{{ hail_install_mode }}"
     follow: true
-#
+
 # - name: Ensure Hail source directory exist
 #   file:
 #     state: directory
@@ -51,16 +51,6 @@
   template:
     src: profile.sh.j2
     dest: /etc/profile.d/40-hail.sh
-
-- name: Install Hail in anaconda3
-  pip:
-    state: present
-    name:
-      - "hail=={{ hail_version }}"
-      - parsimonious==0.8.0
-    executable: "{{ anaconda_install_dir }}/anaconda3/bin/pip"
-  become: yes
-  become_user: "{{ hail_install_owner }}"
 
 - name: Ensure Derby database directory exists
   file:

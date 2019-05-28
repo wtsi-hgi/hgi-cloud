@@ -1,0 +1,10 @@
+---
+- name: Install Hail in Anaconda3
+  pip:
+    state: present
+    name:
+      - "hail=={{ hail_version }}"
+      - parsimonious==0.8.0
+    executable: "{{ anaconda_install_dir }}/anaconda3/bin/pip"
+  become: yes
+  become_user: "{{ hail_install_owner }}"
