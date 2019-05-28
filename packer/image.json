@@ -23,7 +23,7 @@
         "most_recent": true
       },
       "image_name": "{{user `datacenter`}}-{{user `programme`}}-image-{{user `role_name`}}-{{user `role_version`}}",
-      "image_visibility": "community",
+      "image_visibility": "shared",
       "instance_name": "{{user `datacenter`}}-{{user `programme`}}-{{user `env`}}-instance-packer-{{user `role_name`}}-{{user `role_version`}}",
       "volume_name": "{{user `datacenter`}}-{{user `programme`}}-{{user `env`}}-volume-packer-{{user `role_name`}}-{{user `role_version`}}",
       "volume_size": 32,
