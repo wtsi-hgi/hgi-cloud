@@ -93,10 +93,10 @@ spark_env_extras: {}
 
 spark_jars:
   - "{{ anaconda_install_dir }}/anaconda3/lib/python{{ anaconda_python_version }}/site-packages/hail/hail-all-spark.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-core-1.7.4.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-kms-1.7.4.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-s3-1.7.4.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/hadoop-aws-7.3.2.jar"
+  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-core-1.10.6.jar"
+  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-kms-1.10.6.jar"
+  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-s3-1.10.6.jar"
+  - "{{ hadoop_home }}/share/hadoop/tools/lib/hadoop-aws-2.8.2.jar"
 
 spark_defaults_extras:
   # SparkContext Configuration
