@@ -34,12 +34,11 @@ VARS
 # https://docs.openstack.org/security-guide/secrets-management.html
 #
 # This usage of cat does not print the password in the log file
-cat > vault_password.txt <<<"${vault_password}"
+# cat > vault_password.txt <<<"${vault_password}"
 
-chmod 0600 vault_password.txt
+# chmod 0600 vault_password.txt
 
 ansible-playbook \
-  --vault-id vault_password.txt \
   --extra-vars @vars/metadata.yml \
   --extra-vars @vars/${datacenter}.yml \
   --extra-vars @vars/${datacenter}/${programme}.yml \
