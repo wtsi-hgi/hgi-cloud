@@ -99,4 +99,6 @@ variable "spark_slaves_network_name" {
   default     = "main"
 }
 
-variable "vault_password" {}
+variable "vault_password" {
+  default     = ""
+}
