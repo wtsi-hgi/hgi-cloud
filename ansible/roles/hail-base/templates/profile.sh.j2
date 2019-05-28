@@ -2,10 +2,9 @@ export HAIL_HOME="{{ hail_home }}"
 export DERBY_HOME="{{ derby_home }}"
 
 ## PYSPARK_ARGS wants to make command line pyspark easier
-_PYSPARK_ARGS="\
-  --jars "{{ spark_jars | join(',') }}" \
-  --conf "spark.serializer={{ spark_defaults_extras['spark.serializer'] }}" \
-  --conf "spark.kryo.registrator={{ spark_defaults_extras['spark.kryo.registrator'] }}"
+_PYSPARK_ARGS="--conf spark.serializer={{ spark_defaults_extras['spark.serializer'] }} \
+               --conf spark.kryo.registrator={{ spark_defaults_extras['spark.kryo.registrator'] }} \
+               --jars {{ spark_jars | join(',') }}"
 
 alias pyspark="pyspark ${_PYSPARK_ARGS}"
 
