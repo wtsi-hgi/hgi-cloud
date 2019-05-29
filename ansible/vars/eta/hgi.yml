@@ -100,10 +100,10 @@ spark_defaults_extras:
 
   spark.driver.host: spark-master
   spark.driver.bindAddress: 0.0.0.0
-  spark.driver.memory: "{{ ansible_memtotal_mb * 0.94 }}m"
+  spark.driver.memory: "{{ ansible_memtotal_mb * 0.94 | int() }}m"
   spark.driver.maxResultSize: 0
 
-  spark.executor.memory: "{{ ansible_memtotal_mb * 0.94 }}m"
+  spark.executor.memory: "{{ ansible_memtotal_mb * 0.94 | int() }}m"
   spark.executor.instances: 1
 
   spark.jars: "{{ spark_jars | join(':') }}"
