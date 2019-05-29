@@ -98,16 +98,15 @@ spark_defaults_extras:
   spark.sql.files.maxPartitionBytes: "42949672960"
   spark.sql.files.openCostInBytes: "42949672960"
 
-  spark.driver.memory: 60g
+  spark.driver.host: spark-master
+  spark.driver.bindAddress: 0.0.0.0
+  spark.driver.memory: "{{ ansible_memtotal_mb * 0.94 }}m"
   spark.driver.maxResultSize: 0
 
-  spark.executor.memory: 60g
+  spark.executor.memory: "{{ ansible_memtotal_mb * 0.94 }}m"
   spark.executor.instances: 1
 
   spark.jars: "{{ spark_jars | join(':') }}"
-
-  # spark.ui.reverseProxy: true
-  # spark.ui.reverseProxyUrl: "https://{# spark_master_external_hostname #}.{# spark_master_external_domain #}/{# spark_master_external_path #}"
 
   spark.serializer: "org.apache.spark.serializer.KryoSerializer"
   spark.kryo.registrator: "is.hail.kryo.HailKryoRegistrator"
