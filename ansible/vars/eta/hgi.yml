@@ -2,13 +2,11 @@
 anaconda_distribution: 2019.03-Linux-x86_64
 anaconda_extra_modules: []
 
-hail_version: 0.2.14
-
-java_jdk_version: 8
-
-hadoop_version: 2.8.2
-
-spark_version: 2.4.0
+hail_version: "0.2.14"
+java_jdk_version: "8"
+hadoop_version: "2.7.7"
+spark_hadoop_profile: "hadoop-2.7"
+spark_version: "2.4.3"
 
 base_user_name: hgi
 base_user_uid: 10000
@@ -75,8 +73,6 @@ spark_log_dir: "{{ spark_home }}/log"
 spark_temp_dir: "{{ spark_home }}/temp"
 spark_work_dir: "{{ spark_home }}/work"
 spark_conf_dir: "{{ spark_home }}/conf"
-
-spark_hadoop_profile: hadoop-2.7
 
 spark_distribution_name: "hgi-hadoop{{ hadoop_version }}"
 spark_home: "{{ spark_install_dir }}/spark-{{ spark_version }}-bin-{{ spark_distribution_name }}"
