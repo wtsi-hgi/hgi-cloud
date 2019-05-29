@@ -1,4 +1,12 @@
 ---
+- name: Ensure logs directory exists
+  file:
+    path: "{{ hail_home }}/log"
+    state: directory
+    owner: "{{ hail_install_owner }}"
+    group: "{{ hail_install_group }}"
+    mode: "{{ hail_install_mode }}"
+
 - name: Install Hail in Anaconda3
   pip:
     state: present
