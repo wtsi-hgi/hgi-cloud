@@ -202,11 +202,11 @@ hail_install_owner: "{{ base_install_owner }}"
 hail_install_group: "{{ base_install_group }}"
 hail_install_mode: "ug+rw,o+r"
 
-hail_home: "{{ hail_install_dir }}/hail/hail"
+hail_home: "{{ hail_install_dir }}/hail"
 
 nfs_server: spark-master
-nfs_share_path: "{{ spark_home }}/local"
-nfs_mount_point: "{{ spark_home }}/temp"
-nfs_share_owner: "{{ base_user_name }}"
-nfs_share_group: "{{ base_group_name }}"
-nfs_share_mode: "ug+rw,o+r"
+nfs_share_path: "{{ hail_home }}/tmp"
+nfs_mount_point: "{{ hail_home }}/tmp"
+nfs_share_owner: "{{ hail_install_owner }}"
+nfs_share_group: "{{ hail_install_group }}"
+nfs_share_mode: "{{ hail_install_mode }}"
