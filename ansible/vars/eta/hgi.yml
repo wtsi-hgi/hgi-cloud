@@ -70,7 +70,6 @@ spark_install_mode: "ug+rw,o+r"
 
 spark_pid_dir: "{{ spark_home }}/run"
 spark_log_dir: "{{ spark_home }}/log"
-spark_temp_dir: "{{ spark_home }}/temp"
 spark_work_dir: "{{ spark_home }}/work"
 spark_conf_dir: "{{ spark_home }}/conf"
 
@@ -80,8 +79,6 @@ spark_home: "{{ spark_install_dir }}/spark-{{ spark_version }}-bin-{{ spark_dist
 spark_local_owner: "{{ spark_user_name }}"
 spark_local_group: "{{ spark_group_name }}"
 spark_local_mode: "ug+rw,o+r,+t"
-spark_local_dirs:
-  - "{{ spark_temp_dir }}"
 
 spark_master_port: 7077
 

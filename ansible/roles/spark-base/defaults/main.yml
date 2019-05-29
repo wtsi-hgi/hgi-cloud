@@ -57,7 +57,6 @@ spark_defaults_extras:
 
 spark_pid_dir: "{{ spark_home }}/run"
 spark_log_dir: "{{ spark_home }}/log"
-spark_temp_dir: "{{ spark_home }}/temp"
 spark_work_dir: "{{ spark_home }}/work"
 spark_conf_dir: "{{ spark_home }}/conf"
 

@@ -110,7 +110,6 @@
   loop:
     - "{{ spark_pid_dir }}"
     - "{{ spark_log_dir }}"
-    - "{{ spark_temp_dir }}"
     - "{{ spark_work_dir }}"
     - "{{ spark_conf_dir }}"
   loop_control:
