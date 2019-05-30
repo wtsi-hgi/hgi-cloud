@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # This wants to be an handy script to wrap the usage of invoke.
 # This tool is supposed to work only from the base project directory.
 
