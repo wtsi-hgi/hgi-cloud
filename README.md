@@ -16,29 +16,98 @@ requirements, and design around operability from the very beginning.
 TODO: include a simple design diagram
 
 # Design choices
-
-## The common environment
-Regardless of the Openstack's project, all environments will require some
-common resources such as `keypair`s or `secgroup`s, therefore a module for the
-`common` environment has been created. Before you create/mange any resource,
-you should ensure that the all the resources in [the common
-environment](terraform/modules/openstack/environments/common) are created. Read
-the [Usage](#usage) section below.
+TODO: rewrite / update the design choices
 
 # Use cases
 
-## Create a Spark Cluster
+## Create a Hail/Spark Cluster
 TODO: wirte down the use case's details
 
-## Destroy a Spark Cluster
+## Destroy a Hail/Spark Cluster
 TODO: wirte down the use case's details
 
-# Usage
+## Use a Hail/Spark Cluster
+TODO: wirte down the use case's details
+
+# User Guide
+
+You can use the cluster in 3 possible ways:
+1. With interactive Jupyter Notebooks
+2. With interactive pyspark session on the command line
+3. With a non interactive scrypt
+
+# Important details
+1. In order for `import_vcf` / `export_vcf` to work, `tmp_dir` must point to a
+	 network shared directory. The directory `${HAIL_HOME}/tmp` is already shared
+	 through NFS protocol and available on all nodes.
+2. Hail initialisation is different from tool to tool.
+
+## Jupyter Notebook
+Open your hail-master Jupyter URL http://\<IP\_OR\_NAME\>/jupyter/ in a web
+browser, create a notebook, then initialise it:
+```
+import os
+import hail
+import pyspark
+
+tmp_dir = os.path.join(os.environ['HAIL_HOME'], 'tmp')
+sc = pyspark.SparkContext()
+
+hail.init(sc=sc, tmp_dir=tmp_dir)
+```
+
+## Interactive pyspark
+
+(TODO: include a .ssh/config snippet to allow for an easier ssh run)
+`ssh` into your hail-master node:
+```
+$ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@<IP_OR_NAME>
+```
+Once you've logged in, become the application user (i.e. hgi -- for now)
+```
+$ sudo --login --user=hgi --group=hgi
+```
+The `--login` option will create a login shell that will have a lot of
+pre-configured environment variables and commands, including a pre-configured
+alias to `pyspark`, so you should not need to remember any option. Once you
+started `pyspark`, you can initialise hail like this:
+
+```
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /__ / .__/\_,_/_/ /_/\_\   version 2.4.3
+      /_/
+
+Using Python version 3.7.3 (default, Mar 27 2019 22:11:17)
+SparkSession available as 'spark'.
+>>> import os
+>>> import hail
+>>> tmp_dir = os.path.join(os.environ['HAIL_HOME'], 'tmp')
+>>> mail.init(sc=sc, tmp_dir=tmp_dir)
+```
+
+# Non-interactive pyspark
+Hail initialisation in a non-interactive `pyspark` session is the same as for
+the Jupyter Notebooks:
+```
+import os
+import hail
+import pyspark
+
+tmp_dir = os.path.join(os.environ['HAIL_HOME'], 'tmp')
+sc = pyspark.SparkContext()
+
+hail.init(sc=sc, tmp_dir=tmp_dir)
+```
+
+# Admin Guide
 
 ## What do you need?
 1. (required) `terraform` executable anywhere in your `PATH`
 2. (required) `packer` executable anywhere in your `PATH`
-4. (optional) `openrc.sh` OpenStack's RC file, that you can get from
+4. (required) `openrc.sh` OpenStack's RC file, that you can get from
    OpenStack's web interface. Alternatively, you could manually export the
    shell environment variables required to configure the OpenStack provider in
    `terraform`.
@@ -61,14 +130,24 @@ source code.
 The easy way to use this project is through the [invoke.sh](#invoke-sh)
 shellscript from the base directory of this repository.
 
-To build the base Openstack image:
+To build an Hail base image:
 ```
-bash invoke.sh base_image build
+bash invoke.sh image hail-base/1.0.0 build
 ```
 
-To create an environment:
+To share an Hail base image:
 ```
-bash invoke.sh common_environment up
+bash invoke.sh image hail-base/1.0.0 share --with hgi-dev,hgi
+```
+
+To accept am Hail base image:
+```
+bash invoke.sh image hail-base/1.0.0 accept
+```
+
+To create an Hail cluster:
+```
+bash invoke.sh deployment spark/ld14 up
 ```
 The above command will run `terraform` with the correct variables file, and
 against the correct initial module. It also depends on other tasks:
@@ -77,42 +156,40 @@ against the correct initial module. It also depends on other tasks:
 3. `validate`
 4. `plan`
 which will automatically run in the correct order. You can replace
-`common_environment` with other values. 
-To get the list of available tasks collections, you can run:
-```
-bash invoke.sh --list
-```
+`spark/ld14` with other values. 
 
-To update an environment:
+To update an spark deployment:
 ```
-bash invoke.sh dev_environment plan --to update
+bash invoke.sh deployment spark/ld14 plan --to update
 # At this point you should check the update.tfplan
-bash invoke.sh dev_environment update
+bash invoke.sh deployment spark/ld14 update
 ```
 The `update` task won't run unless there is an `update.tfplan` file available,
 but that file is not automatically created as a result of running other
 `invoke`'s tasks: the rationale is that we don't want you to unwillingly modify
 the infrastructure. That being said, the `up` task is effectively the same as:
 ```
-bash invoke.sh dev_environment plan --to update
-bash invoke.sh dev_environment update
+bash invoke.sh deployment spark/ld14 plan --to update
+bash invoke.sh deployment spark/ld14 update
+# or, by running the plan and the update tasks with the same command
+bash invoke.sh deployment spark/ld14 plan --to update update
 ```
 This means that you could use the `up` task to bypass the "2 steps" approach,
 **if you know what you are doing**. The `up` tasks just uses different file
 names and options which let all subtasks to run automatically.
 
-To destroy an environment:
+To destroy a hail cluster:
 ```
-bash invoke.sh spark_environment plan --to destroy
+bash invoke.sh deployment spark/ld14 plan --to destroy
 # At this point you should check the destroy.tfplan
-bash invoke.sh spark_environment down
+bash invoke.sh deployment spark/ld14 down
 ```
 The `down` task won't run unless there is a `destroy.tfplan` file available.
 The same rationale for to the `update` task is applied here, however, there is
 no task that bypasses the 2 steps. If you really (I mean REALLY) know what you
 are doing, you could run 2 tasks with the same `invoke.sh` run:
 ```
-bash invoke.sh spark_environment plan --to destroy down
+bash invoke.sh deployment spark/ld14 plan --to destroy down
 ```
 
 ## The hard way
