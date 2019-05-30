@@ -1,0 +1,4 @@
+META_PROVIDER="openstack"
+META_DATACENTER="eta"
+META_PROGRAMME="hgi"
+META_ENV="ci"

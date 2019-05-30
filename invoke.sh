@@ -74,7 +74,7 @@ fi
 # Activates python3's virtualenv
 if [ -z "${VIRTUAL_ENV}" ] ; then
   if [ -f "${PWD}/py3/bin/activate" ] ; then
-    . ./py3/bin/activate
+    source ./py3/bin/activate
   else
     die 4 "Cannot find ${PWD}/py3/bin/activate\n\tvirtualenv is broken, you can remove the direcotry and run ${0} again"
   fi
@@ -88,7 +88,7 @@ if [ -z "${OS_PROJECT_NAME}" ] ; then
   die 1 "OS_PROJECT_NAME is empty: you need to source the right openrc.sh file"
 fi
 
-source "${OS_PROJECT_NAME}.rc"
+source "os_projects/${OS_PROJECT_NAME}.rc"
 
 # These variables will describe the exact cloud / project in which to operate, in invoke
 export INVOKE_META_PROGRAMME="${META_PROGRAMME:-hgi}"
