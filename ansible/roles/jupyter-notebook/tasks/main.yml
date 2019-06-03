@@ -19,7 +19,7 @@
 
 - name: Install Hail's Jupyter Notebook bash profile
   template:
-    src: 50-jupyter.sh.j2
+    src: profile.sh.j2
     dest: /etc/profile.d/50-jupyeter.sh
     mode: 0644
 
