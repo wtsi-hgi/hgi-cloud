@@ -1,8 +1,12 @@
+upstream jupyter {
+  server localhost:8888;
+}
+
 server {
   server_name {{ extra_user_data['spark_master_external_address'] }};
   client_max_body_size 0;
 
-  location {{ notebook_app_base_url }}/ {
+  location ~ {{ notebook_app_base_url }}/ {
     proxy_pass            http://localhost:8888{{ notebook_app_base_url }}/;
     proxy_set_header      Host $host;
     proxy_set_header      X-Real-IP $remote_addr;
