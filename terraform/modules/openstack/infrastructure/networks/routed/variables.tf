@@ -7,10 +7,6 @@ variable "programme" {}
 
 variable "datacenter" {}
 
-variable "deployment_owner" {
-  default = ""
-}
-
 variable "external_network_name" {
   type        = "string"
   description = "The name of the external network"

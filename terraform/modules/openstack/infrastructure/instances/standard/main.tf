@@ -35,15 +35,16 @@ module "user_data" {
 }
 
 module "network_port" {
-  source          = "../extra/standard_ip_port/"
-  datacenter      = "${var.datacenter}"
-  programme       = "${var.programme}"
-  env             = "${var.env}"
-  network_name    = "${var.network_name}"
-  deployment_name = "${var.deployment_name}"
-  role_name       = "${var.role_name}"
-  security_groups = "${var.security_groups}"
-  count           = "${var.count}"
+  source            = "../extra/standard_ip_port/"
+  datacenter        = "${var.datacenter}"
+  programme         = "${var.programme}"
+  env               = "${var.env}"
+  network_name      = "${var.network_name}"
+  deployment_name   = "${var.deployment_name}"
+  deployment_owner  = "${var.deployment_owner}"
+  role_name         = "${var.role_name}"
+  security_groups   = "${var.security_groups}"
+  count             = "${var.count}"
 }
 
 resource "openstack_compute_instance_v2" "instance" {

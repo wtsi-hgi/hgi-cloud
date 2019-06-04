@@ -7,10 +7,6 @@ variable "programme" {}
 
 variable "datacenter" {}
 
-variable "deployment_owner" {
-  default = ""
-}
-
 variable "network_name" {}
 
 variable "subnet_cidr" {

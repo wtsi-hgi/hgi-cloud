@@ -3,6 +3,7 @@ variable "programme" {}
 variable "env" {}
 variable "network_name" {}
 variable "deployment_name" {}
+variable "deployment_owner" {}
 variable "role_name" {
   default = "vanilla"
 }

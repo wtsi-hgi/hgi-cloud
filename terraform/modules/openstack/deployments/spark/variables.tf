@@ -13,7 +13,6 @@ variable "deployment_color" {
 variable "deployment_owner" {
   description = "The owner of the deployment"
   type        = "string"
-  default     = "mercury"
 }
 
 variable "env" {
@@ -33,6 +32,8 @@ variable "datacenter" {
   type        = "string"
   default     = "eta"
 }
+
+variable "public_key" {}
 
 variable "spark_master_external_address" {
   description = "The number of Spark masters to deploy"

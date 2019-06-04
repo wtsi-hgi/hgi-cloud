@@ -8,5 +8,3 @@ local_dns_nameservers     = ["192.168.224.158", "192.168.224.157", "192.168.224.
 consensus_subnet_cidr     = "192.168.225.0/27"
 
 main_subnet_cidr          = "192.168.226.0/23"
-
-deployment_owner          = "mercury"
