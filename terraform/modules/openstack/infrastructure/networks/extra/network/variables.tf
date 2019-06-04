@@ -7,10 +7,6 @@ variable "env" {
   description = "The name of environment"
 }
 
-variable "deployment_owner" {
-  default = ""
-}
-
 variable "network_name" {
   type        = "string"
   description = "The name of the subnet"
