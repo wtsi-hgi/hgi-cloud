@@ -1,6 +1,7 @@
-In proposed order
-* (v0.1.0) Cleanup the use of metadata and extra data in `user_data`
-* (v0.2.0) Attach a persistent volume to jupyter data directory
+In proposed order:
+* (v0.1.0) Attach a persistent volume to jupyter data directory
+  * Cleanup the use of metadata and extra data in `user_data`
+* (v0.2.0) Shared terraform state (s3 bucket)
 * (v0.3.0) Attach a volatile volume to Hail `tmp_dir` on the master
   * Investigate usage and performances, explore other options
     (requires proper monitoring)
