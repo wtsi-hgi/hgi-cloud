@@ -122,6 +122,10 @@ def down(context, parallelism=64):
 def update(context, parallelism=64):
   apply_plan(context, 'update', parallelism)
 
+@invoke.task(post=[invoke.call(plan, to='destroy'), down, up])
+def rebuild(context, parallelism=64):
+  pass
+
 ns = invoke.Collection()
 ns.add_task(clean)
 ns.add_task(init)
@@ -130,3 +134,4 @@ ns.add_task(plan)
 ns.add_task(up, default=True)
 ns.add_task(down)
 ns.add_task(update)
+ns.add_task(rebuild)
