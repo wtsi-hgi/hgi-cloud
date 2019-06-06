@@ -15,7 +15,7 @@ cd /usr/src/provisioning/ansible
 git checkout ${role_version}
 
 # Create the extra vars for the playbook
-cat > vars/metadata.yml <<VARS
+cat > vars/metadata.yml <<METADATA
 ---
 datacenter: "${datacenter}"
 programme: "${programme}"
@@ -26,15 +26,11 @@ deployment_color: "${deployment_color}"
 role_name: "${role_name}"
 role_version: "${role_version}"
 count: "${count}"
-extra_user_data: ${extra_user_data}
-VARS
+METADATA
 
-# Created the default password file for ansible-vault
-# This should be replaced by Openstack's barbican:
-# https://docs.openstack.org/security-guide/secrets-management.html
-#
-# This usage of cat does not print the password in the log file
-# cat > vault_password.txt <<<"${vault_password}"
+cat > vars/other_data.json <<OTHER
+${other_data}
+OTHER
 
 # chmod 0600 vault_password.txt
 
@@ -46,4 +42,5 @@ ansible-playbook \
   --extra-vars @vars/${datacenter}/${programme}/${env}/${deployment_owner}/${deployment_name}.yml \
   --extra-vars @vars/${datacenter}/${programme}/${env}/${deployment_owner}/${deployment_name}/${role_name}.yml \
   --extra-vars @vars/metadata.yml \
+  --extra-vars @vars/other_data.json \
   instance.yml

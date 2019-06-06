@@ -35,7 +35,7 @@ resource "openstack_compute_servergroup_v2" "servergroup" {
 module "user_data" {
   source        = "../extra/user_data/"
   count         = "${var.count}"
-  template_vars = "${merge(local.metadata, map("extra_user_data", jsonencode(var.extra_user_data), "vault_password", var.vault_password))}"
+  template_vars = "${merge(local.metadata, map("other_data", jsonencode(var.other_data)))}"
 }
 
 module "network_port" {
