@@ -39,7 +39,7 @@ variable "volume_size" {
   default = 64
 }
 
-variable "extra_user_data" {
+variable "other_data" {
   type = "map"
   default = {}
 }

@@ -1,5 +1,5 @@
 server {
-  server_name {{ extra_user_data['spark_master_external_address'] }};
+  server_name {{ spark_master_external_address }};
   client_max_body_size 0;
 
   location ~ {{ notebook_app_base_url }}/ {

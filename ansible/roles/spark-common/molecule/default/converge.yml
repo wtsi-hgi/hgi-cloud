@@ -11,7 +11,8 @@
   tasks:
     - name: Set spark_master_private_address fact
       set_fact:
-        extra_user_data: { spark_master_private_address: "127.0.0.1", spark_master_external_address: "127.0.0.1" }
+        spark_master_private_address: "127.0.0.1"
+        spark_master_external_address: "127.0.0.1"
     - name: Run platform's role
       include_role:
         name: spark-common
