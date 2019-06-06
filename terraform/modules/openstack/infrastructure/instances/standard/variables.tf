@@ -17,7 +17,6 @@ variable "count" {
   default = 1
 }
 variable "network_name" {}
-variable "key_pair" {}
 
 variable "security_groups" {
   type = "list"

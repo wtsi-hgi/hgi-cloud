@@ -21,7 +21,6 @@ variable "count" {
 }
 variable "network_name" {}
 variable "subnet_name" {}
-variable "key_pair" {}
 
 variable "security_groups" {
   type = "list"

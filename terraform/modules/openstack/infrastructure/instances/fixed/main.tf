@@ -23,8 +23,12 @@ data "openstack_images_image_v2" "base_image" {
   most_recent = true
 }
 
+data "openstack_compute_keypair_v2" "key_pair" {
+  name = "${var.datacenter}-${var.programme}-keypair-${var.deployment_owner}"
+}
+
 resource "openstack_compute_servergroup_v2" "servergroup" {
-  name      = "${var.datacenter}-${var.programme}-${var.env}-servergroup-${var.deployment_name}-${var.deployment_owner}-${var.role_name}"
+  name      = "${var.datacenter}-${var.programme}-${var.env}-servergroup-${var.deployment_owner}-${var.deployment_name}-${var.role_name}"
   policies  = ["${var.affinity}"]
 }
 
@@ -59,10 +63,10 @@ module "network_port" {
 }
 
 resource "openstack_compute_instance_v2" "instance" {
-  name                = "${var.datacenter}-${var.programme}-${var.env}-instance-${var.deployment_name}-${var.deployment_owner}-${var.role_name}-${format("%02d", count.index + 1)}"
+  name                = "${var.datacenter}-${var.programme}-${var.env}-instance-${var.deployment_owner}-${var.deployment_name}-${var.role_name}-${format("%02d", count.index + 1)}"
   count               = "${var.count}"
   flavor_name         = "${var.flavor_name}"
-  key_pair            = "${var.key_pair}"
+  key_pair            = "${data.openstack_compute_keypair_v2.key_pair.id}"
   stop_before_destroy = true
   security_groups     = "${var.security_groups}"
   metadata            = "${local.metadata}"
