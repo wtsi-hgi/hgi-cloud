@@ -33,8 +33,6 @@ variable "datacenter" {
   default     = "eta"
 }
 
-variable "public_key" {}
-
 variable "spark_master_external_address" {
   description = "The number of Spark masters to deploy"
   type        = "string"

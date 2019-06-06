@@ -1,9 +1,6 @@
-provider "openstack" {
-  version = "~> 1.16"
-}
-provider "template" {
-  version = "~> 2.1"
-}
+terraform { backend "s3" {} }
+provider "openstack" { version = "~> 1.16" }
+provider "template" { version = "~> 2.1" }
 
 locals {
   deployment_version = "0.0.0"
@@ -15,7 +12,6 @@ module "main_network" {
   datacenter            = "${var.datacenter}"
   programme             = "${var.programme}"
   env                   = "${var.env}"
-#  deployment_owner      = "${var.deployment_owner}"
   external_network_name = "${var.external_network_name}"
   network_name          = "main"
   subnet_cidr           = "${var.main_subnet_cidr}"

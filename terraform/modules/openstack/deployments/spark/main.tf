@@ -1,9 +1,6 @@
-provider "openstack" {
-  version = "~> 1.16"
-}
-provider "template" {
-  version = "~> 2.1"
-}
+terraform { backend "s3" {} }
+provider "openstack" { version = "~> 1.16" }
+provider "template" { version = "~> 2.1" }
 
 # Package-like metadata
 locals {
@@ -11,21 +8,12 @@ locals {
   dependency = { }
 }
 
-terraform {
-  backend "swift" {
-    container         = "${var.datacenter}-${var.programme}-${var.env}-terarform-${var.deployment_name}-${var.deployment_owner}-state"
-    archive_container = "${var.datacenter}-${var.programme}-${var.env}-terarform-${var.deployment_name}-${var.deployment_owner}-archive"
-  }
-}
-
-module "key_pair" {
-  source              = "../../infrastructure/keypairs/"
-  datacenter          = "${var.datacenter}"
-  programme           = "${var.programme}"
-  env                 = "${var.env}"
-  deployment_owner    = "${var.deployment_owner}"
-  public_key          = "${var.public_key}"
-}
+# terraform {
+#   backend "swift" {
+#     container         = "${var.datacenter}-${var.programme}-${var.env}-terarform-${var.deployment_owner}-${var.deployment_name}-state"
+#     archive_container = "${var.datacenter}-${var.programme}-${var.env}-terarform-${var.deployment_owner}-${var.deployment_name}-archive"
+#   }
+# }
 
 module "spark_masters" {
   source              = "../../infrastructure/instances/standard/"
@@ -39,7 +27,6 @@ module "spark_masters" {
   role_version        = "${var.spark_masters_role_version}"
   image_name          = "${var.spark_masters_image_name}"
   extra_user_data     = "${map("spark_master_private_address", "", "spark_master_external_address", var.spark_master_external_address)}"
-  key_pair            = "${module.key_pair.id}"
   security_groups     = [
     "${var.datacenter}-${var.programme}-${var.env}-secgroup-base",
     "${var.datacenter}-${var.programme}-${var.env}-secgroup-ssh",
@@ -64,7 +51,6 @@ module "spark_slaves" {
   role_version        = "${var.spark_slaves_role_version}"
   image_name          = "${var.spark_slaves_image_name}"
   extra_user_data     = "${map("spark_master_private_address", module.spark_masters.access_ip_v4s[0], "spark_master_external_address", var.spark_master_external_address)}"
-  key_pair            = "${module.key_pair.id}"
   security_groups     = [
     "${var.datacenter}-${var.programme}-${var.env}-secgroup-base",
     "${var.datacenter}-${var.programme}-${var.env}-secgroup-ssh",

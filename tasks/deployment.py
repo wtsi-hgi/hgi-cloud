@@ -14,8 +14,8 @@ def var_files(context):
     context.config['meta']['datacenter'],
     context.config['meta']['programme'],
     context.config['meta']['env'],
-    context.config['deployment']['name'],
-    context.config['deployment']['owner']
+    context.config['deployment']['owner'],
+    context.config['deployment']['name']
   ]
   basename = os.path.join('terraform', 'vars')
   paths = []
@@ -32,8 +32,8 @@ def tfstate_file(context):
       context.config['meta']['datacenter'],
       context.config['meta']['programme'],
       context.config['meta']['env'],
-      context.config['deployment']['name'],
-      context.config['deployment']['owner']),
+      context.config['deployment']['owner'],
+      context.config['deployment']['name']),
     'tfstate'
   ]
 
@@ -44,8 +44,8 @@ def tfplan_file(context, to):
       context.config['meta']['datacenter'],
       context.config['meta']['programme'],
       context.config['meta']['env'],
-      context.config['deployment']['name'],
-      context.config['deployment']['owner']),
+      context.config['deployment']['owner'],
+      context.config['deployment']['name']),
     '{}.tfplan'.format(to)
   ]
 
@@ -54,8 +54,8 @@ def run_terraform(context, args):
     'TF_VAR_datacenter': context.config['meta']['datacenter'],
     'TF_VAR_programme': context.config['meta']['programme'],
     'TF_VAR_env': context.config['meta']['env'],
-    'TF_VAR_deployment_name': context.config['deployment']['name'],
     'TF_VAR_deployment_owner': context.config['deployment']['owner'],
+    'TF_VAR_deployment_name': context.config['deployment']['name'],
   }
   context.run('terraform {}'.format(args), env=env)
 
@@ -68,8 +68,17 @@ def clean(context):
 
 @invoke.task(pre=[clean])
 def init(context):
-  # options = ' '.join(['-var-file={}'.format(f) for f in var_files(context)])
-  options = ''
+  bucket = '-'.join([
+    context.config['meta']['datacenter'],
+    context.config['meta']['programme'],
+    'bucket',
+    os.environ['OS_USERNAME']
+  ])
+  options = ' '.join([
+    '-backend-config="skip_credentials_validation=true"',
+    '-backend-config="bucket={}"'.format(bucket),
+    '-backend-config="key={}"'.format(os.path.join(*tfstate_file(context)))
+  ])
   run_terraform(context, 'init {} {}'.format(options, iac_path(context)))
 
 @invoke.task(init)
@@ -85,11 +94,11 @@ def plan(context, to='create'):
   os.makedirs(tfplan_dirname, exist_ok=True)
   _out = '-out={}'.format(os.path.join(tfplan_dirname, tfplan_basename))
 
-  tfstate_dirname, tfstate_basename = tfstate_file(context)
-  os.makedirs(tfstate_dirname, exist_ok=True)
-  _state = '-state={}'.format(os.path.join(tfstate_dirname, tfstate_basename))
+  # tfstate_dirname, tfstate_basename = tfstate_file(context)
+  # os.makedirs(tfstate_dirname, exist_ok=True)
+  # _state = '-state={}'.format(os.path.join(tfstate_dirname, tfstate_basename))
 
-  options = _var_file + [_out, _state]
+  options = _var_file + [_out]
   if to == 'destroy':
     options.append('-destroy')
 
@@ -97,10 +106,10 @@ def plan(context, to='create'):
 
 def apply_plan(context, to=None, parallelism=64):
   tfplan = os.path.join(*tfplan_file(context, to))
-  _state_out = '-state-out={}'.format(os.path.join(*tfstate_file(context)))
+  # _state_out = '-state-out={}'.format(os.path.join(*tfstate_file(context)))
   _parallelism = '-parallelism={}'.format(parallelism)
   if os.path.isfile(tfplan):
-    run_terraform(context, 'apply {} {} {}'.format(_parallelism, _state_out, tfplan))
+    run_terraform(context, 'apply {} {}'.format(_parallelism, tfplan))
   else:
     error = (
       '{} does not exist or is not a regular file. '
@@ -112,17 +121,11 @@ def apply_plan(context, to=None, parallelism=64):
 def up(context, parallelism=64):
   apply_plan(context, 'create', parallelism)
 
-# Since both destruction and update are meant to modify an infrastructure, we
-# won't run them automatically at this stage.
-@invoke.task
+@invoke.task(pre=[invoke.call(plan, to='destroy')])
 def down(context, parallelism=64):
   apply_plan(context, 'destroy', parallelism)
 
-@invoke.task
-def update(context, parallelism=64):
-  apply_plan(context, 'update', parallelism)
-
-@invoke.task(post=[invoke.call(plan, to='destroy'), down, up])
+@invoke.task(pre=[down], post=[up])
 def rebuild(context, parallelism=64):
   pass
 
@@ -133,5 +136,4 @@ ns.add_task(validate)
 ns.add_task(plan)
 ns.add_task(up, default=True)
 ns.add_task(down)
-ns.add_task(update)
 ns.add_task(rebuild)

@@ -39,11 +39,11 @@ VARS
 # chmod 0600 vault_password.txt
 
 ansible-playbook \
-  --extra-vars @vars/metadata.yml \
   --extra-vars @vars/${datacenter}.yml \
   --extra-vars @vars/${datacenter}/${programme}.yml \
   --extra-vars @vars/${datacenter}/${programme}/${env}.yml \
-  --extra-vars @vars/${datacenter}/${programme}/${env}/${deployment_name}.yml \
-  --extra-vars @vars/${datacenter}/${programme}/${env}/${deployment_name}/${deployment_owner}.yml \
-  --extra-vars @vars/${datacenter}/${programme}/${env}/${deployment_name}/${deployment_owner}/${role_name}.yml \
+  --extra-vars @vars/${datacenter}/${programme}/${env}/${deployment_owner}.yml \
+  --extra-vars @vars/${datacenter}/${programme}/${env}/${deployment_owner}/${deployment_name}.yml \
+  --extra-vars @vars/${datacenter}/${programme}/${env}/${deployment_owner}/${deployment_name}/${role_name}.yml \
+  --extra-vars @vars/metadata.yml \
   instance.yml

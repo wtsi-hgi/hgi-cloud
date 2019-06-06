@@ -16,47 +16,67 @@ fi
 
 source "os_projects/${OS_PROJECT_NAME}.rc"
 
-case "${1}" in
+COLLECTION="${1}"
+
+case "${COLLECTION}" in
   --help)
     cat <<HELP
 SYNOPSIS
 
   ${0} --help
   ${0} [image | role] NAME/VERSION [invoke_options] [ [task_name] [task_options] ... ]
-  ${0} deployment [NAME | NAME/OWNER] invoke_options] [ [task_name] [task_options] ... ]
+  ${0} deployment [NAME | OWNER/NAME] invoke_options] [ [task_name] [task_options] ... ]
 
 DESCRIPTION
   Runs automation tasks on a specific types of objects within the
   infrastructure. The task names depend on the type of the object.
-  If OWNER is not specified, the value of OS_USERNAME will be used.
 
   --help                          Prints this help message. Any other argument
                                   will be discarded.
 EXAMPLES
 
-  $ bash invoke.sh deployment consul up
-  $ bash invoke.sh deployment spark-cluster/vvi plan --to update
-  $ bash invoke.sh role hail-base:HEAD test
-  $ bash invoke.sh image base:0.1.0 build
+  # Low level automations
+  $ bash invoke.sh deployment hermes/networking up
+  $ bash invoke.sh deployment vvi/spark plan --to update
+  $ bash invoke.sh image base/0.1.0 build
+  $ bash invoke.sh image spark-base/0.3.0 publish
+  $ bash invoke.sh image hail-base/1.1.0 accept
+
+  # High level automation. They need to be run by the actual user
+  $ bash invoke.sh user create --public-key=~/.ssh/id_rsa_dev.pub
+  $ bash invoke.sh user delete --yes-also-the-bucket
+
+  # High level automations. It can be run for other users
+  $ bash invoke.sh spark vvi init --masters-role=hail-master --slaves-role=hail-slave
+  $ bash invoke.sh spark ld14 deploy --full
+  $ bash invoke.sh spark ch12 decommission
+  
 HELP
     exit 0
   ;;
   image|role)
     IFS="/" read INVOKE_ROLE_NAME INVOKE_ROLE_VERSION <<<"${2}"
     export INVOKE_ROLE_NAME INVOKE_ROLE_VERSION
+    shift 2
   ;;
   deployment)
-    IFS="/" read INVOKE_DEPLOYMENT_NAME DEPLOYMENT_OWNER <<<"${2}"
-    export INVOKE_DEPLOYMENT_NAME
-    export INVOKE_DEPLOYMENT_OWNER="${DEPLOYMENT_OWNER:-"${OS_USERNAME}"}"
+    IFS="/" read INVOKE_DEPLOYMENT_OWNER INVOKE_DEPLOYMENT_NAME <<<"${2}"
+    export INVOKE_DEPLOYMENT_OWNER INVOKE_DEPLOYMENT_NAME
+    shift 2
+  ;;
+  spark)
+    export INVOKE_DEPLOYMENT_NAME="spark"
+    export INVOKE_DEPLOYMENT_OWNER="${2}"
+    shift 2
+  ;;
+  user)
+    export INVOKE_DEPLOYMENT_OWNER="${OS_USERNAME:?"OS_USERNAME is null or unset"}"
+    shift
   ;;
   *)
     die 1 "Sorry, cannot automate \`${$1}'"
   ;;
 esac
-
-COLLECTION="${1}"
-shift 2
 
 # Creates python3's virtualenv
 if [ ! -d "${PWD}/py3" ] ; then
@@ -83,7 +103,7 @@ if [ -z "${VIRTUAL_ENV}" ] ; then
 fi
 
 # Install all python modules
-pip install --requirement requirements.txt
+pip --no-cache-dir show invoke >/dev/null || pip --no-cache-dir install --requirement requirements.txt
 
 # These variables will describe the exact cloud / project in which to operate, in invoke
 export INVOKE_META_PROGRAMME="${META_PROGRAMME:?"META_PROGRAMME is null or unset"}"
