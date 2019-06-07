@@ -81,7 +81,7 @@ if [ -z "${VIRTUAL_ENV}" ] ; then
 fi
 
 # Install all python modules
-pip install --requirement requirements.txt
+pip --no-cache-dir install --requirement requirements.txt
 
 # User needs to source the right openrc.sh file.
 if [ -z "${OS_PROJECT_NAME}" ] ; then
