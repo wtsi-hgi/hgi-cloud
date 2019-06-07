@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # This wants to be an handy script to wrap the usage of invoke.
 # This tool is supposed to work only from the base project directory.
 
@@ -60,12 +60,7 @@ shift
 if [ ! -d "${PWD}/py3" ] ; then
   PYTHON=$(which python3)
   if [ -x "${PYTHON}" ] ; then
-    VIRTUALENV=$(which virtualenv)
-    if [ -x "${VIRTUALENV}" ] ; then
-      ${VIRTUALENV} --python "${PYTHON}" "${PWD}/py3"
-    else
-      die 2 "Cannot find virtualenv in PATH, or \`${VIRTUALENV}' is not executable"
-    fi
+    "${PYTHON}" -m venv "${PWD}/py3"
   else
     die 3 "Cannot find python3 in PATH, or \`${PYTHON}' is not executable"
   fi
