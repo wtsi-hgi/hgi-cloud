@@ -103,7 +103,7 @@ spark_defaults_extras:
   spark.executor.memory: "{{ (ansible_memtotal_mb * 0.94) | int() }}m"
   spark.executor.instances: 1
 
-  spark.jars: "{{ spark_jars | join(':') }}"
+  spark.jars: "{{ spark_jars | join(',') }}"
 
   spark.serializer: "org.apache.spark.serializer.KryoSerializer"
   spark.kryo.registrator: "is.hail.kryo.HailKryoRegistrator"
