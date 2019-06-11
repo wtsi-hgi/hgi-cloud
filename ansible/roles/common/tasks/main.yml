@@ -58,7 +58,7 @@
 - name: Mount extra volumes
   mount:
     state: mounted
-    src: "{{ volume['device'] }}1"
+    src: "{{ volume['filesystem_dev'] }}"
     path: "{{ volume['path'] }}"
     fstype: "{{ volume['fstype'] }}"
   loop: "{{ volumes }}"
