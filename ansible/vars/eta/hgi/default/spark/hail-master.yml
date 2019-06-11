@@ -1,0 +1,12 @@
+---
+volumes:
+  - name: jupyter_data
+    device: /dev/vdb
+    fstype: ext4
+    luks_state: opened
+    path: "{{ jupyter_install_dir }}/jupyter/data"
+  - name: tmp_dir
+    device: /dev/vdc
+    fstype: ext4
+    luks_state: absent
+    path: "{{ nfs_share_path }}"

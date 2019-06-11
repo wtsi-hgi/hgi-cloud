@@ -34,7 +34,6 @@ variable "depends_on" {
   type = "list"
   default = []
 }
-variable "vault_password" {}
 variable "volume_size" {
   default = 64
 }
