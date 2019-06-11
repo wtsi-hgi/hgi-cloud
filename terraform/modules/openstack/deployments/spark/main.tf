@@ -26,7 +26,7 @@ module "spark_masters" {
   role_name           = "${var.spark_masters_role_name}"
   role_version        = "${var.spark_masters_role_version}"
   image_name          = "${var.spark_masters_image_name}"
-  other_data          = "${map("spark_master_private_address", "", "spark_master_external_address", var.spark_master_external_address)}"
+  other_data          = "${map("password", var.password, "spark_master_private_address", "", "spark_master_external_address", var.spark_master_external_address)}"
   security_groups     = [
     "${var.datacenter}-${var.programme}-${var.env}-secgroup-base",
     "${var.datacenter}-${var.programme}-${var.env}-secgroup-ssh",
@@ -83,7 +83,7 @@ module "spark_slaves" {
   role_name           = "${var.spark_slaves_role_name}"
   role_version        = "${var.spark_slaves_role_version}"
   image_name          = "${var.spark_slaves_image_name}"
-  other_data          = "${map("spark_master_private_address", module.spark_masters.access_ip_v4s[0], "spark_master_external_address", var.spark_master_external_address)}"
+  other_data          = "${map("password", var.password, "spark_master_private_address", module.spark_masters.access_ip_v4s[0], "spark_master_external_address", var.spark_master_external_address)}"
   security_groups     = [
     "${var.datacenter}-${var.programme}-${var.env}-secgroup-base",
     "${var.datacenter}-${var.programme}-${var.env}-secgroup-ssh",

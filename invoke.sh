@@ -2,7 +2,7 @@
 # This wants to be an handy script to wrap the usage of invoke.
 # This tool is supposed to work only from the base project directory.
 
-set -e
+set -ex
 
 die() {
   echo -e "$2" >&2
