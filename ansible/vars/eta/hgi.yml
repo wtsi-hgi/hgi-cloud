@@ -8,6 +8,8 @@ hadoop_version: "2.7.7"
 spark_hadoop_profile: "hadoop-2.7"
 spark_version: "2.4.3"
 
+volumes: []
+
 base_user_name: hgi
 base_user_uid: 10000
 base_user_home: "/opt/sanger.ac.uk/{{ base_user_name }}"
@@ -203,7 +205,12 @@ hail_home: "{{ hail_install_dir }}/hail"
 
 nfs_server: spark-master
 nfs_share_path: "{{ hail_home }}/tmp"
-nfs_mount_point: "{{ hail_home }}/tmp"
+nfs_mount_point: "{{ nfs_share_path }}"
 nfs_share_owner: "{{ hail_install_owner }}"
 nfs_share_group: "{{ hail_install_group }}"
 nfs_share_mode: "{{ hail_install_mode }}"
+
+notebook_app_base_url: /jupyter
+jupyter_install_dir: "{{ base_install_dir }}"
+jupyter_install_owner: "{{ base_install_owner }}"
+jupyter_install_group: "{{ base_install_group }}"

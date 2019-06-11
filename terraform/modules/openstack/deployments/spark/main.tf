@@ -36,7 +36,40 @@ module "spark_masters" {
   flavor_name         = "${var.spark_masters_flavor_name}"
   affinity            = "${var.spark_masters_affinity}"
   network_name        = "${var.spark_masters_network_name}"
-  vault_password      = "${var.vault_password}"
+}
+
+resource "openstack_compute_floatingip_associate_v2" "public_ip" {
+  floating_ip = "${var.spark_master_external_address}"
+  instance_id = "${module.spark_masters.instance_ids[0]}"
+}
+
+module "jupyter_data" {
+  source              = "../../infrastructure/instances/extra/volume"
+  datacenter          = "${var.datacenter}"
+  programme           = "${var.programme}"
+  env                 = "${var.env}"
+  deployment_name     = "${var.deployment_name}"
+  deployment_owner    = "${var.deployment_owner}"
+  role_name           = "${var.spark_slaves_role_name}"
+  volume_name         = "tmp_dir"
+  size                = "${var.jupyter_data_size}"
+  instance_ids        = "${module.spark_masters.instance_ids}"
+  count               = 1
+}
+
+module "tmp_dir" {
+  source              = "../../infrastructure/instances/extra/volume"
+  datacenter          = "${var.datacenter}"
+  programme           = "${var.programme}"
+  env                 = "${var.env}"
+  deployment_name     = "${var.deployment_name}"
+  deployment_owner    = "${var.deployment_owner}"
+  role_name           = "${var.spark_slaves_role_name}"
+  volume_name         = "tmp_dir"
+  size                = "${var.tmp_dir_size}"
+  instance_ids        = "${module.spark_masters.instance_ids}"
+  count               = 1
+  depends_on          = "${module.jupyter_data.attached}"
 }
 
 module "spark_slaves" {
@@ -60,11 +93,5 @@ module "spark_slaves" {
   flavor_name         = "${var.spark_slaves_flavor_name}"
   affinity            = "${var.spark_slaves_affinity}"
   network_name        = "${var.spark_slaves_network_name}"
-  vault_password      = "${var.vault_password}"
   depends_on          = ["${module.spark_masters.instance_ids}" ]
-}
-
-resource "openstack_compute_floatingip_associate_v2" "public_ip" {
-  floating_ip = "${var.spark_master_external_address}"
-  instance_id = "${module.spark_masters.instance_ids[0]}"
 }

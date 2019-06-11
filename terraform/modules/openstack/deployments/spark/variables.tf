@@ -98,6 +98,10 @@ variable "spark_slaves_network_name" {
   default     = "main"
 }
 
-variable "vault_password" {
-  default     = ""
+variable "tmp_dir_size" {
+  default     = 64
+}
+
+variable "jupyter_data_size" {
+  default     = 32
 }

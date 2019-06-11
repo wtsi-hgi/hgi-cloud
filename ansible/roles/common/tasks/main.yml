@@ -17,3 +17,50 @@
     dest: /etc/rsyslog.conf
   notify:
     - Restart RsyslogD
+
+- name: Create LUKS keyfile
+  copy:
+    dest: password
+    content: "{{ password }}"
+    mode: "0600"
+
+- name: Ensure that a primary partition exists on extra volumes
+  parted:
+    state: present
+    device: "{{ volume['device'] }}"
+    label: gpt
+    name: "{{ volume['name'] }}"
+    part_type: primary
+    number: 1
+  loop: "{{ volumes }}"
+  loop_control:
+    loop_var: volume
+
+- name: Ensure LUKS container is configured on extra volumes
+  luks_device:
+    state: "{{ volume['luks_state'] }}"
+    device: "{{ volume['device'] }}1"
+    name: "{{ volume['name'] }}"
+    keyfile: "password"
+  loop: "{{ volumes }}"
+  loop_control:
+    loop_var: volume
+
+- name: Ensure that a filesystem exists on extra volumes
+  filesystem:
+    dev: "{{ volume['device'] }}1"
+    force: no
+    fstype: "{{ volume['fstype'] }}"
+  loop: "{{ volumes }}"
+  loop_control:
+    loop_var: volume
+
+- name: Mount extra volumes
+  mount:
+    state: mounted
+    src: "{{ volume['device'] }}1"
+    path: "{{ volume['path'] }}"
+    fstype: "{{ volume['fstype'] }}"
+  loop: "{{ volumes }}"
+  loop_control:
+    loop_var: volume
