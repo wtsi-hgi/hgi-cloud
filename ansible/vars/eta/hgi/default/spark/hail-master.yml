@@ -1,14 +1,14 @@
 ---
-volumes:
-  - name: jupyter_data
-    device: /dev/vdb
-    fstype: ext4
-    luks_state: opened
-    filesystem_dev: /dev/mapper/jupyter_data
-    path: "{{ jupyter_install_dir }}/jupyter/data"
-  - name: tmp_dir
-    device: /dev/vdc
-    fstype: ext4
-    luks_state: absent
-    filesystem_dev: /dev/vdc1
-    path: "{{ nfs_share_path }}"
+# volumes:
+#   - name: jupyter_data
+#     device: /dev/vdb
+#     fstype: ext4
+#     luks_state: opened
+#     filesystem_dev: /dev/mapper/jupyter_data
+#     path: "{{ jupyter_install_dir }}/jupyter/data"
+#   - name: tmp_dir
+#     device: /dev/vdc
+#     fstype: ext4
+#     luks_state: absent
+#     filesystem_dev: /dev/vdc1
+#     path: "{{ nfs_share_path }}"
