@@ -75,6 +75,7 @@ def init(context):
     os.environ['OS_USERNAME']
   ])
   options = ' '.join([
+    '-backend-config="region=eu-west-1"',
     '-backend-config="skip_credentials_validation=true"',
     '-backend-config="bucket={}"'.format(bucket),
     '-backend-config="key={}"'.format(os.path.join(*tfstate_file(context)))
