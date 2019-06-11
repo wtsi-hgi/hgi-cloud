@@ -49,7 +49,7 @@
 - name: Ensure that a filesystem exists on extra volumes
   filesystem:
     dev: "{{ volume['device'] }}1"
-    force: no
+    force: yes
     fstype: "{{ volume['fstype'] }}"
   loop: "{{ volumes }}"
   loop_control:
