@@ -85,7 +85,7 @@ def init(context):
 @invoke.task(init)
 def validate(context):
   options = ' '.join(['-var-file={}'.format(f) for f in var_files(context)])
-  run_terraform(context, 'validate {} {}'.format(options, iac_path(context)))
+  run_terraform(context, 'validate -check-variables=false {} {}'.format(options, iac_path(context)))
 
 @invoke.task(validate)
 def plan(context, to='create'):
