@@ -50,7 +50,7 @@ EXAMPLES
   $ bash invoke.sh spark vvi init --masters-role=hail-master --slaves-role=hail-slave
   $ bash invoke.sh spark ld14 deploy --full
   $ bash invoke.sh spark ch12 decommission
-  
+
 HELP
     exit 0
   ;;
@@ -92,7 +92,7 @@ esac
 #     die 3 "Cannot find python3 in PATH, or \`${PYTHON}' is not executable"
 #   fi
 # fi
-# 
+#
 # # Activates python3's virtualenv
 # if [ -z "${VIRTUAL_ENV}" ] ; then
 #   if [ -f "${PWD}/py3/bin/activate" ] ; then
@@ -101,7 +101,7 @@ esac
 #     die 4 "Cannot find ${PWD}/py3/bin/activate\n\tvirtualenv is broken, you can remove the direcotry and run ${0} again"
 #   fi
 # fi
-# 
+#
 # # Install all python modules
 # pip --no-cache-dir show invoke >/dev/null || pip --no-cache-dir install --requirement requirements.txt
 
