@@ -78,32 +78,32 @@ HELP
   ;;
 esac
 
-# Creates python3's virtualenv
-if [ ! -d "${PWD}/py3" ] ; then
-  PYTHON=$(which python3)
-  if [ -x "${PYTHON}" ] ; then
-    VIRTUALENV=$(which virtualenv)
-    if [ -x "${VIRTUALENV}" ] ; then
-      ${VIRTUALENV} --python "${PYTHON}" "${PWD}/py3"
-    else
-      die 2 "Cannot find virtualenv in PATH, or \`${VIRTUALENV}' is not executable"
-    fi
-  else
-    die 3 "Cannot find python3 in PATH, or \`${PYTHON}' is not executable"
-  fi
-fi
-
-# Activates python3's virtualenv
-if [ -z "${VIRTUAL_ENV}" ] ; then
-  if [ -f "${PWD}/py3/bin/activate" ] ; then
-    source ./py3/bin/activate
-  else
-    die 4 "Cannot find ${PWD}/py3/bin/activate\n\tvirtualenv is broken, you can remove the direcotry and run ${0} again"
-  fi
-fi
-
-# Install all python modules
-pip --no-cache-dir show invoke >/dev/null || pip --no-cache-dir install --requirement requirements.txt
+# # Creates python3's virtualenv
+# if [ ! -d "${PWD}/py3" ] ; then
+#   PYTHON=$(which python3)
+#   if [ -x "${PYTHON}" ] ; then
+#     VIRTUALENV=$(which virtualenv)
+#     if [ -x "${VIRTUALENV}" ] ; then
+#       ${VIRTUALENV} --python "${PYTHON}" "${PWD}/py3"
+#     else
+#       die 2 "Cannot find virtualenv in PATH, or \`${VIRTUALENV}' is not executable"
+#     fi
+#   else
+#     die 3 "Cannot find python3 in PATH, or \`${PYTHON}' is not executable"
+#   fi
+# fi
+# 
+# # Activates python3's virtualenv
+# if [ -z "${VIRTUAL_ENV}" ] ; then
+#   if [ -f "${PWD}/py3/bin/activate" ] ; then
+#     source ./py3/bin/activate
+#   else
+#     die 4 "Cannot find ${PWD}/py3/bin/activate\n\tvirtualenv is broken, you can remove the direcotry and run ${0} again"
+#   fi
+# fi
+# 
+# # Install all python modules
+# pip --no-cache-dir show invoke >/dev/null || pip --no-cache-dir install --requirement requirements.txt
 
 # These variables will describe the exact cloud / project in which to operate, in invoke
 export INVOKE_META_PROGRAMME="${META_PROGRAMME:?"META_PROGRAMME is null or unset"}"
