@@ -45,11 +45,16 @@
   loop_control:
     extended: yes
     loop_var: volume
-  when: parted_info.results[ansible_loop.index0].rc != 0
+  when: parted_info.results[ansible_loop.index0].partitions == []
 
 - name: Check if partition has been formatted
-  shell: "blkid --output value {{ volume['device'] }}1 | sed '2q;d'"
+  shell: |
+    blkid {{ volume['filesystem_dev'] }} | sed --quiet 's/.* TYPE="\([^\"]*\)".*/\1/p'
   register: blkid_info
+  loop: "{{ volumes }}"
+  loop_control:
+    extended: yes
+    loop_var: volume
 
 - name: Ensure LUKS container is configured on extra volumes
   luks_device:
@@ -61,7 +66,6 @@
   loop_control:
     extended: yes
     loop_var: volume
-  when: blkid_info.results[ansible_loop.index0].stdout == ""
 
 - name: Ensure that a filesystem exists on extra volumes
   filesystem:
@@ -72,7 +76,7 @@
   loop_control:
     loop_var: volume
     extended: yes
-  when: blkid_info.results[ansible_loop.index0].stdout == ""
+  when: blkid_info.results[ansible_loop.index0].rc != 0 or blkid_info.results[ansible_loop.index0].stdout == ''
 
 - name: Mount extra volumes
   mount:
