@@ -102,8 +102,6 @@ variable "tmp_dir_size" {
   default     = 64
 }
 
-variable "jupyter_data_size" {
-  default     = 32
-}
+variable "jupyter_data_volume" {}
 
 variable "password" {}
