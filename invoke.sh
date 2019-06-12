@@ -59,15 +59,10 @@ HELP
     export INVOKE_ROLE_NAME INVOKE_ROLE_VERSION
     shift 2
   ;;
-  deployment)
-    IFS="/" read INVOKE_DEPLOYMENT_OWNER INVOKE_DEPLOYMENT_NAME <<<"${2}"
-    export INVOKE_DEPLOYMENT_OWNER INVOKE_DEPLOYMENT_NAME
-    shift 2
-  ;;
-  spark)
-    export INVOKE_DEPLOYMENT_NAME="spark"
-    export INVOKE_DEPLOYMENT_OWNER="${2}"
-    shift 2
+  deployment|spark)
+    # IFS="/" read INVOKE_DEPLOYMENT_OWNER INVOKE_DEPLOYMENT_NAME <<<"${2}"
+    # export INVOKE_DEPLOYMENT_OWNER INVOKE_DEPLOYMENT_NAME
+    shift
   ;;
   user)
     export INVOKE_DEPLOYMENT_OWNER="${OS_USERNAME:?"OS_USERNAME is null or unset"}"
