@@ -24,6 +24,15 @@
     content: "{{ password }}"
     mode: "0600"
 
+- name: Check if volume has been partitioned
+  parted:
+    state: info
+    device: "{{ volume['device'] }}"
+  loop: "{{ volumes }}"
+  loop_control:
+    loop_var: volume
+  register: parted_info
+  
 - name: Ensure that a primary partition exists on extra volumes
   parted:
     state: present
@@ -34,7 +43,13 @@
     number: 1
   loop: "{{ volumes }}"
   loop_control:
+    extended: yes
     loop_var: volume
+  when: parted_info.results[ansible_loop.index0].rc != 0
+
+- name: Check if partition has been formatted
+  shell: "blkid --output value {{ volume['device'] }}1 | sed '2q;d'"
+  register: blkid_info
 
 - name: Ensure LUKS container is configured on extra volumes
   luks_device:
@@ -44,7 +59,9 @@
     keyfile: "password"
   loop: "{{ volumes }}"
   loop_control:
+    extended: yes
     loop_var: volume
+  when: blkid_info.results[ansible_loop.index0].stdout == ""
 
 - name: Ensure that a filesystem exists on extra volumes
   filesystem:
@@ -54,6 +71,8 @@
   loop: "{{ volumes }}"
   loop_control:
     loop_var: volume
+    extended: yes
+  when: blkid_info.results[ansible_loop.index0].stdout == ""
 
 - name: Mount extra volumes
   mount:
