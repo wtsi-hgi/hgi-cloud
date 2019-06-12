@@ -7,6 +7,9 @@ image:
     hgi: 4a9207c32f884e188bc3fe8227ebb7a1
     hgi-dev: 59d94c4174434c54a2f7b9eb1a905b00
 
+terraform:
+  parallelism: 32
+
 meta:
   env: default
   datacenter: default

@@ -4,6 +4,15 @@ import os
 import os.path
 import sys
 
+import openstack as openstack_client
+
+openstack = openstack_client.connect(auth_url=os.environ['OS_AUTH_URL'],
+                                     project_name=os.environ['OS_PROJECT_NAME'],
+                                     username=os.environ['OS_USERNAME'],
+                                     password=os.environ['OS_PASSWORD'],
+                                     region_name=os.environ['OS_REGION_NAME'],
+                                     app_name='invoke')
+
 def create_terraform_vars(order):
   dirname = os.path.join('terraform', 'vars')
   created = []
@@ -42,6 +51,14 @@ def create_ansible_vars(order, masters_roles, slaves_role):
 
   return created
 
+def jupyter_data_volume(context, owner):
+  volume_name = '-'.join([
+      context.config['meta']['datacenter'],
+      context.config['meta']['programme'],
+      context.config['meta']['env'],
+      'volume', owner, 'jupyter-data-01'])
+  return [ v.id for v in openstack.volume.volumes() if v.name == volume_name][0]
+
 @invoke.task
 def init(context, masters_roles, slaves_role):
   created = []
@@ -71,20 +88,32 @@ def init(context, masters_roles, slaves_role):
   context.run('git add {}'.format(' '.join(created)))
 
 @invoke.task
-def deploy(context, full=False):
-  owner = context.config['deployment']['owner']
-  if full:
-    context.run('bash invoke.sh deployment {}/networking up'.format(owner))
-  context.run('bash invoke.sh deployment {}/spark up'.format(owner))
+def create(context, owner, networking=False):
+  if networking:
+    context.run('bash invoke.sh deployment create --name networking --owner {}'.format(owner))
+  context.run('bash invoke.sh deployment create --name jupyter --owner {}'.format(owner))
+  volume_name = '-'.join([
+      context.config['meta']['datacenter'],
+      context.config['meta']['programme'],
+      context.config['meta']['env'],
+      'volume', owner, 'jupyter-data-01'])
+  env = {
+    'TF_VAR_jupyter_data_volume': jupyter_data_volume(context, owner)
+  }
+  context.run('bash invoke.sh deployment create --name spark --owner {}'.format(owner), env=env)
 
 @invoke.task
-def decommission(context, full=False):
-  owner = context.config['deployment']['owner']
-  context.run('bash invoke.sh deployment {}/spark down'.format(owner))
-  if full:
-    context.run('bash invoke.sh deployment {}/networking down'.format(owner))
+def destroy(context, owner, networking=False, yes_also_jupyter_data=False):
+  env = {
+    'TF_VAR_jupyter_data_volume': jupyter_data_volume(context, owner)
+  }
+  context.run('bash invoke.sh deployment destroy --name spark --owner {}'.format(owner), env=env)
+  if networking:
+    context.run('bash invoke.sh deployment destroy --name networking --owner {}'.format(owner))
+  if yes_also_jupyter_data:
+    context.run('bash invoke.sh deployment destroy --name jupyter --owner {}'.format(owner))
 
 ns = invoke.Collection()
 ns.add_task(init)
-ns.add_task(deploy)
-ns.add_task(decommission)
+ns.add_task(create)
+ns.add_task(destroy)

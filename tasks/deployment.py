@@ -95,20 +95,15 @@ def plan(context, to='create'):
   os.makedirs(tfplan_dirname, exist_ok=True)
   _out = '-out={}'.format(os.path.join(tfplan_dirname, tfplan_basename))
 
-  # tfstate_dirname, tfstate_basename = tfstate_file(context)
-  # os.makedirs(tfstate_dirname, exist_ok=True)
-  # _state = '-state={}'.format(os.path.join(tfstate_dirname, tfstate_basename))
-
   options = _var_file + [_out]
   if to == 'destroy':
     options.append('-destroy')
 
   run_terraform(context, 'plan {} {}'.format(' '.join(options), iac_path(context)))
 
-def apply_plan(context, to=None, parallelism=64):
+def apply_plan(context, to):
   tfplan = os.path.join(*tfplan_file(context, to))
-  # _state_out = '-state-out={}'.format(os.path.join(*tfstate_file(context)))
-  _parallelism = '-parallelism={}'.format(parallelism)
+  _parallelism = '-parallelism={}'.format(context.config['terraform']['parallelism'])
   if os.path.isfile(tfplan):
     run_terraform(context, 'apply {} {}'.format(_parallelism, tfplan))
   else:
@@ -119,22 +114,31 @@ def apply_plan(context, to=None, parallelism=64):
     sys.exit(1)
 
 @invoke.task(pre=[invoke.call(plan, to='create')])
-def up(context, parallelism=64):
-  apply_plan(context, 'create', parallelism)
+def deploy(context):
+  apply_plan(context, 'create')
 
 @invoke.task(pre=[invoke.call(plan, to='destroy')])
-def down(context, parallelism=64):
-  apply_plan(context, 'destroy', parallelism)
+def decommission(context):
+  apply_plan(context, 'destroy')
 
-@invoke.task(pre=[down], post=[up])
-def rebuild(context, parallelism=64):
-  pass
+@invoke.task(post=[deploy])
+def create(context, name, owner=None, parallelism=64):
+  context.config['deployment']['name'] = name
+  context.config['deployment']['owner'] = owner or os.environ['OS_USERNAME']
+  context.config['terraform']['parallelism'] = parallelism
+
+@invoke.task(post=[decommission])
+def destroy(context, name, owner=None, parallelism=64):
+  context.config['deployment']['name'] = name
+  context.config['deployment']['owner'] = owner or os.environ['OS_USERNAME']
+  context.config['terraform']['parallelism'] = parallelism
 
 ns = invoke.Collection()
 ns.add_task(clean)
 ns.add_task(init)
 ns.add_task(validate)
 ns.add_task(plan)
-ns.add_task(up, default=True)
-ns.add_task(down)
-ns.add_task(rebuild)
+ns.add_task(deploy)
+ns.add_task(decommission)
+ns.add_task(create, default=True)
+ns.add_task(destroy)
