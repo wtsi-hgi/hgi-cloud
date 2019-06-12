@@ -44,21 +44,22 @@ resource "openstack_compute_floatingip_associate_v2" "public_ip" {
 }
 
 module "jupyter_data" {
-  source              = "../../infrastructure/instances/extra/volume"
+  source              = "../../infrastructure/instances/extra/volatile_volume"
   datacenter          = "${var.datacenter}"
   programme           = "${var.programme}"
   env                 = "${var.env}"
   deployment_name     = "${var.deployment_name}"
   deployment_owner    = "${var.deployment_owner}"
   role_name           = "${var.spark_slaves_role_name}"
-  volume_name         = "tmp_dir"
-  size                = "${var.jupyter_data_size}"
+  volume_name         = "jupyter_data"
+  size                = "${var.tmp_dir_size}"
   instance_ids        = "${module.spark_masters.instance_ids}"
   count               = 1
+  depends_on          = "${module.jupyter_data.attached}"
 }
 
 module "tmp_dir" {
-  source              = "../../infrastructure/instances/extra/volume"
+  source              = "../../infrastructure/instances/extra/volatile_volume"
   datacenter          = "${var.datacenter}"
   programme           = "${var.programme}"
   env                 = "${var.env}"
