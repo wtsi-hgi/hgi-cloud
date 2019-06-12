@@ -1,10 +1,7 @@
 In proposed order:
-* (v0.1.0) Attach a persistent volume to jupyter data directory
-  * Cleanup the use of metadata and extra data in `user_data`
-* (v0.2.0) Shared terraform state (s3 bucket)
-* (v0.3.0) Attach a volatile volume to Hail `tmp_dir` on the master
-  * Investigate usage and performances, explore other options
-    (requires proper monitoring)
+* (v0.1.0) Shared terraform state (s3 bucket)
+* (v0.2.0) Attach a volatile volume to Hail `tmp_dir` on the master
+* (v0.3.0) Attach a persistent volume to jupyter data directory
 * (v0.4.0) Auto register hail master to infoblox
 * (v0.5.0) Backup / Restore (to S3?) Jupyter data files outside git
 * (v0.6.0) Review / improve testing and documentation
