@@ -65,6 +65,7 @@ def clean(context):
   print('Removing {}'.format(tfplans))
   for plan in glob.glob(tfplans):
     os.remove(plan)
+  os.remove(os.path.join('.terraform', 'terraform.tfstate'))
 
 @invoke.task(pre=[clean])
 def init(context):
