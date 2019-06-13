@@ -20,7 +20,7 @@
 
 - name: Create LUKS keyfile
   copy:
-    dest: password
+    dest: "{{ base_user_home }}/password"
     content: "{{ password }}"
     mode: "0600"
 
@@ -50,7 +50,7 @@
     state: "{{ volume['luks_state'] }}"
     device: "/dev/mapper/{{ volume['vg'] }}-{{ volume['lv'] }}"
     name: "{{ volume['luks_name'] }}"
-    keyfile: "password"
+    keyfile: "{{ base_user_home }}/password"
   loop: "{{ volumes }}"
   loop_control:
     loop_var: volume
@@ -63,6 +63,17 @@
   loop: "{{ volumes }}"
   loop_control:
     loop_var: volume
+
+- name: Ensure all entries are set in crypttab
+  crypttab:
+    state: present
+    name: "{{ volume['luks_name'] }}"
+    password: "{{ base_user_home }}/password"
+    backing_device: "/dev/mapper/{{ volume['vg'] }}-{{ volume['lv'] }}"
+  loop: "{{ volumes }}"
+  loop_control:
+    loop_var: volume
+  when: volume['luks_state'] != 'absent'
 
 - name: Mount extra volumes
   mount:
