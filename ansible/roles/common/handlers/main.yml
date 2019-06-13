@@ -8,3 +8,7 @@
   service:
     name: rsyslog
     state: restarted
+
+- name: systemctl daemon-reload
+  systemd:
+    daemon_reload: yes
