@@ -28,6 +28,7 @@
   lvg:
     state: present
     force: no
+    pesize: "4"
     vg: "{{ volume['vg'] }}"
     pvs: "{{ volume['device'] }}"
   loop: "{{ volumes }}"
