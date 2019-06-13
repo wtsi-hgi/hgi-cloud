@@ -1,9 +1,5 @@
-provider "openstack" {
-  version = "~> 1.16"
-}
-provider "template" {
-  version = "~> 2.1"
-}
+# provider "openstack" { version = "~> 1.16" }
+# provider "template" { version = "~> 2.1" }
 
 locals {
   metadata = {

@@ -1,9 +1,5 @@
-provider "openstack" {
-  version = "~> 1.16"
-}
-provider "template" {
-  version = "~> 2.1"
-}
+# provider "openstack" { version = "~> 1.16" }
+# provider "template" { version = "~> 2.1" }
 
 resource "openstack_compute_volume_attach_v2" "attachment" {
   count       = "${var.count}"

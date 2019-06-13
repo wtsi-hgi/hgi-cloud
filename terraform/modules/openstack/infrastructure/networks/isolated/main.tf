@@ -1,9 +1,5 @@
-provider "openstack" {
-  version = "~> 1.16"
-}
-provider "template" {
-  version = "~> 2.1"
-}
+# provider "openstack" { version = "~> 1.16" }
+# provider "template" { version = "~> 2.1" }
 
 resource "openstack_networking_network_v2" "isolated" {
   name           = "${var.datacenter}-${var.programme}-${var.env}-network-${var.network_name}"

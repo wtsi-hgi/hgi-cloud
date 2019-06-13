@@ -1,9 +1,5 @@
-provider "openstack" {
-  version = "~> 1.16"
-}
-provider "template" {
-  version = "~> 2.1"
-}
+# provider "openstack" { version = "~> 1.16" }
+# provider "template" { version = "~> 2.1" }
 
 # FIXME: with terraform > 0.12
 # user_data = "${templatefile("${path.module}/user_data.sh.tpl", merge(local.metadata, map("count", format("%02d", count.index + 1))))}"
