@@ -212,5 +212,6 @@ nfs_share_mode: "{{ hail_install_mode }}"
 
 notebook_app_base_url: /jupyter
 jupyter_install_dir: "{{ base_install_dir }}"
+jupyter_home: "{{ jupyter_install_dir }}/jupyter"
 jupyter_install_owner: "{{ base_install_owner }}"
 jupyter_install_group: "{{ base_install_group }}"

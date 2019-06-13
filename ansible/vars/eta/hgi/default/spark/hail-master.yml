@@ -1,14 +1,18 @@
 ---
 volumes:
-  - name: jupyter_data
-    device: /dev/vdb
-    fstype: ext4
+  - device: /dev/vdb
+    vg: jupyter
+    lv: data
     luks_state: opened
+    luks_name: jupyter_data
     filesystem_dev: /dev/mapper/jupyter_data
-    path: "{{ jupyter_install_dir }}/jupyter/data"
-  - name: tmp_dir
-    device: /dev/vdc
-    fstype: ext4
+    filesystem_type: ext4
+    mount_path: "{{ jupyter_home }}/data"
+  - device: /dev/vdc
+    vg: hail
+    lv: tmp_dir
     luks_state: absent
-    filesystem_dev: /dev/vdc1
-    path: "{{ nfs_share_path }}"
+    luks_name: tmp_dir
+    filesystem_dev: /dev/mapper/hail-tmp_dir
+    filesystem_type: ext4
+    mount_path: "{{ hail_home }}/tmp"

@@ -24,66 +24,51 @@
     content: "{{ password }}"
     mode: "0600"
 
-- name: Check if volume has been partitioned
-  parted:
-    state: info
-    device: "{{ volume['device'] }}"
-  loop: "{{ volumes }}"
-  loop_control:
-    loop_var: volume
-  register: parted_info
-  
-- name: Ensure that a primary partition exists on extra volumes
-  parted:
+- name: Ensure LVM volume group is created on extra volumes
+  lvg:
     state: present
-    device: "{{ volume['device'] }}"
-    label: gpt
-    name: "{{ volume['name'] }}"
-    part_type: primary
-    number: 1
+    force: no
+    vg: "{{ volume['vg'] }}"
+    pvs: "{{ volume['device'] }}"
   loop: "{{ volumes }}"
   loop_control:
-    extended: yes
     loop_var: volume
-  when: parted_info.results[ansible_loop.index0].partitions == []
 
-- name: Check if partition has been formatted
-  shell: |
-    blkid {{ volume['filesystem_dev'] }} | sed --quiet 's/.* TYPE="\([^\"]*\)".*/\1/p'
-  register: blkid_info
+- name: Ensure LVM logical volume is created on extra volumes
+  lvol:
+    vg: "{{ volume['vg'] }}"
+    lv: "{{ volume['lv'] }}"
+    size: +100%FREE
+    resizefs: yes
   loop: "{{ volumes }}"
   loop_control:
-    extended: yes
     loop_var: volume
 
 - name: Ensure LUKS container is configured on extra volumes
   luks_device:
     state: "{{ volume['luks_state'] }}"
-    device: "{{ volume['device'] }}1"
-    name: "{{ volume['name'] }}"
+    device: "/dev/mapper/{{ volume['vg'] }}-{{ volume['lv'] }}"
+    name: "{{ volume['luks_name'] }}"
     keyfile: "password"
   loop: "{{ volumes }}"
   loop_control:
-    extended: yes
     loop_var: volume
 
 - name: Ensure that a filesystem exists on extra volumes
   filesystem:
     dev: "{{ volume['filesystem_dev'] }}"
     force: yes
-    fstype: "{{ volume['fstype'] }}"
+    type: "{{ volume['filesystem_type'] }}"
   loop: "{{ volumes }}"
   loop_control:
     loop_var: volume
-    extended: yes
-  when: blkid_info.results[ansible_loop.index0].rc != 0 or blkid_info.results[ansible_loop.index0].stdout == ''
 
 - name: Mount extra volumes
   mount:
     state: mounted
     src: "{{ volume['filesystem_dev'] }}"
-    path: "{{ volume['path'] }}"
-    fstype: "{{ volume['fstype'] }}"
+    fstype: "{{ volume['filesystem_type'] }}"
+    path: "{{ volume['mount_path'] }}"
   loop: "{{ volumes }}"
   loop_control:
     loop_var: volume
