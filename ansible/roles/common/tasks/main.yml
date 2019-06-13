@@ -55,16 +55,7 @@
   loop_control:
     loop_var: volume
 
-- name: Ensure that a filesystem exists on extra volumes
-  filesystem:
-    dev: "{{ volume['filesystem_dev'] }}"
-    force: yes
-    type: "{{ volume['filesystem_type'] }}"
-  loop: "{{ volumes }}"
-  loop_control:
-    loop_var: volume
-
-- name: Ensure all entries are set in crypttab
+- name: Ensure LUKS containers are configured in crypttab
   crypttab:
     state: present
     name: "{{ volume['luks_name'] }}"
@@ -74,6 +65,16 @@
   loop_control:
     loop_var: volume
   when: volume['luks_state'] != 'absent'
+  notify: systemctl daemon-reload
+
+- name: Ensure that a filesystem exists on extra volumes
+  filesystem:
+    dev: "{{ volume['filesystem_dev'] }}"
+    force: yes
+    type: "{{ volume['filesystem_type'] }}"
+  loop: "{{ volumes }}"
+  loop_control:
+    loop_var: volume
 
 - name: Mount extra volumes
   mount:
