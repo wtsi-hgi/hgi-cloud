@@ -62,10 +62,13 @@ def run_terraform(context, args):
 @invoke.task
 def clean(context):
   tfplans = os.path.join(*tfplan_file(context, '*'))
+  tfstate = os.path.join('.terraform', 'terraform.tfstate')
   print('Removing {}'.format(tfplans))
   for plan in glob.glob(tfplans):
     os.remove(plan)
-  os.remove(os.path.join('.terraform', 'terraform.tfstate'))
+  print('Removing {}'.format(tfstate))
+  if os.path.exists(tfstate):
+    os.remove(tfstate)
 
 @invoke.task(pre=[clean])
 def init(context):
