@@ -49,6 +49,13 @@ module "jupyter_data" {
   instance_ids        = "${module.spark_masters.instance_ids}"
 }
 
+resource "null_resource" "wait" {
+  provisioner "local-exec" {
+    command   = "sleep 2"
+  }
+  depends_on  = ["${module.jupyter_data.attached}"]
+}
+
 module "tmp_dir" {
   source              = "../../infrastructure/instances/extra/volatile_volume"
   datacenter          = "${var.datacenter}"
@@ -61,7 +68,7 @@ module "tmp_dir" {
   size                = "${var.tmp_dir_size}"
   instance_ids        = "${module.spark_masters.instance_ids}"
   count               = 1
-  depends_on          = "${module.jupyter_data.attached}"
+  depends_on          = ["${null_resource.wait}"]
 }
 
 module "spark_slaves" {
