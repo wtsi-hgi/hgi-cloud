@@ -67,7 +67,11 @@
   when: volume['luks_state'] == 'present'
   notify: systemctl daemon-reload
 
-- name: Ensure SystemD handles LUKS containers
+- name: Let SystemD create new services based on the new entries in crypttab
+  systemd:
+    daemon_reload: yes
+
+- name: Ensure SystemD services handles LUKS containers
   service:
     name: "systemd-cryptsetup@{{ volume['luks_name'] }}"
     enabled: yes
