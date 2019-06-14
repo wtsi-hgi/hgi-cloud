@@ -64,8 +64,18 @@
   loop: "{{ volumes }}"
   loop_control:
     loop_var: volume
-  when: volume['luks_state'] != 'absent'
+  when: volume['luks_state'] == 'present'
   notify: systemctl daemon-reload
+
+- name: Ensure SystemD handles LUKS containers
+  service:
+    name: "systemd-cryptsetup@{{ volume['luks_name'] }}"
+    enabled: yes
+    state: started
+  loop: "{{ volumes }}"
+  loop_control:
+    loop_var: volume
+  when: volume['luks_state'] == 'present'
 
 - name: Ensure that a filesystem exists on extra volumes
   filesystem:
