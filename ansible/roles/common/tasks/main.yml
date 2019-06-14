@@ -65,7 +65,6 @@
   loop_control:
     loop_var: volume
   when: volume['luks_state'] == 'present'
-  notify: systemctl daemon-reload
 
 - name: Let SystemD create new services based on the new entries in crypttab
   systemd:
