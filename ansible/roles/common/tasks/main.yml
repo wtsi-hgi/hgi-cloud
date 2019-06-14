@@ -39,7 +39,8 @@
   lvol:
     vg: "{{ volume['vg'] }}"
     lv: "{{ volume['lv'] }}"
-    size: +100%FREE
+    pvs: "{{ volume['device'] }}"
+    size: +100%PVS
     resizefs: yes
   loop: "{{ volumes }}"
   loop_control:
