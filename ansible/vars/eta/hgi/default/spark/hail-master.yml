@@ -3,7 +3,7 @@ volumes:
   - device: /dev/vdb
     vg: jupyter
     lv: data
-    luks_state: present
+    luks_state: absent
     luks_name: jupyter_data
     filesystem_dev: /dev/mapper/jupyter_data
     filesystem_type: ext4
