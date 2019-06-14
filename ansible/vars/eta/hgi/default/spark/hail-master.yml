@@ -5,7 +5,7 @@ volumes:
     lv: data
     luks_state: absent
     luks_name: jupyter_data
-    filesystem_dev: /dev/mapper/jupyter_data
+    filesystem_dev: /dev/mapper/jupyter-data
     filesystem_type: ext4
     mount_path: "{{ jupyter_home }}/data"
   - device: /dev/vdc
