@@ -17,6 +17,5 @@ galaxy_info:
   galaxy_tags: []
 dependencies:
   - hail-common
-  - nfs-server
   - spark-master
   - jupyter-notebook

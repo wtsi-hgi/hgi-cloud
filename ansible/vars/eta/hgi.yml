@@ -203,13 +203,6 @@ hail_install_mode: "ug+rw,o+r"
 
 hail_home: "{{ hail_install_dir }}/hail"
 
-nfs_server: spark-master
-nfs_share_path: "{{ hail_home }}/tmp"
-nfs_mount_point: "{{ nfs_share_path }}"
-nfs_share_owner: "{{ hail_install_owner }}"
-nfs_share_group: "{{ hail_install_group }}"
-nfs_share_mode: "{{ hail_install_mode }}"
-
 notebook_app_base_url: /jupyter
 jupyter_install_dir: "{{ base_install_dir }}"
 jupyter_home: "{{ jupyter_install_dir }}/jupyter"
