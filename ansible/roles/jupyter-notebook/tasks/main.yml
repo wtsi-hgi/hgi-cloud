@@ -37,6 +37,7 @@
     dest: "{{ jupyter_data_keyfile }}"
     content: "{{ jupyter_data_password }}"
     mode: "0600"
+  no_log: true
 
 - name: Get data volume info
   parted:
@@ -60,6 +61,7 @@
     device: "{{ jupyter_data_volume }}1"
     name: jupyter_data
     keyfile: "{{ jupyter_data_keyfile }}"
+  no_log: true
 
 - name: Ensure LUKS containers are configured in crypttab
   crypttab:
@@ -67,7 +69,7 @@
     name: /dev/mapper/jupyter_data
     password: "{{ jupyter_data_keyfile }}"
     backing_device: "{{ jupyter_data_volume }}1"
-  when: jupyter_data_info.partitions == []
+  no_log: true
 
 - name: Let SystemD create new services based on the new entries in crypttab
   systemd:
