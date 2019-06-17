@@ -24,7 +24,6 @@ def var_files(context):
     paths.append('{}.tfvars'.format(basename))
   return paths
 
-# When we'll move to s3 backed state files, this function will be deprecated
 def tfstate_file(context):
   return [
     os.path.join(
