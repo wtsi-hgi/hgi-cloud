@@ -11,12 +11,12 @@
 
 ## The Logging format template
 #c.Application.log_format = '[%(name)s]%(highlevel)s %(message)s'
-
-## Set the log level by value or name.
-#c.Application.log_level = 30
-
-#------------------------------------------------------------------------------
-# JupyterApp(Application) configuration
+  
+  ## Set the log level by value or name.
+  #c.Application.log_level = 30
+  
+  #------------------------------------------------------------------------------
+  # JupyterApp(Application) configuration
 #------------------------------------------------------------------------------
 
 ## Base class for Jupyter applications
@@ -45,7 +45,7 @@
 #  Use '*' to allow any origin to access your server.
 #  
 #  Takes precedence over allow_origin_pat.
-c.NotebookApp.allow_origin = '*'
+#c.NotebookApp.allow_origin = '*'
 
 ## Use a regular expression for the Access-Control-Allow-Origin header
 #  
@@ -67,7 +67,7 @@ c.NotebookApp.allow_origin = '*'
 ## The base URL for the notebook server.
 #  
 #  Leading and trailing slashes can be omitted, and will automatically be added.
-c.NotebookApp.base_url = '{{ notebook_app_base_url }}'
+#c.NotebookApp.base_url = ''
 
 ## Specify what command to use to invoke a web browser when opening the notebook.
 #  If not specified, the default browser will be determined by the `webbrowser`
@@ -159,7 +159,7 @@ c.NotebookApp.base_url = '{{ notebook_app_base_url }}'
 #c.NotebookApp.iopub_msg_rate_limit = 1000
 
 ## The IP address the notebook server will listen on.
-c.NotebookApp.ip = '0.0.0.0'
+#c.NotebookApp.ip = '0.0.0.0'
 
 ## Supply extra arguments that will be passed to Jinja environment.
 #c.NotebookApp.jinja_environment_options = {}
@@ -199,13 +199,13 @@ c.NotebookApp.ip = '0.0.0.0'
 #c.NotebookApp.nbserver_extensions = {}
 
 ## The directory to use for notebooks and kernels.
-c.NotebookApp.notebook_dir = '{{ hail_install_dir }}/jupyter/data'
+#c.NotebookApp.notebook_dir = 'data/'
 
 ## Whether to open in a browser after starting. The specific browser used is
 #  platform dependent and determined by the python standard library `webbrowser`
 #  module, unless it is overridden using the --browser (NotebookApp.browser)
 #  configuration option.
-c.NotebookApp.open_browser = False
+# c.NotebookApp.open_browser = False
 
 ## Hashed password to use for web authentication.
 #  
@@ -258,7 +258,7 @@ c.NotebookApp.open_browser = False
 #  
 #  Setting to an empty string disables authentication altogether, which is NOT
 #  RECOMMENDED.
-c.NotebookApp.token = '{{ hail_jupyter_token | default('') }}'
+# c.NotebookApp.token = ''
 
 ## Supply overrides for the tornado.web.Application that the Jupyter notebook
 #  uses.
@@ -604,3 +604,6 @@ c.NotebookApp.token = '{{ hail_jupyter_token | default('') }}'
 #  By default, all installed kernels are allowed.
 #c.KernelSpecManager.whitelist = set()
 
+{% for key, value in jupyter_notebookapp_config.items() | sort %}
+{{ key }} = {{ value }}
+{% endfor %}
