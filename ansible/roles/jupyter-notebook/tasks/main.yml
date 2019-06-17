@@ -49,7 +49,7 @@
     device: "{{ jupyter_data_volume }}"
     state: present
     label: gpt
-    name: jupyter-data
+    name: jupyter_data
     number: 1
     part_type: primary
   when: jupyter_data_info.partitions == []
@@ -58,15 +58,15 @@
   luks_device:
     state: present
     device: "{{ jupyter_data_volume }}1"
-    name: jupyter-data
+    name: jupyter_data
     keyfile: "{{ jupyter_data_keyfile }}"
 
 - name: Ensure LUKS containers are configured in crypttab
   crypttab:
     state: present
-    name: "{{ jupyter_data_volume }}1"
+    name: /dev/mapper/jupyter_data
     password: "{{ jupyter_data_keyfile }}"
-    backing_device: /dev/mapper/jupyter-data
+    backing_device: "{{ jupyter_data_volume }}1"
   when: jupyter_data_info.partitions == []
 
 - name: Let SystemD create new services based on the new entries in crypttab
@@ -75,13 +75,13 @@
 
 - name: Ensure SystemD services handles LUKS containers
   service:
-    name: "systemd-cryptsetup@-dev-vdb1"
+    name: "systemd-cryptsetup@jupyter_data"
     enabled: yes
     state: started
 
 - name: Ensure that a filesystem exists on extra volumes
   filesystem:
-    dev: "/dev/mapper/jupyter-data"
+    dev: "/dev/mapper/jupyter_data"
     force: no
     type: ext4
   when: jupyter_data_info.partitions == []
@@ -97,7 +97,7 @@
 - name: Mount extra volumes
   mount:
     state: mounted
-    src: "/dev/mapper/jupyter-data"
+    src: "/dev/mapper/jupyter_data"
     fstype: "ext4"
     path: "{{ jupyter_install_dir }}/jupyter/data"
 
