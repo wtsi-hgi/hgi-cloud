@@ -32,6 +32,75 @@
     group: "{{ jupyter_install_group }}"
     mode: 0600
 
+- name: Create data volume LUKS keyfile
+  copy:
+    dest: "{{ jupyter_data_keyfile }}"
+    content: "{{ jupyter_data_password }}"
+    mode: "0600"
+
+- name: Get data volume info
+  parted:
+    device: "{{ jupyter_data_volume }}"
+    state: info
+  register: jupyter_data_info
+
+- name: Create data volume partition
+  parted:
+    device: "{{ jupyter_data_volume }}"
+    state: present
+    label: gpt
+    name: jupyter-data
+    number: 1
+    part_type: primary
+  when: jupyter_data_info.partitions == []
+
+- name: Ensure LUKS container is configured on extra volumes
+  luks_device:
+    state: present
+    device: "{{ jupyter_data_volume }}1"
+    name: jupyter-data
+    keyfile: "{{ jupyter_data_keyfile }}"
+
+- name: Ensure LUKS containers are configured in crypttab
+  crypttab:
+    state: present
+    name: "{{ jupyter_data_volume }}1"
+    password: "{{ jupyter_data_keyfile }}"
+    backing_device: /dev/mapper/jupyter-data
+  when: jupyter_data_info.partitions == []
+
+- name: Let SystemD create new services based on the new entries in crypttab
+  systemd:
+    daemon_reload: yes
+
+- name: Ensure SystemD services handles LUKS containers
+  service:
+    name: "systemd-cryptsetup@jupyter-data"
+    enabled: yes
+    state: started
+
+- name: Ensure that a filesystem exists on extra volumes
+  filesystem:
+    dev: "/dev/mapper/jupyter-data"
+    force: no
+    type: ext4
+  when: jupyter_data_info.partitions == []
+
+- name: Ensure Jupyter data directory exists
+  file:
+    state: directory
+    path: "{{ jupyter_install_dir }}/jupyter/data"
+    mode: "0755"
+    owner: "{{ jupyter_install_owner }}"
+    group: "{{ jupyter_install_group }}"
+
+- name: Mount extra volumes
+  mount:
+    state: mounted
+    src: "/dev/mapper/jupyter-data"
+    fstype: "ext4"
+    path: "{{ jupyter_install_dir }}/jupyter/data"
+
 - name: Enable and start Hail's Jupyter Notebook service
   become: yes
   service:

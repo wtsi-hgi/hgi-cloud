@@ -53,7 +53,7 @@ resource "null_resource" "wait" {
   provisioner "local-exec" {
     command   = "sleep 2"
   }
-  depends_on  = ["${module.jupyter_data.attached}"]
+  triggers = { jupyter_data_attached = "${join("", module.jupyter_data.attached)}" }
 }
 
 module "tmp_dir" {
@@ -68,7 +68,7 @@ module "tmp_dir" {
   size                = "${var.tmp_dir_size}"
   instance_ids        = "${module.spark_masters.instance_ids}"
   count               = 1
-  depends_on          = ["${null_resource.wait}"]
+  depends_on          = ["${null_resource.wait.id}"]
 }
 
 module "spark_slaves" {
