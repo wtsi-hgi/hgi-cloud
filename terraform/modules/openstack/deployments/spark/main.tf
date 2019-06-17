@@ -51,9 +51,9 @@ module "jupyter_data" {
 
 resource "null_resource" "wait" {
   provisioner "local-exec" {
-    command   = "sleep 2"
+    command   = "sleep 5"
   }
-  triggers = { jupyter_data_attached = "${join("", module.jupyter_data.attached)}" }
+  depends_on = [ "module.jupyter_data" ]
 }
 
 module "tmp_dir" {
