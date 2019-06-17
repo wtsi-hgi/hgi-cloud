@@ -1,4 +1,69 @@
 ---
+- name: Ensure LVM volume group hail is created
+  lvg:
+    state: present
+    force: no
+    pesize: "4"
+    vg: hail
+    pvs: /dev/vdc
+
+- name: Ensure LVM logical volume for tmp_dir is created
+  lvol:
+    vg: hail
+    lv: tmp_dir
+    pvs: /dev/vdc
+    size: 100%VG
+    resizefs: yes
+
+- name: Ensure that a filesystem is create on tmp_dir volume
+  filesystem:
+    dev: /dev/mapper/hail-tmp_dir
+    force: yes
+    type: ext4
+
+- name: Mount tmp_dir
+  mount:
+    state: mounted
+    src: /dev/mapper/hail-tmp_dir
+    fstype: ext4
+    path: "{{ hail_home }}/tmp"
+
+- name: Ensure /etc/exports exists
+  become: yes
+  file:
+    path: /etc/exports
+    state: touch
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Ensure NFS shared directory exists
+  file:
+    path: "{{ hail_home }}/tmp"
+    state: directory
+    owner: "{{ hail_install_owner }}"
+    group: "{{ hail_install_group }}"
+    mode: "{{ hail_install_mode }}"
+
+- name: Ensure NFS shared directory is exported
+  become: yes
+  lineinfile:
+    path: /etc/exports
+    state: present
+    regexp: "^{{ hail_home }}/tmp"
+    # Security groups will take care of the connection restrictions
+    line: "{{ hail_home }}/tmp *(rw,sync,no_root_squash,no_subtree_check)"
+
+- name: Install NFS packages
+  become: yes
+  apt:
+    name:
+      - nfs-common
+      - nfs-kernel-server
+    state: present
+    update_cache: yes
+    force_apt_get: yes
+
 - name: Install nginx
   become: yes
   apt:
