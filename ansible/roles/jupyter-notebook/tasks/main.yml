@@ -92,9 +92,6 @@
   file:
     state: directory
     path: "{{ jupyter_install_dir }}/jupyter/data"
-    mode: "0755"
-    owner: "{{ jupyter_install_owner }}"
-    group: "{{ jupyter_install_group }}"
 
 - name: Mount extra volumes
   mount:
@@ -102,6 +99,15 @@
     src: "/dev/mapper/jupyter_data"
     fstype: "ext4"
     path: "{{ jupyter_install_dir }}/jupyter/data"
+    opts: "uid={{ jupyter_install_owner }},gid={{ jupyter_install_group }}"
+
+- name: Ensure Jupyter data directory correct ownership and permission
+  file:
+    state: directory
+    path: "{{ jupyter_install_dir }}/jupyter/data"
+    mode: "0700"
+    owner: "{{ jupyter_install_owner }}"
+    group: "{{ jupyter_install_group }}"
 
 - name: Enable and start Hail's Jupyter Notebook service
   become: yes
