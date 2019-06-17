@@ -75,7 +75,7 @@
 
 - name: Ensure SystemD services handles LUKS containers
   service:
-    name: "systemd-cryptsetup@jupyter-data"
+    name: "systemd-cryptsetup@-dev-vdb1"
     enabled: yes
     state: started
 
