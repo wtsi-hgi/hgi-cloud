@@ -25,14 +25,15 @@ def keypair_name(context):
   ])
 
 @invoke.task
-def create(context, s3cfg='~/.s3cfg', public_key='~/.ssh/id_rsa.pub'):
+def create(context, public_key='~/.ssh/id_rsa.pub', create_bucket=False, s3cfg='~/.s3cfg'):
   openstack = 'openstack keypair create --public-key={} {}'
   key_path = os.path.expanduser(public_key)
   context.run(openstack.format(key_path, keypair_name(context)), warn=True)
-  run_s3cmd(context, s3cfg, 'mb')
+  if create_bucket:
+    run_s3cmd(context, s3cfg, 'mb')
 
 @invoke.task
-def delete(context, s3cfg='~/.s3cfg', yes_also_the_bucket=False):
+def delete(context, yes_also_the_bucket=False, s3cfg='~/.s3cfg'):
   openstack = 'openstack keypair delete {}'
   context.run(openstack.format(keypair_name(context)), warn=True)
   if yes_also_the_bucket:
