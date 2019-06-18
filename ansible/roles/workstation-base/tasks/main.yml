@@ -1,0 +1,57 @@
+---
+- name: Ensure workstation's packages are installed
+  apt:
+    state: present
+    name:
+      - python3
+      - python3-dev
+      - virtualenv
+      - build-essential
+      - unzip
+    install_recommends: yes
+    force_apt_get: yes
+
+- name: Get terraform
+  get_url:
+    url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip"
+    dest: /tmp
+    sha256sum: "{{ terraform_sha256sum }}"
+
+- name: Install terraform
+  unarchive:
+    src: "/tmp/terraform_{{ terraform_version }}_linux_amd64.zip"
+    remote_src: true
+    dest: /usr/local/bin
+    mode: "0755"
+    creates: /usr/local/bin/terraform
+
+- name: Get packer
+  get_url:
+    url: "https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_linux_amd64.zip"
+    dest: /tmp
+    sha256sum: "{{ packer_sha256sum }}"
+
+- name: Install packer
+  unarchive:
+    src: "/tmp/packer_{{ packer_version }}_linux_amd64.zip"
+    remote_src: true
+    dest: /usr/local/bin
+    mode: "0755"
+    creates: /usr/local/bin/packer
+
+- name: Clone provisioning repo
+  git:
+    repo: "{{ provisioning_repo }}"
+    dest: "/home/{{ workstation_install_owner }}/provisioning"
+
+- name: Create py3 virtualenv
+    shell: "virtualenv --python=/usr/bin/python3 /home/{{ workstation_install_owner }}/provisioning/py3"
+
+- name: Fix ownership and permissions on repo
+    file:
+      state: directory
+      path: "/home/{{ workstation_install_owner }}/provisioning"
+      recursive: yes
+      mode: "ug+rw,o+r"
+      owner: "{{ workstation_install_owner }}"
+      group: "{{ workstation_install_group }}"
