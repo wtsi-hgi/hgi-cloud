@@ -1,0 +1,152 @@
+---
+- name: Create data volume LUKS keyfile
+  copy:
+    dest: "{{ hail_volume_keyfile }}"
+    content: "{{ hail_volume_password }}"
+    mode: "0600"
+  no_log: true
+
+- name: Get data volume info
+  parted:
+    device: "{{ hail_volume_volume }}"
+    state: info
+  register: hail_volume_info
+
+- name: Create jupyter data partition
+  parted:
+    device: "{{ hail_volume_volume }}"
+    state: present
+    label: gpt
+    name: jupyter_data
+    number: 1
+    part_type: primary
+    part_end: 1GiB
+  when: hail_volume_info.partitions == []
+
+- name: Create hail data partition
+  parted:
+    device: "{{ hail_volume_volume }}"
+    state: present
+    label: gpt
+    name: hail_data
+    number: 2
+    part_type: primary
+    part_start: 1GiB
+  when: hail_volume_info.partitions == []
+
+- name: Ensure LUKS container is configured on extra volumes
+  luks_device:
+    state: present
+    device: "{{ hail_volume_volume }}1"
+    name: jupyter_data
+    keyfile: "{{ hail_volume_keyfile }}"
+  no_log: true
+
+- name: Ensure LUKS containers are configured in crypttab
+  crypttab:
+    state: present
+    name: /dev/mapper/jupyter_data
+    password: "{{ hail_volume_keyfile }}"
+    backing_device: "{{ hail_volume_volume }}1"
+  no_log: true
+
+- name: Let SystemD create new services based on the new entries in crypttab
+  systemd:
+    daemon_reload: yes
+
+- name: Ensure SystemD services handles LUKS containers
+  service:
+    name: "systemd-cryptsetup@jupyter_data"
+    enabled: yes
+    state: started
+
+- name: Ensure that a filesystem exists on extra volumes
+  filesystem:
+    dev: "/dev/mapper/jupyter_data"
+    force: no
+    type: ext4
+  when: hail_volume_info.partitions == []
+
+- name: Ensure LVM volume group hail is created
+  lvg:
+    state: present
+    force: no
+    pesize: "4"
+    vg: hail
+    pvs: "{{ hail_volume_volume }}2"
+
+- name: Ensure LVM logical volume for tmp_dir is created
+  lvol:
+    vg: hail
+    lv: tmp_dir
+    pvs: "{{ hail_volume_volume }}2"
+    size: 100%VG
+    resizefs: yes
+
+- name: Ensure that a filesystem is create on tmp_dir volume
+  filesystem:
+    dev: /dev/mapper/hail-tmp_dir
+    force: yes
+    type: ext4
+
+- name: Mount tmp_dir
+  mount:
+    state: mounted
+    src: /dev/mapper/hail-tmp_dir
+    fstype: ext4
+    path: "{{ hail_home }}/tmp"
+
+- name: Ensure /etc/exports exists
+  become: yes
+  file:
+    path: /etc/exports
+    state: touch
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Ensure NFS shared directory exists
+  file:
+    path: "{{ hail_home }}/tmp"
+    state: directory
+    owner: "{{ hail_install_owner }}"
+    group: "{{ hail_install_group }}"
+    mode: "{{ hail_install_mode }}"
+
+- name: Ensure NFS shared directory is exported
+  become: yes
+  lineinfile:
+    path: /etc/exports
+    state: present
+    regexp: "^{{ hail_home }}/tmp"
+    # Security groups will take care of the connection restrictions
+    line: "{{ hail_home }}/tmp *(rw,sync,no_root_squash,no_subtree_check)"
+
+- name: Install NFS packages
+  become: yes
+  apt:
+    name:
+      - nfs-common
+      - nfs-kernel-server
+    state: present
+    update_cache: yes
+    force_apt_get: yes
+
+- name: Install nginx
+  become: yes
+  apt:
+    name:
+      - nginx
+    state: present
+    update_cache: yes
+    force_apt_get: yes
+
+- name: Configure nginx
+  become: yes
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/conf.d/hail-master.conf
+    mode: 0700
+    owner: www-data
+  notify:
+    - Restart nginx
