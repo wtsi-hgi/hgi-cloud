@@ -1,7 +1,6 @@
 variable "datacenter" {}
 variable "programme" {}
 variable "env" {}
-variable "deployment_name" {}
 variable "deployment_owner" {}
 variable "size" {
   default = 1

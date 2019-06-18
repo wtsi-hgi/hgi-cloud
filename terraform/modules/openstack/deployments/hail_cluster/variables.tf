@@ -1,9 +1,3 @@
-variable "deployment_name" {
-  description = "The name of the deployment"
-  type        = "string"
-  default     = "main"
-}
-
 variable "deployment_color" {
   description = "The color of the deployment"
   type        = "string"
@@ -98,10 +92,9 @@ variable "spark_slaves_network_name" {
   default     = "main"
 }
 
-variable "tmp_dir_size" {
-  default     = 64
-}
+variable "hail_volume" {}
 
-variable "jupyter_data_volume" {}
-
-variable "password" {}
+variable "aws_access_key_id" {}
+variable "aws_secret_access_key" {}
+variable "aws_s3_endpoint" {}
+variable "aws_default_region" {}

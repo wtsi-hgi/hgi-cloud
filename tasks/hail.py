@@ -51,12 +51,12 @@ def create_ansible_vars(order, masters_roles, slaves_role):
 
   return created
 
-def jupyter_data_volume(context, owner):
+def hail_volume(context, owner):
   volume_name = '-'.join([
       context.config['meta']['datacenter'],
       context.config['meta']['programme'],
       context.config['meta']['env'],
-      'volume', owner, 'jupyter-data-01'])
+      'volume', owner, 'hail-data-01'])
   return [ v.id for v in openstack.volume.volumes() if v.name == volume_name][0]
 
 @invoke.task
@@ -72,12 +72,12 @@ def init(context, masters_roles, slaves_role):
   created += create_terraform_vars(order) + \
              create_ansible_vars(order, masters_roles, slaves_role)
 
-  spark_conf = ['terraform', 'vars'] + order
-  user_conf = spark_conf[:]
-  spark_conf[-1] = spark_conf[-1] + '.tfvars'
+  hail_cluster_conf = ['terraform', 'vars'] + order
+  user_conf = hail_cluster_conf[:]
+  hail_cluster_conf[-1] = hail_cluster_conf[-1] + '.tfvars'
   user_conf[-1] = 'user.tfvars'
 
-  with open(os.path.join(*spark_conf), 'a') as conf:
+  with open(os.path.join(*hail_cluster_conf), 'a') as conf:
     conf.write("spark_masters_role_name = \"{}\"\n".format(masters_roles))
     conf.write("spark_slaves_role_name = \"{}\"\n".format(slaves_role))
 
@@ -91,27 +91,22 @@ def init(context, masters_roles, slaves_role):
 def create(context, owner, networking=False):
   if networking:
     context.run('bash invoke.sh deployment create --name networking --owner {}'.format(owner))
-  context.run('bash invoke.sh deployment create --name jupyter --owner {}'.format(owner))
-  volume_name = '-'.join([
-      context.config['meta']['datacenter'],
-      context.config['meta']['programme'],
-      context.config['meta']['env'],
-      'volume', owner, 'jupyter-data-01'])
+  context.run('bash invoke.sh deployment create --name hail_volume --owner {}'.format(owner))
   env = {
-    'TF_VAR_jupyter_data_volume': jupyter_data_volume(context, owner)
+    'TF_VAR_hail_volume': hail_volume(context, owner)
   }
-  context.run('bash invoke.sh deployment create --name spark --owner {}'.format(owner), env=env)
+  context.run('bash invoke.sh deployment create --name hail_cluster --owner {}'.format(owner), env=env)
 
 @invoke.task
-def destroy(context, owner, networking=False, yes_also_jupyter_data=False):
+def destroy(context, owner, networking=False, yes_also_hail_volume=False):
   env = {
-    'TF_VAR_jupyter_data_volume': jupyter_data_volume(context, owner)
+    'TF_VAR_hail_volume': hail_volume(context, owner)
   }
-  context.run('bash invoke.sh deployment destroy --name spark --owner {}'.format(owner), env=env)
+  context.run('bash invoke.sh deployment destroy --name hail_cluster --owner {}'.format(owner), env=env)
   if networking:
     context.run('bash invoke.sh deployment destroy --name networking --owner {}'.format(owner))
-  if yes_also_jupyter_data:
-    context.run('bash invoke.sh deployment destroy --name jupyter --owner {}'.format(owner))
+  if yes_also_hail_volume:
+    context.run('bash invoke.sh deployment destroy --name hail_volume --owner {}'.format(owner))
 
 ns = invoke.Collection()
 ns.add_task(init)

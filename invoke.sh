@@ -37,9 +37,9 @@ EXAMPLES
 
   # Low level automations
   $ bash invoke.sh deployment hermes/networking up
-  $ bash invoke.sh deployment vvi/spark plan --to update
+  $ bash invoke.sh deployment vvi/hail plan --to update
   $ bash invoke.sh image base/0.1.0 build
-  $ bash invoke.sh image spark-base/0.3.0 publish
+  $ bash invoke.sh image hail-base/0.3.0 publish
   $ bash invoke.sh image hail-base/1.1.0 accept
 
   # High level automation. They need to be run by the actual user
@@ -47,9 +47,9 @@ EXAMPLES
   $ bash invoke.sh user delete --yes-also-the-bucket
 
   # High level automations. It can be run for other users
-  $ bash invoke.sh spark vvi init --masters-role=hail-master --slaves-role=hail-slave
-  $ bash invoke.sh spark ld14 deploy --full
-  $ bash invoke.sh spark ch12 decommission
+  $ bash invoke.sh hail vvi init --masters-role=hail-master --slaves-role=hail-slave
+  $ bash invoke.sh hail ld14 deploy --full
+  $ bash invoke.sh hail ch12 decommission
 
 HELP
     exit 0
@@ -59,7 +59,7 @@ HELP
     export INVOKE_ROLE_NAME INVOKE_ROLE_VERSION
     shift 2
   ;;
-  deployment|spark)
+  deployment|hail)
     # IFS="/" read INVOKE_DEPLOYMENT_OWNER INVOKE_DEPLOYMENT_NAME <<<"${2}"
     # export INVOKE_DEPLOYMENT_OWNER INVOKE_DEPLOYMENT_NAME
     shift
