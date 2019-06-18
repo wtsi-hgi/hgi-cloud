@@ -14,7 +14,8 @@ module "standard_volume" {
 }
 
 resource "openstack_compute_volume_attach_v2" "attachment" {
-  count       = "${var.count}"
-  instance_id = "${element(var.instance_ids, count.index)}"
-  volume_id   = "${element(module.standard_volume.volume_ids, count.index)}"
+  count               = "${var.count}"
+  instance_id         = "${element(var.instance_ids, count.index)}"
+  volume_id           = "${element(openstack_blockstorage_volume_v2.volume.*.id, count.index)}"
+  depends_on          = ["null_resource.wait"]
 }

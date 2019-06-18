@@ -55,6 +55,10 @@ def run_terraform(context, args):
     'TF_VAR_env': context.config['meta']['env'],
     'TF_VAR_deployment_owner': context.config['deployment']['owner'],
     'TF_VAR_deployment_name': context.config['deployment']['name'],
+    'TF_VAR_aws_access_key_id': os.environ['AWS_ACCESS_KEY_ID'],
+    'TF_VAR_aws_secret_access_key': os.environ['AWS_SECRET_ACCESS_KEY'],
+    'TF_VAR_aws_s3_endpoint': os.environ['AWS_S3_ENDPOINT'],
+    'TF_VAR_aws_default_region': os.environ['AWS_DEFAULT_REGION']
   }
   context.run('terraform {}'.format(args), env=env)
 

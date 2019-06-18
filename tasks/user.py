@@ -3,18 +3,15 @@ import glob
 import os
 import os.path
 import sys
+import tempfile
 
-def run_s3cmd(context, s3cfg, command, *args):
-  config = os.path.expanduser(s3cfg)
-  options = '--config={}'.format(config) if os.path.exists(s3cfg) else ''
-  bucket = '-'.join([
+def bucket_name(context):
+  return 's3://' + '-'.join([
     context.config['meta']['datacenter'],
     context.config['meta']['programme'],
     'bucket',
     context.config['deployment']['owner']
   ])
-  s3cmd = 's3cmd {} {} s3://{} {}'
-  context.run(s3cmd.format(options, command, bucket, ' '.join(args)), warn=True)
 
 def keypair_name(context):
   return '-'.join([
@@ -24,18 +21,30 @@ def keypair_name(context):
     context.config['deployment']['owner']
   ])
 
+def run_s3cmd(context, s3cfg, command):
+  config = os.path.expanduser(s3cfg)
+  options = '--config={}'.format(config) if os.path.exists(s3cfg) else ''
+  s3cmd = 's3cmd {} {}'.format(options, command)
+  context.run(s3cmd, warn=True)
+
 @invoke.task
-def create(context, public_key='~/.ssh/id_rsa.pub', create_bucket=False, s3cfg='~/.s3cfg'):
+def create(context, public_key='~/.ssh/id_rsa.pub', s3cfg='~/.s3cfg', secret=None):
   openstack = 'openstack keypair create --public-key={} {}'
   key_path = os.path.expanduser(public_key)
   context.run(openstack.format(key_path, keypair_name(context)), warn=True)
-  if create_bucket:
-    run_s3cmd(context, s3cfg, 'mb')
+  bucket = bucket_name(context)
+  run_s3cmd(context, s3cfg, 'mb {}'.format(bucket))
+  if secret:
+    temp_fd, temp_filename = tempfile.mkstemp()
+    os.write(temp_fd, secret)
+    os.close(temp_fd)
+    run_s3cmd(context, s3cfg, 'put {} {}/secret'.format(temp_filename, bucket))
+    os.remove(temp_filename)
 
 @invoke.task
 def delete(context, yes_also_the_bucket=False, s3cfg='~/.s3cfg'):
   openstack = 'openstack keypair delete {}'
   context.run(openstack.format(keypair_name(context)), warn=True)
   if yes_also_the_bucket:
-    run_s3cmd(context, s3cfg, 'rb')
+    run_s3cmd(context, s3cfg, 'rb {bucket}')
 

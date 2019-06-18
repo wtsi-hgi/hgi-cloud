@@ -8,12 +8,12 @@ locals {
   dependency = { }
 }
 
-module "jupyter_data" {
+module "persistent_volume" {
   source              = "../../infrastructure/volumes/standard"
   datacenter          = "${var.datacenter}"
   programme           = "${var.programme}"
   env                 = "${var.env}"
-  deployment_name     = "${var.deployment_name}"
+  deployment_name     = "hail"
   deployment_owner    = "${var.deployment_owner}"
   volume_name         = "data"
   size                = "${var.size}"
