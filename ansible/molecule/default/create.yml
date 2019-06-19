@@ -8,8 +8,8 @@
     ssh_user: ubuntu
     ssh_port: 22
     identity_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
-    # keypair_user: "{{ lookup('env', 'OS_USERNAME') }}"
-    keypair_user: mercury
+    keypair_user: "{{ lookup('env', 'OS_USERNAME') }}"
+    # keypair_user: mercury
 
   tasks:
     - name: Read metadata from file
@@ -30,7 +30,7 @@
         image: "{{ item.image }}"
         flavor: "{{ item.flavor }}"
         floating_ip_pools: public
-        key_name: "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-keypair-{{ keypair_user }}"
+        key_name: "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-keypair-{{ keypair_user }}"
         # Whatever service you are going to install, it is not going to be
         # accessed from the outside, therefore you don't need specific security
         # groups. Molecule's tests need to assert the configuration and the
@@ -41,7 +41,7 @@
         security_groups:
           - "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-base"
           - "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-ssh"
-        network: "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-network-mercury-main"
+        network: "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-network-main"
         meta: "{{ metadata | combine({ 'molecule_platform': item.name, 'molecule_scenario': molecule_yml.scenario['name'], 'role_name': item.role }) }}"
         boot_from_volume: yes
         terminate_volume: yes
