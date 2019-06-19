@@ -99,7 +99,8 @@ def create(context, owner=None, networking=False):
   context.run('bash invoke.sh deployment create --name hail_cluster --owner {}'.format(owner), env=env)
 
 @invoke.task
-def destroy(context, owner, networking=False, yes_also_hail_volume=False):
+def destroy(context, owner=None, networking=False, yes_also_hail_volume=False):
+  owner = owner or os.environ['OS_USERNAME']
   env = {
     'TF_VAR_hail_volume': hail_volume(context, owner)
   }
