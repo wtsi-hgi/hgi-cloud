@@ -1,0 +1,43 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: openstack
+lint:
+  name: yamllint
+  options:
+    config-file: ../../../yamllint.conf
+platforms:
+  - name: default
+    image: bionic-server
+    flavor: o2.medium
+    role: workstation-base
+provisioner:
+  name: ansible
+  options:
+    extra-vars: "@../../../../molecule/default/metadata.yml,@../../../../vars/eta/hgi.yml"
+  lint:
+    name: ansible-lint
+  playbooks:
+    create: ../../../../molecule/default/create.yml
+    destroy: ../../../../molecule/default/destroy.yml
+    prepare: ../../../../molecule/default/prepare_image.yml
+    converge: ../../../../molecule/default/converge.yml
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
+scenario:
+  name: default
+  test_sequence:
+    - lint
+    - destroy
+    - dependency
+    - syntax
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - side_effect
+    - verify
+    - destroy
