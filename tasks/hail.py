@@ -88,7 +88,8 @@ def init(context, masters_roles, slaves_role):
   context.run('git add {}'.format(' '.join(created)))
 
 @invoke.task
-def create(context, owner, networking=False):
+def create(context, owner=None, networking=False):
+  owner = owner or os.environ['OS_USERNAME']
   if networking:
     context.run('bash invoke.sh deployment create --name networking --owner {}'.format(owner))
   context.run('bash invoke.sh deployment create --name hail_volume --owner {}'.format(owner))
