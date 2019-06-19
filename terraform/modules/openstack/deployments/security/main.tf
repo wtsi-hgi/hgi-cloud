@@ -15,7 +15,7 @@ module "keypairs" {
   datacenter          = "${var.datacenter}"
   programme           = "${var.programme}"
   env                 = "${var.env}"
-  deployment_owner    = "mercury"
+  deployment_owner    = "hermes"
   public_key          = "${var.public_key}"
 }
 

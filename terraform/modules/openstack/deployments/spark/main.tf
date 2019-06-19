@@ -14,7 +14,7 @@ locals {
 # Actual locals/defaults: you can't create default input values that are made
 # of other default input values.
 locals {
-  key_pair = "${var.datacenter}-${var.programme}-${var.env}-keypair-mercury"
+  key_pair = "${var.datacenter}-${var.programme}-${var.env}-keypair-hermes"
 }
 
 module "spark_masters" {
