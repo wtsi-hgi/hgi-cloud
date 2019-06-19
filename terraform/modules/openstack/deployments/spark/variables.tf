@@ -13,7 +13,7 @@ variable "deployment_color" {
 variable "deployment_owner" {
   description = "The owner of the deployment"
   type        = "string"
-  default     = "mercury"
+  default     = "hermes"
 }
 
 variable "env" {

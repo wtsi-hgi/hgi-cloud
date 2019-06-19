@@ -9,4 +9,4 @@ consensus_subnet_cidr     = "192.168.225.0/27"
 
 main_subnet_cidr          = "192.168.226.0/23"
 
-deployment_owner          = "mercury"
+deployment_owner          = "hermes"

@@ -1,3 +1,3 @@
-output "mercury_keypair" {
-  value = "${module.keypairs.mercury}"
+output "hermes_keypair" {
+  value = "${module.keypairs.id}"
 }
