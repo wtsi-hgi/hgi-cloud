@@ -37,8 +37,6 @@ OTHER
 ansible-playbook \
   --extra-vars @vars/${datacenter}.yml \
   --extra-vars @vars/${datacenter}/${programme}.yml \
-  --extra-vars @vars/${datacenter}/${programme}/default/${deployment_name}.yml \
-  --extra-vars @vars/${datacenter}/${programme}/default/${deployment_name}/${role_name}.yml \
   --extra-vars @vars/${datacenter}/${programme}/${env}.yml \
   --extra-vars @vars/${datacenter}/${programme}/${env}/${deployment_owner}.yml \
   --extra-vars @vars/${datacenter}/${programme}/${env}/${deployment_owner}/${deployment_name}.yml \
