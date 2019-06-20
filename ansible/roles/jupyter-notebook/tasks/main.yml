@@ -25,7 +25,7 @@
 
 # https://github.com/ansible/ansible/pull/56133
 - name: Generate Hail's Jupyter password
-  shell: "python -c \"from notebook.auth import passwd ; print(passwd('{{ password }}'))\""
+  shell: "{{ anaconda_install_dir }}/anaconda3/bin/python -c \"from notebook.auth import passwd ; print(passwd('{{ password }}'))\""
   register: jupyter_notebookapp_password
 
 - name: Install Hail's Jupyter Notebook configuration file

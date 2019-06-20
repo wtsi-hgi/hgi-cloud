@@ -604,7 +604,7 @@
 #  By default, all installed kernels are allowed.
 #c.KernelSpecManager.whitelist = set()
 
-c.NotebookApp.password: "{{ jupyter_notebookapp_password }}"
+c.NotebookApp.password: "{{ jupyter_notebookapp_password.stdout }}"
 
 {% for key, value in jupyter_notebookapp_config.items() | sort %}
 {{ key }} = {{ value }}
