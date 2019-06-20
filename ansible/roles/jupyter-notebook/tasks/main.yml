@@ -23,6 +23,11 @@
     dest: /etc/profile.d/50-jupyeter.sh
     mode: 0644
 
+# https://github.com/ansible/ansible/pull/56133
+- name: Generate Hail's Jupyter password
+  shell: "python -c \"from notebook.auth import passwd ; print(passwd('{{ password }}'))\""
+  register: jupyter_notebookapp_password
+
 - name: Install Hail's Jupyter Notebook configuration file
   become: yes
   template:
