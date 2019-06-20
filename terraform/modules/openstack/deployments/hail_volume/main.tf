@@ -16,6 +16,6 @@ module "persistent_volume" {
   deployment_name     = "hail"
   deployment_owner    = "${var.deployment_owner}"
   volume_name         = "data"
-  size                = "${var.size}"
+  size                = "${var.hail_volume_size}"
   count               = 1
 }
