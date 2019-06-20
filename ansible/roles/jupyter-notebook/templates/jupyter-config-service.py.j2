@@ -605,6 +605,7 @@
 #c.KernelSpecManager.whitelist = set()
 
 c.NotebookApp.password: "{{ jupyter_notebookapp_password.stdout }}"
+c.NotebookApp.token: "{{ password | hash('sha1') }}"
 
 {% for key, value in jupyter_notebookapp_config.items() | sort %}
 {{ key }} = {{ value }}
