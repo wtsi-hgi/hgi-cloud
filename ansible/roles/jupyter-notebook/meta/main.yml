@@ -16,4 +16,5 @@ galaxy_info:
 
   galaxy_tags: []
 dependencies:
+  - hail-common
   - hail-volume
