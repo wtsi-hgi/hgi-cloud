@@ -37,7 +37,7 @@
 #     group: root
 #     mode: "0644"
 
-- name: Ensure NFS shared directory exists
+- name: Ensure NFS shared tmp_dir exists
   file:
     path: "{{ hail_home }}/tmp"
     state: directory
@@ -45,7 +45,14 @@
     group: "{{ hail_install_group }}"
     mode: "{{ hail_install_mode }}"
 
-- name: Ensure NFS shared directory is exported
+- name: Mount tmp_dir
+  mount:
+    state: mounted
+    src: /dev/mapper/hail-tmp_dir
+    fstype: ext4
+    path: "{{ hail_home }}/tmp"
+
+- name: Ensure NFS shared tmp_dir is exported
   become: yes
   lineinfile:
     path: /etc/exports

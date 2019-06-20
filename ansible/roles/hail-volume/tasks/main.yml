@@ -8,13 +8,13 @@
 
 - name: Get data volume info
   parted:
-    device: "{{ hail_volume_volume }}"
+    device: "{{ hail_volume_device }}"
     state: info
   register: hail_volume_info
 
 - name: Create jupyter data partition
   parted:
-    device: "{{ hail_volume_volume }}"
+    device: "{{ hail_volume_device }}"
     state: present
     label: gpt
     name: jupyter_data
@@ -25,7 +25,7 @@
 
 - name: Create hail data partition
   parted:
-    device: "{{ hail_volume_volume }}"
+    device: "{{ hail_volume_device }}"
     state: present
     label: gpt
     name: hail_data
@@ -37,7 +37,7 @@
 - name: Ensure LUKS container is configured on extra volumes
   luks_device:
     state: present
-    device: "{{ hail_volume_volume }}1"
+    device: "{{ hail_volume_device }}1"
     name: jupyter_data
     keyfile: "{{ hail_volume_keyfile }}"
   no_log: true
@@ -47,7 +47,7 @@
     state: present
     name: /dev/mapper/jupyter_data
     password: "{{ hail_volume_keyfile }}"
-    backing_device: "{{ hail_volume_volume }}1"
+    backing_device: "{{ hail_volume_device }}1"
   no_log: true
 
 - name: Let SystemD create new services based on the new entries in crypttab
@@ -62,7 +62,7 @@
 
 - name: Ensure that a filesystem exists on extra volumes
   filesystem:
-    dev: "/dev/mapper/jupyter_data"
+    dev: /dev/mapper/jupyter_data
     force: no
     type: ext4
   when: hail_volume_info.partitions == []
@@ -73,13 +73,13 @@
     force: no
     pesize: "4"
     vg: hail
-    pvs: "{{ hail_volume_volume }}2"
+    pvs: "{{ hail_volume_device }}2"
 
 - name: Ensure LVM logical volume for tmp_dir is created
   lvol:
     vg: hail
     lv: tmp_dir
-    pvs: "{{ hail_volume_volume }}2"
+    pvs: "{{ hail_volume_device }}2"
     size: 100%VG
     resizefs: yes
 
@@ -88,13 +88,6 @@
     dev: /dev/mapper/hail-tmp_dir
     force: yes
     type: ext4
-
-- name: Mount tmp_dir
-  mount:
-    state: mounted
-    src: /dev/mapper/hail-tmp_dir
-    fstype: ext4
-    path: "{{ hail_home }}/tmp"
 
 - name: Ensure /etc/exports exists
   become: yes

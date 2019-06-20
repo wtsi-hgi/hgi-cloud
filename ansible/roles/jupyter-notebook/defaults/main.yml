@@ -3,10 +3,6 @@ jupyter_install_dir: "{{ base_install_dir }}"
 jupyter_install_owner: "{{ base_install_owner }}"
 jupyter_install_group: "{{ base_install_group }}"
 
-jupyter_data_volume: /dev/vdb
-jupyter_data_password: "{{ password }}"
-jupyter_data_keyfile: "{{ base_user_home }}/password"
-
 jupyter_notebookapp_base_url: jupyter
 jupyter_notebookapp_config:
   c.NotebookApp.allow_origin: "'*'"
