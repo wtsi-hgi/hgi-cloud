@@ -2,7 +2,7 @@ server {
   server_name {{ spark_master_external_address }};
   client_max_body_size 0;
 
-  location ~ {{ notebook_app_base_url }}/ {
+  location ~ /{{ jupyter_notebookapp_base_url }}/ {
     proxy_pass            http://localhost:8888;
     proxy_set_header      X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header      X-Real-IP $remote_addr;
@@ -32,8 +32,6 @@ server {
   }
 
   location / {
-    rewrite ^/$ {{ notebook_app_base_url }}/ redirect;
+    rewrite ^/$ /{{ jupyter_notebookapp_base_url }}/ redirect;
   }
-
 }
-

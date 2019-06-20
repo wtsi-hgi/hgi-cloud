@@ -202,9 +202,20 @@ hail_install_group: "{{ base_install_group }}"
 hail_install_mode: "ug+rw,o+r"
 
 hail_home: "{{ hail_install_dir }}/hail"
+hail_volume_keyfile: "{{ hail_install_dir }}/keyfile"
+hail_volume_password: "{{ password }}"
+hail_volume_device: /dev/vdb
 
-notebook_app_base_url: /jupyter
 jupyter_install_dir: "{{ base_install_dir }}"
-jupyter_home: "{{ jupyter_install_dir }}/jupyter"
 jupyter_install_owner: "{{ base_install_owner }}"
 jupyter_install_group: "{{ base_install_group }}"
+jupyter_home: "{{ jupyter_install_dir }}/jupyter"
+
+jupyter_notebookapp_base_url: jupyter
+jupyter_notebookapp_config:
+  c.NotebookApp.allow_origin: "'*'"
+  c.NotebookApp.base_url: "'{{ jupyter_notebookapp_base_url }}'"
+  c.NotebookApp.ip: "'0.0.0.0'"
+  c.NotebookApp.notebook_dir: "'{{ hail_install_dir }}/jupyter/data'"
+  c.NotebookApp.open_browser: "False"
+  c.NotebookApp.password: "'{{ password | default('') }}'"
