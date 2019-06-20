@@ -1,6 +1,6 @@
-spark_masters_flavor_name     = "m1.large"
-spark_slaves_count            = 2
-spark_slaves_flavor_name      = "m1.large"
+spark_masters_flavor_name     = "m1.medium"
+spark_slaves_count            = 256
+spark_slaves_flavor_name      = "m1.medium"
 spark_master_external_address = "172.27.81.159"
 deployment_owner              = "ch12"
 spark_masters_role_name       = "hail-master"
