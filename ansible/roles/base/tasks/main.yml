@@ -82,19 +82,3 @@
     line: ubuntu ALL=(ALL:ALL) NOPASSWD:ALL
     path: /etc/sudoers.d/90-cloud-init-users
     regexp: ^ubuntu
-
-- name: Install cloud-init config
-  copy:
-    src: 10_partition_vda.cfg
-    dest: /etc/cloud/cloud.cfg.d/10_partition_vda.cfg
-    owner: root
-    group: root
-    mode: "0644"
-
-- name: Install boot-time partitioning script
-  copy:
-    src: partition-vda.sh
-    dest: /usr/local/sbin/partition-vda.sh
-    owner: root
-    group: root
-    mode: "0700"
