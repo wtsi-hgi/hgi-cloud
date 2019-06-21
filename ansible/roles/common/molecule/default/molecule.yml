@@ -1,0 +1,42 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: openstack
+lint:
+  name: yamllint
+  options:
+    config-file: ../../../yamllint.conf
+platforms:
+  - name: default
+    image: eta-hgi-image-hail-base-0.0.15
+    flavor: m1.large
+    role: common
+provisioner:
+  name: ansible
+  options:
+    extra-vars: "{\"spark_master_external_address\": \"127.0.0.1\"}"
+  lint:
+    name: ansible-lint
+  playbooks:
+    create: ../../../../molecule/default/create.yml
+    destroy: ../../../../molecule/default/destroy.yml
+    converge: ../../../../molecule/default/converge.yml
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
+scenario:
+  name: default
+  test_sequence:
+    - lint
+    - destroy
+    - dependency
+    - syntax
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - side_effect
+    - verify
+    - destroy
