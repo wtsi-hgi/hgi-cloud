@@ -22,6 +22,7 @@
       - gpg
       - collectd
       - rsyslog
+      - expect
     install_recommends: yes
     force_apt_get: yes
 
