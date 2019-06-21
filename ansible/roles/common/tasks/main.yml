@@ -4,6 +4,78 @@
     path: /etc/hosts
     line: "{{ spark_master_private_address | default('127.0.0.1', true) }} spark-master"
 
+- name: Instal expect
+  apt:
+    state: present
+    name:
+      - expect
+    install_recommends: yes
+    force_apt_get: yes
+    
+
+- name: Fix GPT partition on /dev/vda
+  shell: |
+    eval spawn parted /dev/vda
+    send "print\r"
+    send "F\r"
+    send "q\r"
+    expect eof
+  args:
+    executable: /usr/bin/expect
+
+# parted module refuses to modify devices which are in use
+- name: Copy partition script
+  copy:
+    dest: /usr/local/bin/make-vda2.sh
+    src: make-vda2.sh
+    mode: "0700"
+    owner: root
+    group: root
+
+- name: Create /dev/vda2 partition
+  shell: /usr/local/bin/make-vda2.sh
+  args:
+    creates: /dev/vda2
+
+- name: Create swap filesystem on /dev/vda2
+  filesystem:
+    dev: /dev/vda2
+    force: false
+    fstype: swap
+
+# - name: Insert /dev/vda2 in /etc/fstab
+#   lieinfile:
+#     path: /etc/fstab
+#     regexp: "^/dev/vda2"
+#     lien: "/dev/vda2   swap   swap    defaults 0 0"
+
+- name: Insert /dev/vda2 in /etc/fstab
+  mount:
+    path: swap
+    state: present
+    src: /dev/vda2
+    fstype: swap
+
+- name: Enable swap from /dev/vda2
+  shell: swapon --all
+
+- name: Get swap size
+  shell: swapon --show --bytes | awk '$1~/vda2$/ {printf ("%d", $3*75/100/(1024*1024*1024) ); }'
+  register: swapon_show
+
+- name: Create tmpfs mountpoint
+  file:
+    path: /mnt/tmpfs
+    state: directory
+
+- name: Mount tmpfs
+  mount:
+    path: /mnt/tmpfs
+    state: mounted
+    src: tmpfs
+    fstype: tmpfs
+    opts: "defaults,noatime,mode=1777,nosuid,size={{ swapon_show.stdout }}G"
+
 - name: Configure Collectd
   template:
     src: collectd.conf.j2
@@ -17,85 +89,3 @@
     dest: /etc/rsyslog.conf
   notify:
     - Restart RsyslogD
-
-# - name: Create LUKS keyfile
-#   copy:
-#     dest: "{{ base_user_home }}/password"
-#     content: "{{ password }}"
-#     mode: "0600"
-# 
-# - name: Ensure LVM volume group is created on extra volumes
-#   lvg:
-#     state: present
-#     force: no
-#     pesize: "4"
-#     vg: "{{ volume['vg'] }}"
-#     pvs: "{{ volume['device'] }}"
-#   loop: "{{ volumes }}"
-#   loop_control:
-#     loop_var: volume
-# 
-# - name: Ensure LVM logical volume is created on extra volumes
-#   lvol:
-#     vg: "{{ volume['vg'] }}"
-#     lv: "{{ volume['lv'] }}"
-#     pvs: "{{ volume['device'] }}"
-#     size: 100%VG
-#     resizefs: yes
-#   loop: "{{ volumes }}"
-#   loop_control:
-#     loop_var: volume
-# 
-# - name: Ensure LUKS container is configured on extra volumes
-#   luks_device:
-#     state: "{{ volume['luks_state'] }}"
-#     device: "/dev/mapper/{{ volume['vg'] }}-{{ volume['lv'] }}"
-#     name: "{{ volume['luks_name'] }}"
-#     keyfile: "{{ base_user_home }}/password"
-#   loop: "{{ volumes }}"
-#   loop_control:
-#     loop_var: volume
-# 
-# - name: Ensure LUKS containers are configured in crypttab
-#   crypttab:
-#     state: present
-#     name: "{{ volume['luks_name'] }}"
-#     password: "{{ base_user_home }}/password"
-#     backing_device: "/dev/mapper/{{ volume['vg'] }}-{{ volume['lv'] }}"
-#   loop: "{{ volumes }}"
-#   loop_control:
-#     loop_var: volume
-#   when: volume['luks_state'] == 'present'
-# 
-# - name: Let SystemD create new services based on the new entries in crypttab
-#   systemd:
-#     daemon_reload: yes
-# 
-# - name: Ensure SystemD services handles LUKS containers
-#   service:
-#     name: "systemd-cryptsetup@{{ volume['luks_name'] }}"
-#     enabled: yes
-#     state: started
-#   loop: "{{ volumes }}"
-#   loop_control:
-#     loop_var: volume
-#   when: volume['luks_state'] == 'present'
-# 
-# - name: Ensure that a filesystem exists on extra volumes
-#   filesystem:
-#     dev: "{{ volume['filesystem_dev'] }}"
-#     force: yes
-#     type: "{{ volume['filesystem_type'] }}"
-#   loop: "{{ volumes }}"
-#   loop_control:
-#     loop_var: volume
-# 
-# - name: Mount extra volumes
-#   mount:
-#     state: mounted
-#     src: "{{ volume['filesystem_dev'] }}"
-#     fstype: "{{ volume['filesystem_type'] }}"
-#     path: "{{ volume['mount_path'] }}"
-#   loop: "{{ volumes }}"
-#   loop_control:
-#     loop_var: volume
