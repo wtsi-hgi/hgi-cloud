@@ -1,42 +1,4 @@
 ---
-# - name: Ensure LVM volume group hail is created
-#   lvg:
-#     state: present
-#     force: no
-#     pesize: "4"
-#     vg: hail
-#     pvs: /dev/vdc
-# 
-# - name: Ensure LVM logical volume for tmp_dir is created
-#   lvol:
-#     vg: hail
-#     lv: tmp_dir
-#     pvs: /dev/vdc
-#     size: 100%VG
-#     resizefs: yes
-# 
-# - name: Ensure that a filesystem is create on tmp_dir volume
-#   filesystem:
-#     dev: /dev/mapper/hail-tmp_dir
-#     force: yes
-#     type: ext4
-# 
-# - name: Mount tmp_dir
-#   mount:
-#     state: mounted
-#     src: /dev/mapper/hail-tmp_dir
-#     fstype: ext4
-#     path: "{{ hail_home }}/tmp"
-# 
-# - name: Ensure /etc/exports exists
-#   become: yes
-#   file:
-#     path: /etc/exports
-#     state: touch
-#     owner: root
-#     group: root
-#     mode: "0644"
-
 - name: Ensure NFS shared tmp_dir exists
   file:
     path: "{{ hail_home }}/tmp"
@@ -45,7 +7,7 @@
     group: "{{ hail_install_group }}"
     mode: "{{ hail_install_mode }}"
 
-- name: Mount tmp_dir
+- name: Mount tmp_dir from attached volume
   mount:
     state: mounted
     src: /dev/mapper/hail-tmp_dir
@@ -61,24 +23,73 @@
     # Security groups will take care of the connection restrictions
     line: "{{ hail_home }}/tmp *(rw,sync,no_root_squash,no_subtree_check)"
 
-- name: Install NFS packages
-  become: yes
-  apt:
-    name:
-      - nfs-common
-      - nfs-kernel-server
-    state: present
-    update_cache: yes
-    force_apt_get: yes
+- name: Start NFS server
+  service:
+    name: nfs-server
+    enabled: yes
+    state: started
 
-- name: Install nginx
+- name: Ensure Jupyter Notebook App's directories exist
+  file:
+    path: "{{ jupyter_dir }}"
+    state: directory
+    owner: "{{ hail_install_owner }}"
+    group: "{{ hail_install_group }}"
+    mode: "ug+rw,o-rw"
+  loop:
+    - "{{ hail_install_dir }}/jupyter"
+    - "{{ hail_install_dir }}/jupyter/config"
+    - "{{ hail_install_dir }}/jupyter/data"
+  loop_control:
+    loop_var: jupyter_dir
+
+- name: Install Jupyter Notebook App's service
+  template:
+    src: jupyter-notebook.service.j2
+    dest: /etc/systemd/system/jupyter-notebook.service
+
+- name: Install Jupyter Notebook bash profile
+  template:
+    src: profile.sh.j2
+    dest: /etc/profile.d/50-jupyeter.sh
+    mode: 0644
+
+# https://github.com/ansible/ansible/pull/56133
+- name: Generate Jupyter Notebook App's password
+  shell: "{{ anaconda_install_dir }}/anaconda3/bin/python -c \"from notebook.auth import passwd ; print(passwd('{{ password }}'))\""
+  register: jupyter_notebookapp_password
+
+- name: Install Jupyter Notebook App's configuration file
   become: yes
-  apt:
-    name:
-      - nginx
-    state: present
-    update_cache: yes
-    force_apt_get: yes
+  template:
+    src: jupyter-config-service.py.j2
+    dest: "{{ hail_install_dir }}/jupyter/config/service.py"
+    owner: "{{ hail_install_owner }}"
+    group: "{{ hail_install_group }}"
+    mode: 0600
+
+- name: Mount Jupyter Notebooks App's data directory from attached volume
+  mount:
+    state: mounted
+    src: "/dev/mapper/jupyter_data"
+    fstype: "ext4"
+    path: "{{ hail_install_dir }}/jupyter/data"
+
+# Fixes permissions on first time mount
+- name: Ensure Jupyter Notebook App's data directory correct ownership and permission
+  file:
+    state: directory
+    path: "{{ hail_install_dir }}/jupyter/data"
+    mode: "0700"
+    owner: "{{ hail_install_owner }}"
+    group: "{{ hail_install_group }}"
+
+- name: Enable and start Jupyter Notebook App
+  become: yes
+  service:
+    name: jupyter-notebook
+    enabled: yes
+    state: started
 
 - name: Configure nginx
   become: yes
@@ -87,5 +98,9 @@
     dest: /etc/nginx/conf.d/hail-master.conf
     mode: 0700
     owner: www-data
-  notify:
-    - Restart nginx
+
+- name: Start Nginx
+  service:
+    name: nginz
+    enabled: yes
+    state: started

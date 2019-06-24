@@ -1,12 +1,4 @@
 ---
-- name: Install NFS common package
-  apt:
-    state: present
-    name:
-      - nfs-common
-    install_recommends: yes
-    force_apt_get: yes
-
 - name: Wait for master NFS Server to come up
   wait_for:
     state: started
