@@ -4,15 +4,6 @@
     path: /etc/hosts
     line: "{{ spark_master_private_address | default('127.0.0.1', true) }} spark-master"
 
-- name: Instal expect
-  apt:
-    state: present
-    name:
-      - expect
-    install_recommends: yes
-    force_apt_get: yes
-    
-
 - name: Fix GPT partition on /dev/vda
   shell: |
     eval spawn parted /dev/vda
