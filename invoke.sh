@@ -14,7 +14,7 @@ if [ -z "${OS_PROJECT_NAME}" ] ; then
   die 1 "OS_PROJECT_NAME is empty: you need to source the right openrc.sh file"
 fi
 
-source "os_projects/${OS_PROJECT_NAME}.rc"
+source "metadata/${OS_PROJECT_NAME}.rc"
 
 COLLECTION="${1}"
 
@@ -24,8 +24,7 @@ case "${COLLECTION}" in
 SYNOPSIS
 
   ${0} --help
-  ${0} [image | role] NAME/VERSION [invoke_options] [ [task_name] [task_options] ... ]
-  ${0} deployment [NAME | OWNER/NAME] invoke_options] [ [task_name] [task_options] ... ]
+  ${0} [image|role|deployment|user|hail] [invoke_options] [ [task_name] [task_options] ... ]
 
 DESCRIPTION
   Runs automation tasks on a specific types of objects within the
@@ -36,36 +35,26 @@ DESCRIPTION
 EXAMPLES
 
   # Low level automations
-  $ bash invoke.sh deployment hermes/networking up
-  $ bash invoke.sh deployment vvi/hail plan --to update
-  $ bash invoke.sh image base/0.1.0 build
-  $ bash invoke.sh image hail-base/0.3.0 publish
-  $ bash invoke.sh image hail-base/1.1.0 accept
+  $ bash invoke.sh deployment create --owner hermes --name networking
+  $ bash invoke.sh deployment destroy --owner vvi --name hail
+
+  $ bash invoke.sh image build --role-name base --role-version 0.1.0
+  $ bash invoke.sh image promote --role-name hail-base --role-version 0.3.0 --to hgi-dev
+  $ bash invoke.sh image share --role-name spark-base --role-version 1.2.0 --with f1c35e83bca7412f847211257c73b5f4
+  $ bash invoke.sh image accept --image-name random-image-from-somebody
 
   # High level automation. They need to be run by the actual user
   $ bash invoke.sh user create --public-key=~/.ssh/id_rsa_dev.pub
   $ bash invoke.sh user delete --yes-also-the-bucket
 
   # High level automations. It can be run for other users
-  $ bash invoke.sh hail vvi init --masters-role=hail-master --slaves-role=hail-slave
-  $ bash invoke.sh hail ld14 deploy --full
-  $ bash invoke.sh hail ch12 decommission
-
+  $ bash invoke.sh hail init --owner vvi
+  $ bash invoke.sh hail create --full
+  $ bash invoke.sh hail destroy --owner ch12 --yes-also-hail-volume
 HELP
     exit 0
   ;;
-  image|role)
-    IFS="/" read INVOKE_ROLE_NAME INVOKE_ROLE_VERSION <<<"${2}"
-    export INVOKE_ROLE_NAME INVOKE_ROLE_VERSION
-    shift 2
-  ;;
-  deployment|hail)
-    # IFS="/" read INVOKE_DEPLOYMENT_OWNER INVOKE_DEPLOYMENT_NAME <<<"${2}"
-    # export INVOKE_DEPLOYMENT_OWNER INVOKE_DEPLOYMENT_NAME
-    shift
-  ;;
-  user)
-    export INVOKE_DEPLOYMENT_OWNER="${OS_USERNAME:?"OS_USERNAME is null or unset"}"
+  user|deployment|hail|image|role)
     shift
   ;;
   *)
