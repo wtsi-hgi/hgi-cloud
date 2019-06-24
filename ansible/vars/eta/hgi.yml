@@ -206,11 +206,6 @@ hail_volume_keyfile: "{{ hail_install_dir }}/keyfile"
 hail_volume_password: "{{ password }}"
 hail_volume_device: /dev/vdb
 
-jupyter_install_dir: "{{ base_install_dir }}"
-jupyter_install_owner: "{{ base_install_owner }}"
-jupyter_install_group: "{{ base_install_group }}"
-jupyter_home: "{{ jupyter_install_dir }}/jupyter"
-
 jupyter_notebookapp_base_url: jupyter
 jupyter_notebookapp_config:
   c.NotebookApp.allow_origin: "'*'"
