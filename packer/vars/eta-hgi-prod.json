@@ -1,6 +1,0 @@
-{
-  "datacenter": "eta",
-  "programme": "hgi",
-  "env": "prod",
-  "source_image_name": "bionic-server"
-}
