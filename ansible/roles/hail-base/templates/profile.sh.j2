@@ -10,3 +10,8 @@ alias pyspark="pyspark ${_PYSPARK_ARGS}"
 
 ## PYSPARK_SUBMIT_ARGS is used by ipython and jupyter
 export PYSPARK_SUBMIT_ARGS="${_PYSPARK_ARGS} pyspark-shell"
+
+export JUPYTER_HOME="{{ hail_install_dir }}/jupyter"
+export JUPYTER_PATH="${JUPYTER_HOME}/data"
+export JUPYTER_CONFIG_DIR="${JUPYTER_HOME}/config"
+export JUPYTER_RUNTIME_DIR="${JUPYTER_HOME}/runtime"
