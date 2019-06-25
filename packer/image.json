@@ -12,7 +12,6 @@
     {
       "type": "openstack",
       "ssh_username": "ubuntu",
-      "ssh_private_key_file": "~/.ssh/id_rsa",
       "source_image_filter": {
         "filters": {
           "name": "{{user `source_image_name`}}",
@@ -24,10 +23,7 @@
       "image_name": "{{user `datacenter`}}-{{user `programme`}}-image-{{user `role_name`}}-{{user `role_version`}}",
       "image_visibility": "shared",
       "instance_name": "{{user `datacenter`}}-{{user `programme`}}-{{user `env`}}-instance-packer-{{user `role_name`}}-{{user `role_version`}}",
-      "volume_name": "{{user `datacenter`}}-{{user `programme`}}-{{user `env`}}-volume-packer-{{user `role_name`}}-{{user `role_version`}}",
-      "volume_size": 32,
-      "use_blockstorage_volume": true,
-      "flavor": "o2.medium",
+      "flavor": "o2.large",
       "networks": ["{{user `network_id`}}"],
       "floating_ip_network": "public",
       "security_groups": [
