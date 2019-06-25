@@ -1,0 +1,12 @@
+---
+- name: Remove unused dependencies
+  apt:
+    force_apt_get: true
+    update_cache: true
+    autoremove: true
+  changed_when: false
+
+- name: Remove source directory
+  file:
+    state: absent
+    path: "{{ base_source_dir }}"
