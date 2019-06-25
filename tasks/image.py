@@ -12,31 +12,40 @@ import keystoneclient.v3
 
 import glanceclient
 
-auth = keystoneauth1.identity.v3.Password(user_domain_name=os.environ['OS_USER_DOMAIN_NAME'],
-                                          username=os.environ['OS_USERNAME'],
-                                          password=os.environ['OS_PASSWORD'],
-                                          project_domain_name=os.environ['OS_PROJECT_DOMAIN_ID'],
-                                          project_name=os.environ['OS_PROJECT_NAME'],
-                                          auth_url=os.environ['OS_AUTH_URL'])
-session = keystoneauth1.session.Session(auth=auth)
+__clients = {}
 
-keystone = keystoneclient.v3.client.Client(session=session)
-glance = glanceclient.Client('2', session=session)
-
-openstack = openstack_client.connect(auth_url=os.environ['OS_AUTH_URL'],
-                                     project_name=os.environ['OS_PROJECT_NAME'],
-                                     username=os.environ['OS_USERNAME'],
-                                     password=os.environ['OS_PASSWORD'],
-                                     region_name=os.environ['OS_REGION_NAME'],
-                                     app_name='invoke')
-
-now = datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S')
+def get_clients(os_project_name=None):
+  project_name = os_project_name or os.environ['OS_PROJECT_NAME']
+  try:
+    return __clients[project_name]
+  except KeyError:
+    auth = keystoneauth1.identity.v3.Password(user_domain_name=os.environ['OS_USER_DOMAIN_NAME'],
+                                              username=os.environ['OS_USERNAME'],
+                                              password=os.environ['OS_PASSWORD'],
+                                              project_domain_name=os.environ['OS_PROJECT_DOMAIN_ID'],
+                                              project_name=project_name,
+                                              auth_url=os.environ['OS_AUTH_URL'])
+    session = keystoneauth1.session.Session(auth=auth)
+    
+    keystone = keystoneclient.v3.client.Client(session=session)
+    glance = glanceclient.Client('2', session=session)
+    
+    openstack = openstack_client.connect(auth_url=os.environ['OS_AUTH_URL'],
+                                         project_name=project_name,
+                                         username=os.environ['OS_USERNAME'],
+                                         password=os.environ['OS_PASSWORD'],
+                                         region_name=os.environ['OS_REGION_NAME'],
+                                         app_name='invoke')
+    __clients[project_name] = openstack, keystone, glance
+    return __clients[project_name]
 
 def default_version(context):
+  now = datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S')
   config_version = context.config['role']['version']
   return now if (config_version == '0.0.0') else config_version
 
 def packer_options(context, role_name, role_version=None):
+  openstack, keystone, glance = get_clients()
   network_template = '{}-{}-{}-network-main'
   network_name = network_template.format(context.config['meta']['datacenter'],
                                          context.config['meta']['programme'],
@@ -52,6 +61,7 @@ def packer_options(context, role_name, role_version=None):
   ])
 
 def get_image(context, role_name, role_version):
+  openstack, keystone, glance = get_clients()
   image_name = '-'.join([context.config['meta']['datacenter'],
                          context.config['meta']['programme'],
                          'image', role_name, role_version or default_version(context)])
@@ -78,23 +88,24 @@ def build(context, role_name, role_version=None, on_error='cleanup', force=False
   else:
     print("Skipping {}: image is already available".format(image.name))
 
-@invoke.task(pre=[build])
+@invoke.task()
 def promote(context, to, role_name, role_version):
+  openstack, keystone, glance = get_clients()
   user = openstack.identity.get_user_id()
   image_id = get_image(context, role_name, role_version).id
   project = next((p for p in keystone.projects.list(user=user) if p.name == to))
   glance.image_members.create(image_id, project.id)
+  openstack, keystone, glance = get_clients(project.name)
   glance.image_members.update(image_id, project.id, 'accepted')
 
 @invoke.task()
-def accept(context, image_name):
-  image_id = openstack.image.find_image(image_name).id
+def accept(context, image_id):
   glance.image_members.update(image_id, os.environ['OS_PROJECT_ID'], 'accepted')
 
 @invoke.task()
-def share(context, with_, role_name, role_version):
+def share(context, with_project_id, role_name, role_version):
   image_id = get_image(context, role_name, role_version).id
-  glance.image_members.create(image_id, with_)
+  glance.image_members.create(image_id, with_project_id)
 
 ns = invoke.Collection()
 ns.add_task(validate)
