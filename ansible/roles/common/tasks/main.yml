@@ -4,29 +4,29 @@
     path: /etc/hosts
     line: "{{ spark_master_private_address | default('127.0.0.1', true) }} spark-master"
 
-- name: Fix GPT partition on /dev/vda
-  shell: |
-    eval spawn parted /dev/vda
-    send "print\r"
-    send "F\r"
-    send "q\r"
-    expect eof
-  args:
-    executable: /usr/bin/expect
-
-# parted module refuses to modify devices which are in use
-- name: Copy partition script
-  copy:
-    dest: /usr/local/bin/make-vda2.sh
-    src: make-vda2.sh
-    mode: "0700"
-    owner: root
-    group: root
-
-- name: Create /dev/vda2 partition
-  shell: /usr/local/bin/make-vda2.sh
-  args:
-    creates: /dev/vda2
+# - name: Fix GPT partition on /dev/vda
+#   shell: |
+#     eval spawn parted /dev/vda
+#     send "print\r"
+#     send "F\r"
+#     send "q\r"
+#     expect eof
+#   args:
+#     executable: /usr/bin/expect
+# 
+# # parted module refuses to modify devices which are in use
+# - name: Copy partition script
+#   copy:
+#     dest: /usr/local/bin/make-vda2.sh
+#     src: make-vda2.sh
+#     mode: "0700"
+#     owner: root
+#     group: root
+# 
+# - name: Create /dev/vda2 partition
+#   shell: /usr/local/bin/make-vda2.sh
+#   args:
+#     creates: /dev/vda2
 
 - name: Create swap filesystem on /dev/vda2
   filesystem:
