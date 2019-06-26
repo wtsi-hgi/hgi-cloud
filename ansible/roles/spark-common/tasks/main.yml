@@ -27,7 +27,7 @@
     state: directory
     path: "{{ local_dir }}"
     owner: "{{ spark_install_owner }}"
-    gorup: "{{ spark_install_group }}"
+    group: "{{ spark_install_group }}"
     mode: "{{ spark_install_mode }}"
   loop: "{{ spark_local_dirs }}"
   loop_control:
