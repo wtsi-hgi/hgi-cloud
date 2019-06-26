@@ -51,14 +51,16 @@ EXAMPLES
   $ bash invoke.sh hail init --owner vvi
   $ bash invoke.sh hail create --full
   $ bash invoke.sh hail destroy --owner ch12 --yes-also-hail-volume
+
+  $ bash invoke.sh spark_distribution create
 HELP
     exit 0
   ;;
-  user|deployment|hail|image|role)
+  user|deployment|hail|image|role|spark)
     shift
   ;;
   *)
-    die 1 "Sorry, cannot automate \`${$1}'"
+    die 1 "Sorry, cannot automate \`${1}'"
   ;;
 esac
 
