@@ -5,6 +5,36 @@ run:
 terraform:
   parallelism: 32
 
+spark:
+  version: 0.0.0
+  upload_dirname: spark/distribution/
+  build_dirname: build
+  mirror: https://archive.apache.org/dist/spark
+  sha512:
+    2.4.3: |
+      3EAEA3B0 A81A717B B43CE6EE 0BB2C3B8 351EF080 DB9499AF 66F9F22C
+      8A18D38C 5E1426CB FEF04AFD 2A4002AC E5B28A6B EACBCE4E 5E42506F
+      4FD270B0 5D0DB379
+  asc:
+    2.4.3: |
+      -----BEGIN PGP SIGNATURE-----
+      Version: GnuPG v1
+      
+      iQIcBAABAgAGBQJcySmPAAoJEJb3L3aDDA0bFE8QAKD8NaiCNJ/z43iA/nl+8lwA
+      03OjWsl7VmfXnqLeNn8VcCIjvdgFXBpgD9iHa0zOXhfx6Vx2Lw4Zcuv56vpTDCz7
+      3mAnI2MSlYcd332OIB44frn6iNwhOCfUzdpPtUKMT6laLsPy9No6DJDZIfDwdZZM
+      kPSAqFdiXg2CbiCefBCesVBbmpftVek6AEHyk6sIW+V6QAPM6yzVQMpDf3za/cOV
+      eHIXcpcmx2RmtqEdXY8WBqjV/SnkNFvd8cWGA4Oa2pj/tM8KULxeRiCY5h1uybPF
+      qPMnsm5oydOabvofMNRpWHkIuuJHWccpXV2nKgJwTn/0soRc4I+y0shctyg+sMco
+      aIWYjOdzscB81eDJ6fUDqR5F2FRX0XbLWRf0FHissZI5k5b8kI9hLHXNWtZS9lum
+      VN4Vyv0gS+M/iVyFmVEv3I9LlZHdkhbu6ABE3Y1aUgeyac/6N1wpzFr3b82OQqKb
+      /xuW0Ztc7Mc2Se2BiXpDDsuNvae5T7HCNc3GBej2W501jKxiX1+WVMQ344DprXn5
+      mbqXg3R5lMdFPkKoIonB4tkta3CQT3xD6zziHNqZ+Nos1HFh6gLvc1NXxq5xDySq
+      BouinsXKo0Ztba0TcsRRjLnm8RHhZ11wGrPCpCbfD3u+63lZJVReKRZrLenaV8zu
+      syhMetjcdSvxkYYnQTop
+      =gqDc
+      -----END PGP SIGNATURE-----
+
 meta:
   env: default
   datacenter: default
