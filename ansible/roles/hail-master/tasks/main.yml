@@ -48,12 +48,6 @@
     src: jupyter-notebook.service.j2
     dest: /etc/systemd/system/jupyter-notebook.service
 
-- name: Install Jupyter Notebook bash profile
-  template:
-    src: profile.sh.j2
-    dest: /etc/profile.d/50-jupyeter.sh
-    mode: 0644
-
 # https://github.com/ansible/ansible/pull/56133
 - name: Generate Jupyter Notebook App's password
   shell: "{{ anaconda_install_dir }}/anaconda3/bin/python -c \"from notebook.auth import passwd ; print(passwd('{{ password }}'))\""
