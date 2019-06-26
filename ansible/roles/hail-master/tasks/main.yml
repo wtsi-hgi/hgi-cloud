@@ -95,6 +95,6 @@
 
 - name: Start Nginx
   service:
-    name: nginz
+    name: nginx
     enabled: yes
     state: started
