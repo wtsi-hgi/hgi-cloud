@@ -35,12 +35,6 @@
     fstype: swap
 
 - name: Insert /dev/vda2 in /etc/fstab
-  lieinfile:
-    path: /etc/fstab
-    regexp: "^/dev/vda2"
-    lien: "/dev/vda2   swap   swap    defaults 0 0"
-
-- name: Insert /dev/vda2 in /etc/fstab
   mount:
     path: swap
     state: present
