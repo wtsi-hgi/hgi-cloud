@@ -32,6 +32,11 @@
     name:
       - testinfra
 
+- name: Install new cloud.cfg
+  template:
+    src: cloud.cfg.j2
+    dest: /etc/cloud/cloud.cfg
+
 - name: Create group account for base operation
   group:
     state: present
@@ -75,10 +80,3 @@
     - "{{ base_bin_dir }}"
   loop_control:
     loop_var: base_dir
-
-- name: Set proper sudo permissions
-  lineinfile:
-    state: present
-    line: ubuntu ALL=(ALL:ALL) NOPASSWD:ALL
-    path: /etc/sudoers.d/90-cloud-init-users
-    regexp: ^ubuntu
