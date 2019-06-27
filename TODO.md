@@ -2,10 +2,10 @@ In proposed order:
 * (v0.1.0) Shared terraform state (s3 bucket)
 * (v0.2.0) Attach a volatile volume to Hail `tmp_dir` on the master
 * (v0.3.0) Attach a persistent volume to jupyter data directory
-* (v0.4.0) Auto register hail master to infoblox
-* (v0.5.0) Backup / Restore (to S3?) Jupyter data files outside git
+* (v0.4.0) Create swap partition by resizing the OS boot volume, and use tmpfs
+* (v0.5.0) Create a container out of this repo so user can be independent
 * (v0.6.0) Review / improve testing and documentation
-* (v0.7.0) Create swap partition by resizing the OS boot volume, and use tmpfs
+* (v0.7.0) Auto register hail master to infoblox
 * (v0.8.0) Update `user_data` from script to `cloud-init`
 * Harden spark (random password)
   * (v0.9.0) encryption of connections
