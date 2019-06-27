@@ -56,7 +56,7 @@ EXAMPLES
 HELP
     exit 0
   ;;
-  user|deployment|hail|image|role|spark)
+  user|deployment|hail|image|role|spark_distribution)
     shift
   ;;
   *)
