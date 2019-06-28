@@ -1,0 +1,54 @@
+{
+  "variables": {
+    "datacenter": "",
+    "programme": "",
+    "env": "",
+    "source_image_name": "",
+    "network_id": "",
+    "role_name": "base",
+    "role_version": "0.0.0"
+  },
+  "builders": [
+    {
+      "type": "docker",
+      "image": "ubuntu",
+      "export_path": "image.tar",
+      "commit": false
+    }
+  ],
+  "provisioners" : [
+    {
+      "type": "shell",
+      "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+      "script": "scripts/setup.sh"
+    },
+    {
+      "type": "ansible-local",
+      "playbook_dir": "../ansible",
+      "playbook_file": "../ansible/image.yml",
+      "extra_arguments": [
+        "--extra-vars \"role_name={{user `role_name`}} role_version={{user `role_version`}}\"",
+        "--extra-vars @vars/{{user `datacenter`}}.yml",
+        "--extra-vars @vars/{{user `datacenter`}}/{{user `programme`}}.yml",
+        "--extra-vars @vars/{{user `datacenter`}}/{{user `programme`}}/{{user `env`}}.yml"
+      ],
+      "role_paths": [ "../ansible/roles" ]
+    },
+    {
+      "type": "shell",
+      "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+      "script": "scripts/cleanup.sh"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "checksum",
+      "checksum_types": ["md5", "sha512"],
+      "output": "packer_{{.BuildName}}_{{.BuilderType}}_{{.ChecksumType}}.checksum"
+    },
+    {
+      "type": "manifest",
+      "output": "packer-manifest.json"
+    }
+  ]
+}
