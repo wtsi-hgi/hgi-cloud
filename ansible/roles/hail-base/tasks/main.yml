@@ -3,11 +3,11 @@
   apt:
     state: present
     name:
-      - g++
-      - liblz4-dev
       - nfs-common
       - nfs-kernel-server
       - nginx
+    install_recommends: true
+    force_apt_get: true
 
 - name: Disable NFS
   service:

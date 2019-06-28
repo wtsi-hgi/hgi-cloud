@@ -3,10 +3,6 @@
   apt:
     state: present
     name:
-      - g++
-      - cmake
-      - make
-      - build-essential
       - scala
       - r-base
       - r-recommended
@@ -15,27 +11,18 @@
       - libnetlib-java
       - liblz4-dev
       - nfs-common
-    install_recommends: yes
+    install_recommends: true
+    force_apt_get: true
 
 - name: Ensure group account for Spark exists
   group:
     state: present
     name: "{{ spark_group_name }}"
-#     gid: "{{ spark_group_gid }}"
-#   tags: ["spark-group"]
 
 - name: Ensure user account for Spark exists
   user:
     state: present
     name: "{{ spark_user_name }}"
-#     uid: "{{ spark_user_uid }}"
-#     group: "{{ spark_group_gid }}"
-#     system: no
-#     home: "{{ spark_home }}"
-#     create_home: no
-#     shell: "{{ spark_user_shell }}"
-#     groups: "{{ spark_user_groups | join(',') }}"
-#   tags: ["spark-user"]
 
 - name: Ensure Spark download, source and install directories exist
   file:
@@ -52,43 +39,43 @@
   loop_control:
     loop_var: spark_build_dir
 
-- name: Download Spark distribution
-  get_url:
-    url: "{{ spark_mirror }}/spark-{{ spark_version }}/spark-{{ spark_version }}.tgz"
-    dest: "{{ spark_download_dir }}/spark-{{ spark_version }}.tgz"
-
+# - name: Download Spark distribution
+#   get_url:
+#     url: "{{ spark_mirror }}/spark-{{ spark_version }}/spark-{{ spark_version }}.tgz"
+#     dest: "{{ spark_download_dir }}/spark-{{ spark_version }}.tgz"
+# 
 # TODO: This should really be implemented
 #
 # - name: Verify downloaded Spark distribution
 #   command: /bin/true
-
-- name: Extract Spark distribution
-  unarchive:
-    src: "{{ spark_download_dir }}/spark-{{ spark_version }}.tgz"
-    dest: "{{ spark_source_dir }}"
-    copy: no
-    creates: "{{ spark_source_dir }}/spark-{{ spark_version }}/README.md"
-
-- name: Build Spark
-  shell: |
-    R_HOME=/usr/lib/R \
-    JAVA_HOME=/usr/lib/jvm/java-{{ java_jdk_version }}-openjdk-amd64 \
-    MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn" \
-    ./dev/make-distribution.sh \
-        --name {{ spark_distribution_name }} \
-        --tgz \
-        -B \
-        -Dhadoop.version={{ hadoop_version }} \
-        -Pnetlib-lgpl \
-        -Psparkr \
-        -Pyarn \
-        -P{{ spark_hadoop_profile }} \
-        -Phive \
-        -Phive-thriftserver \
-        -Pmesos
-  args:
-    chdir: "{{ spark_source_dir }}/spark-{{ spark_version }}"
-    creates: "{{ spark_source_dir }}/spark-{{ spark_version }}/spark-{{ spark_version }}-bin-{{ spark_distribution_name }}.tgz"
+# 
+# - name: Extract Spark distribution
+#   unarchive:
+#     src: "{{ spark_download_dir }}/spark-{{ spark_version }}.tgz"
+#     dest: "{{ spark_source_dir }}"
+#     copy: no
+#     creates: "{{ spark_source_dir }}/spark-{{ spark_version }}/README.md"
+# 
+# - name: Build Spark
+#   shell: |
+#     R_HOME=/usr/lib/R \
+#     JAVA_HOME=/usr/lib/jvm/java-{{ java_jdk_version }}-openjdk-amd64 \
+#     MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn" \
+#     ./dev/make-distribution.sh \
+#         --name {{ spark_distribution_name }} \
+#         --tgz \
+#         -B \
+#         -Dhadoop.version={{ hadoop_version }} \
+#         -Pnetlib-lgpl \
+#         -Psparkr \
+#         -Pyarn \
+#         -P{{ spark_hadoop_profile }} \
+#         -Phive \
+#         -Phive-thriftserver \
+#         -Pmesos
+#   args:
+#     chdir: "{{ spark_source_dir }}/spark-{{ spark_version }}"
+#     creates: "{{ spark_source_dir }}/spark-{{ spark_version }}/spark-{{ spark_version }}-bin-{{ spark_distribution_name }}.tgz"
 
 - name: Install Spark
   unarchive:

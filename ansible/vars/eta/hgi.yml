@@ -212,3 +212,12 @@ jupyter_notebookapp_config:
   c.NotebookApp.notebook_dir: "'{{ hail_install_dir }}/jupyter/data'"
   c.NotebookApp.open_browser: "False"
   c.NotebookApp.allow_password_change: "False"
+
+terraform_version: 0.11.14
+terraform_sha256sum: 9b9a4492738c69077b079e595f5b2a9ef1bc4e8fb5596610f69a6f322a8af8dd
+
+packer_version: 1.4.1
+packer_sha256sum: b713ea79a6fb131e27d65ec3f2227f36932540e71820288c3c5ad770b565ecd7
+
+provisioning_repo: https://gitlab.internal.sanger.ac.uk/hgi/hgi-systems-cluster-spark.git
+provisioning_version: v0.5

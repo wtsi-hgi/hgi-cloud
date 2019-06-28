@@ -1,0 +1,58 @@
+---
+- name: Ensure dependencies are installed
+  apt:
+    state: present
+    name:
+      - "openjdk-{{ java_jdk_version }}-jdk"
+      - g++
+      - cmake
+      - make
+      - build-essential
+      - scala
+      - r-base
+      - r-recommended
+      - libopenblas-base
+      - libatlas3-base
+      - libnetlib-java
+      - liblz4-dev
+    install_recommends: true
+    force_apt_get: true
+
+- name: Get terraform
+  get_url:
+    url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip"
+    dest: "/tmp/terraform_{{ terraform_version }}_linux_amd64.zip"
+    sha256sum: "{{ terraform_sha256sum }}"
+
+- name: Install terraform
+  unarchive:
+    src: "/tmp/terraform_{{ terraform_version }}_linux_amd64.zip"
+    remote_src: true
+    dest: /usr/local/bin
+    mode: "0755"
+    creates: /usr/local/bin/terraform
+
+- name: Get packer
+  get_url:
+    url: "https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_linux_amd64.zip"
+    dest: "/tmp/packer_{{ packer_version }}_linux_amd64.zip"
+    sha256sum: "{{ packer_sha256sum }}"
+
+- name: Install packer
+  unarchive:
+    src: "/tmp/packer_{{ packer_version }}_linux_amd64.zip"
+    remote_src: true
+    dest: /usr/local/bin
+    mode: "0755"
+    creates: /usr/local/bin/packer
+
+- name: Clone provisioning repo
+  git:
+    repo: "{{ provisioning_repo }}"
+    dest: "/usr/src/provisioning"
+    version: "{{ provisioning_version }}"
+
+- name: Ensure python requirements for the provisioning are installed
+  pip:
+    requirements: "/usr/src/provisioning/requirements.txt"
+    executable: /usr/bin/pip3
