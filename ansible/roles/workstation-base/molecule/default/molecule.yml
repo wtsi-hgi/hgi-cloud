@@ -9,7 +9,7 @@ lint:
     config-file: ../../../yamllint.conf
 platforms:
   - name: default
-    image: bionic-server
+    image: eta-hgi-image-docker-base-0.1.0
     flavor: o2.medium
     role: workstation-base
 provisioner:
