@@ -74,7 +74,7 @@ def validate(context):
     context.run('packer validate {} image.json'.format(packer_options(context, 'validate', '0.0.0')))
 
 @invoke.task(validate, optional=['version', 'force', 'on_error', 'debug'])
-def build(context, role_name, role_version=None, on_error='cleanup', force=False, debug=False):
+def create(context, role_name, role_version=None, on_error='cleanup', force=False, debug=False):
   image = get_image(context, role_name, role_version)
   if not image:
     options = packer_options(context, role_name, role_version) + \
@@ -109,7 +109,7 @@ def share(context, with_project_id, role_name, role_version):
 
 ns = invoke.Collection()
 ns.add_task(validate)
-ns.add_task(build, default=True)
+ns.add_task(create, default=True)
 ns.add_task(promote)
 ns.add_task(share)
 ns.add_task(accept)

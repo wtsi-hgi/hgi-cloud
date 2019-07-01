@@ -45,8 +45,7 @@
       "extra_arguments": [
         "--extra-vars \"role_name={{user `role_name`}} role_version={{user `role_version`}}\"",
         "--extra-vars @vars/{{user `datacenter`}}.yml",
-        "--extra-vars @vars/{{user `datacenter`}}/{{user `programme`}}.yml",
-        "--extra-vars @vars/{{user `datacenter`}}/{{user `programme`}}/{{user `env`}}.yml"
+        "--extra-vars @vars/{{user `datacenter`}}/{{user `programme`}}.yml"
       ],
       "role_paths": [ "../ansible/roles" ]
     },

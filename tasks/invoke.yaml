@@ -2,16 +2,22 @@
 run:
   echo: true
 
+packer:
+  on_error: cleanup
+  debug: false
+  force: false
+
 terraform:
   parallelism: 32
+
+upload_prefix: download
+build_prefix: build
 
 spark_distribution:
   version: 0.0.0
   jdk_version: "0"
   hadoop_version: 0.0.0
   hadoop_profile: "0.0"
-  upload_dirname: download
-  build_dirname: build
   mirror: https://archive.apache.org/dist/spark
   bucket_name: eta-default-bucket-anonimous
   sha512:
