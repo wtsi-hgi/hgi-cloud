@@ -1,1 +1,12 @@
 ---
+- name: Pull provisioning docker image from Cog
+  get_url:
+    url: "{{ provisioning_image_url }}"
+    dest: /usr/src
+
+- name: Ensure provisioning docker image is loaded
+  docker_image:
+    name: provisioning-base
+    state: present
+    source: load
+    load_path: "/usr/src/{{ datacentre }}-{{ programme }}-docker-provisioning-base-{{ provisioning_image_version }}.tar"

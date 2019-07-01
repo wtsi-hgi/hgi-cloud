@@ -45,3 +45,15 @@
       - containerd.io
     install_recommends: true
     force_apt_get: true
+
+- name: Ensure python3 docker module is istalled
+  pip:
+    name: docker
+    state: present
+    executable: /usr/bin/pip3
+
+- name: Ensure base user belongs to the docker gorup
+  user:
+    name: "{{ base_user_name }}"
+    groups:
+      - docker
