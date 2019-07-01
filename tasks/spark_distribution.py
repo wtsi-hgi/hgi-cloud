@@ -16,19 +16,19 @@ import invoke
 
 @invoke.task
 def clean(context):
-  build_dirname = context.config['spark_distribution']['build_dirname']
-  for path in [build_dirname]:
-    if os.path.isdir(path):
+  build_prefix = context.config['build_prefix']
+  for path in glob.glob(os.path.join(build_prefix, 'spark-*/')):
+    if os.path.exists(path):
       shutil.rmtree(path)
-    if not os.path.isdir(path):
-      os.makedirs(path)
+  if not os.path.isdir(build_prefix):
+    os.makedirs(build_prefix)
 
 @invoke.task
 def download(context, spark_version=None):
-  build_dirname = context.config['spark_distribution']['build_dirname']
+  build_prefix = context.config['build_prefix']
   version = spark_version or context.config['spark_distribution']['version']
   basename = 'spark-{}.tgz'.format(version)
-  filename = os.path.join(build_dirname, basename)
+  filename = os.path.join(build_prefix, basename)
   if not os.path.isfile(filename):
     mirror = context.config['spark_distribution']['mirror']
     url = '{}/spark-{}/{}'.format(mirror, version, basename)
@@ -38,11 +38,11 @@ def download(context, spark_version=None):
 
 @invoke.task(pre=[download])
 def sha512(context, spark_version=None):
-  build_dirname = context.config['spark_distribution']['build_dirname']
+  build_prefix = context.config['build_prefix']
   version = spark_version or context.config['spark_distribution']['version']
   basename = 'spark-{}.tgz'.format(version)
   configured = ''.join(context.config['spark_distribution']['sha512'][version].split()).lower()
-  with open(os.path.join(build_dirname, basename), 'rb') as tgz:
+  with open(os.path.join(build_prefix, basename), 'rb') as tgz:
     calculated = hashlib.sha512(tgz.read()).hexdigest()
     if not hmac.compare_digest(calculated, configured):
       print('Checksum failed!')
@@ -54,21 +54,21 @@ def sha512(context, spark_version=None):
 
 @invoke.task(pre=[sha512])
 def extract(context, spark_version=None):
-  build_dirname = context.config['spark_distribution']['build_dirname']
+  build_prefix = context.config['build_prefix']
   version = spark_version or context.config['spark_distribution']['version']
   basename = 'spark-{}.tgz'.format(version)
-  source = '{}/spark-{}'.format(build_dirname, version)
+  source = '{}/spark-{}'.format(build_prefix, version)
   if not os.path.isdir(source):
-    with tarfile.open(os.path.join(build_dirname, basename), 'r:gz') as tgz:
+    with tarfile.open(os.path.join(build_prefix, basename), 'r:gz') as tgz:
       print('Extracting source: {}'.format(source))
-      tgz.extractall(build_dirname)
+      tgz.extractall(build_prefix)
   print('Source extracted: {}'.format(source))
 
 @invoke.task(pre=[extract])
 def build(context, spark_version=None):
   version = spark_version or context.config['spark_distribution']['version']
-  build_dirname = context.config['spark_distribution']['build_dirname']
-  build_directory = os.path.join(build_dirname, 'spark-{}'.format(version))
+  build_prefix = context.config['build_prefix']
+  build_directory = os.path.join(build_prefix, 'spark-{}'.format(version))
   distribution = os.path.join(build_directory, context.config['spark_distribution']['basename'])
   if not os.path.isfile(distribution):
     with context.cd(build_directory):
@@ -97,16 +97,16 @@ MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMave
 def upload(context):
   basename = context.config['spark_distribution']['basename']
   version = context.config['spark_distribution']['version']
-  build_dirname = context.config['spark_distribution']['build_dirname']
-  upload_dirname = context.config['spark_distribution']['upload_dirname']
+  build_prefix = context.config['build_prefix']
+  upload_prefix = context.config['upload_prefix']
   bucket_name = context.config['spark_distribution']['bucket_name']
 
-  distribution = os.path.join(build_dirname, 'spark-{}'.format(version), basename)
+  distribution = os.path.join(build_prefix, 'spark-{}'.format(version), basename)
   with open(distribution, 'br') as spark_tgz:
     body = spark_tgz.read()
 
   s3 = boto3.resource('s3', endpoint_url='https://{}'.format(os.environ['AWS_S3_ENDPOINT']))
-  object_path = os.path.join(upload_dirname, 'spark-{}'.format(version), basename)
+  object_path = os.path.join(upload_prefix, 'spark-{}'.format(version), basename)
   object_name = 's3://{}/{}'.format(bucket_name, object_path)
   print('Uploading distribution: {}'.format(object_name))
   s3.Object(bucket_name, object_path).put(ACL='public-read', Body=body)
@@ -130,8 +130,8 @@ def create(context, version='2.4.3', user=None, jdk_version=8, hadoop_version='2
   context.config['spark_distribution']['name'] = name
   context.config['spark_distribution']['basename'] = basename
 
-  upload_dirname = context.config['spark_distribution']['upload_dirname']
-  object_path = os.path.join(upload_dirname, 'spark-{}'.format(version), basename)
+  upload_prefix = context.config['upload_prefix']
+  object_path = os.path.join(upload_prefix, 'spark-{}'.format(version), basename)
   object_name = 's3://{}/{}'.format(bucket_name, object_path)
   s3 = boto3.resource('s3', endpoint_url='https://{}'.format(os.environ['AWS_S3_ENDPOINT']))
   try:
