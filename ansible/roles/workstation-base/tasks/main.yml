@@ -1,12 +1,14 @@
 ---
 - name: Pull provisioning docker image from Cog
   get_url:
-    url: "{{ provisioning_image_url }}"
-    dest: /usr/src
+    url: "{{ provisioning_image_url }}/{{ provisioning_image_basename }}"
+    dest: "/usr/src/{{ provisioning_image_basename }}"
 
 - name: Ensure provisioning docker image is loaded
   docker_image:
-    name: provisioning-base
+    name: "hgi/provisioning-base:{{ provisioning_image_version }}"
+    repository: hgi/provisioning-base
+    tag: "{{ provisioning_image_version }}"
     state: present
     source: load
-    load_path: "/usr/src/{{ datacentre }}-{{ programme }}-docker-provisioning-base-{{ provisioning_image_version }}.tar"
+    load_path: "/usr/src/{{ provisioning_image_basename }}"

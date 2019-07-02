@@ -9,7 +9,7 @@ lint:
     config-file: ../../../yamllint.conf
 platforms:
   - name: default
-    image: eta-hgi-image-docker-base-0.1.0
+    image: eta-hgi-image-docker-base-0.1.2
     flavor: o2.medium
     role: workstation-base
 provisioner:
@@ -40,4 +40,4 @@ scenario:
     - idempotence
     - side_effect
     - verify
-    - destroy
+#    - destroy

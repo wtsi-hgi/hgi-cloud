@@ -35,6 +35,11 @@
     name:
       - testinfra
 
+- name: Ensure /etc/cloud exists
+  file:
+    path: /etc/cloud
+    state: directory
+
 - name: Install new cloud.cfg
   template:
     src: cloud.cfg.j2
