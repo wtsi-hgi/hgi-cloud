@@ -11,6 +11,7 @@
     {
       "type": "docker",
       "image": "ubuntu:bionic",
+      "run_command": ["--detach", "--interactive", "--tty", "--entrypoint=/bin/sh", "--", "{{.Image}}"], 
       "export_path": "{{user `build_prefix`}}/containers/docker/{{user `datacenter`}}-{{user `programme`}}-docker-{{user `role_name`}}-{{user `role_version`}}.tar"
     }
   ],
@@ -30,12 +31,14 @@
         "--extra-vars @vars/{{user `datacenter`}}/{{user `programme`}}.yml"
       ],
       "role_paths": [ "ansible/roles" ]
-    },
-    {
-      "type": "shell",
-      "execute_command": "{{.Vars}} bash '{{.Path}}'",
-      "script": "packer/scripts/cleanup.sh"
     }
   ],
-  "post-processors": []
+  "post-processors": [
+    {
+      "type": "docker-import",
+      "repository": "hgi/{{user `role_name` }}",
+      "tag": "{{user `role_version`}}",
+      "keep_input_artifact": false
+    }
+  ]
 }

@@ -28,11 +28,14 @@ def get_container_name(context):
 @invoke.task
 def clean(context):
   build_prefix = context.config['build_prefix']
-  for path in glob.glob(os.path.join(build_prefix, 'containers', 'docker', '*.tar')):
+  for path in glob.glob(os.path.join(build_prefix, 'containers', 'docker', '*')):
     if os.path.exists(path):
       os.remove(path)
+      print('Removed {}'.format(path))
   if not os.path.isdir(build_prefix):
     os.makedirs(build_prefix)
+
+  context.run('docker system prune --all --force')
   
 @invoke.task
 def validate(context):
@@ -52,9 +55,12 @@ def save(context, role_name=None, role_version=None, on_error=None, force=None, 
   if debug is not None:
     context.config['packer']['debug'] = debug
 
+  save_path = os.path.join(build_prefix, 'containers', 'docker')
+  if not os.path.isdir(save_path):
+    os.makedirs(save_path)
+
   container_name = get_container_name(context)
-  saved_container = os.path.join(build_prefix, 'containers', 'docker',
-                                 '{}.tar'.format(container_name))
+  saved_container = os.path.join(save_path, '{}.tar'.format(container_name))
 
   if not os.path.isfile(saved_container):
     var_file = 'packer/vars/{}-{}.json'.format(context.config['meta']['datacenter'],
@@ -69,8 +75,12 @@ def save(context, role_name=None, role_version=None, on_error=None, force=None, 
       '-var-file={}'.format(var_file)
     ])
     context.run('packer build {} packer/docker.json'.format(options))
+    context.run('docker save hgi/{}:{} --output {}'.format(
+                context.config['role']['name'],
+                context.config['role']['version'],
+                saved_container))
   else:
-    print("Skipping {}: container is already available".format(saved_container))
+    print("Skipping {}: container is already build".format(saved_container))
 
 @invoke.task(pre=[save])
 def upload(context):
@@ -79,16 +89,18 @@ def upload(context):
 
   bucket_name = get_bucket_name(context)
   container_name = get_container_name(context)
-  saved_container = os.path.join('containers', 'docker', '{}.tar'.format(container_name))
+  # I could not make the checksum work
+  for ext in ['tar']:
+    container_file = os.path.join('containers', 'docker', '{}.{}'.format(container_name, ext))
 
-  with open(os.path.join(build_prefix, saved_container), 'br') as content:
-    body = content.read()
+    with open(os.path.join(build_prefix, container_file), 'br') as content:
+      body = content.read()
 
-  object_path = os.path.join(upload_prefix, saved_container)
-  object_name = 's3://{}/{}'.format(get_bucket_name(context), object_path)
-  s3 = boto3.resource('s3', endpoint_url='https://{}'.format(os.environ['AWS_S3_ENDPOINT']))
-  print('Uploading distribution: {}'.format(object_name))
-  s3.Object(bucket_name, object_path).put(ACL='public-read', Body=body)
+    object_path = os.path.join(upload_prefix, container_file)
+    object_name = 's3://{}/{}'.format(get_bucket_name(context), object_path)
+    s3 = boto3.resource('s3', endpoint_url='https://{}'.format(os.environ['AWS_S3_ENDPOINT']))
+    print('Uploading distribution: {}'.format(object_name))
+    s3.Object(bucket_name, object_path).put(ACL='public-read', Body=body)
 
 @invoke.task(post=[upload])
 def create(context, role_name, role_version, user=None, on_error='cleanup', force=False, debug=False):
