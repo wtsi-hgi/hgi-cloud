@@ -1,7 +1,4 @@
 ---
-workstation_install_owner: ubuntu
-workstation_install_group: ubuntu
-
 provisioning_repo: https://gitlab.internal.sanger.ac.uk/hgi/hgi-systems-cluster-spark.git
 provisioning_version: v0.5
 provisioning_image_version: 0.0.2
