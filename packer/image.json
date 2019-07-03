@@ -43,6 +43,7 @@
       "playbook_dir": "../ansible",
       "playbook_file": "../ansible/image.yml",
       "extra_arguments": [
+        "--extra-vars \"datacenter={{user `datacenter`}} programme={{user `programme`}}\"",
         "--extra-vars \"role_name={{user `role_name`}} role_version={{user `role_version`}}\"",
         "--extra-vars @vars/{{user `datacenter`}}.yml",
         "--extra-vars @vars/{{user `datacenter`}}/{{user `programme`}}.yml"

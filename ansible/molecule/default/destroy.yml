@@ -14,5 +14,5 @@
       os_server:
         state: absent
         terminate_volume: yes
-        name: "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ item.role }}-{{ item.name }}"
+        name: "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ item.role }}-{{ item.name }}"
       with_items: "{{ molecule_yml.platforms }}"

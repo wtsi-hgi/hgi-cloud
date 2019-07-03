@@ -1,5 +1,5 @@
 ---
-datacentre: eta
+datacenter: eta
 programme: hgi
 env: ci
 deployment_name: molecule

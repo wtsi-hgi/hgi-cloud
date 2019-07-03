@@ -2,5 +2,5 @@
 provisioning_repo: https://gitlab.internal.sanger.ac.uk/hgi/hgi-systems-cluster-spark.git
 provisioning_version: v0.5
 provisioning_image_version: 0.0.2
-provisioning_image_basename: "{{ datacentre }}-{{ programme }}-docker-provisioning-base-{{ provisioning_image_version }}.tar"
-provisioning_image_url: "https://{{ datacentre }}-{{ programme }}-bucket-ld14.cog.sanger.ac.uk/download/containers/docker"
+provisioning_image_basename: "{{ datacenter }}-{{ programme }}-docker-provisioning-base-{{ provisioning_image_version }}.tar"
+provisioning_image_url: "https://{{ datacenter }}-{{ programme }}-bucket-ld14.cog.sanger.ac.uk/download/containers/docker"
