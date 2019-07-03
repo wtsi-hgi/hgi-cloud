@@ -11,7 +11,7 @@ platforms:
   - name: default
     image: eta-hgi-image-docker-base-0.1.2
     flavor: o2.medium
-    role: workstation-base
+    role: console-base
 provisioner:
   name: ansible
   options:
