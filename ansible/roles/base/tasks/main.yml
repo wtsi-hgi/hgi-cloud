@@ -88,3 +88,23 @@
     - "{{ base_bin_dir }}"
   loop_control:
     loop_var: base_dir
+
+- name: Create namespace for Sanger's CA certificates
+  file:
+    path: /usr/share/ca-certificates/sanger.ac.uk
+    state: directory
+
+- name: Add Sanger's CA certificate
+  copy:
+    dest: /usr/share/ca-certificates/sanger.ac.uk/Genome_Research_Ltd_Certificate_Authority-cert.pem
+    content: "{{ sanger_pem }}"
+
+- name: Register Sanger's CA certificate
+  lineinfile:
+    path: /etc/ca-certificates.conf
+    regex: "^sanger.ac.uk/Genome_Research_Ltd_Certificate_Authority-cert.pem"
+    line: "sanger.ac.uk/Genome_Research_Ltd_Certificate_Authority-cert.pem"
+
+- name: Update CA certificates
+  shell: "update-ca-certificates --verbose"
+  changed_when: false
