@@ -221,6 +221,6 @@ packer_sha256sum: b713ea79a6fb131e27d65ec3f2227f36932540e71820288c3c5ad770b565ec
 
 provisioning_repo: https://gitlab.internal.sanger.ac.uk/hgi/hgi-systems-cluster-spark.git
 provisioning_version: v0.5
-provisioning_image_version: 0.0.3
+provisioning_image_version: v0.5
 provisioning_image_basename: "{{ datacentre }}-{{ programme }}-docker-provisioning-base-{{ provisioning_image_version }}.tar"
 provisioning_image_url: "https://{{ datacentre }}-{{ programme }}-bucket-ld14.cog.sanger.ac.uk/download/containers/docker"
