@@ -10,7 +10,7 @@ def bucket_name(context):
     context.config['meta']['datacenter'],
     context.config['meta']['programme'],
     'bucket',
-    context.config['deployment']['owner']
+    os.environ['OS_USERNAME']
   ])
 
 def keypair_name(context):
@@ -18,7 +18,7 @@ def keypair_name(context):
     context.config['meta']['datacenter'],
     context.config['meta']['programme'],
     'keypair',
-    context.config['deployment']['owner']
+    os.environ['OS_USERNAME']
   ])
 
 def run_s3cmd(context, s3cfg, command):
@@ -42,9 +42,9 @@ def create(context, public_key='~/.ssh/id_rsa.pub', s3cfg='~/.s3cfg', secret=Non
     os.remove(temp_filename)
 
 @invoke.task
-def delete(context, yes_also_the_bucket=False, s3cfg='~/.s3cfg'):
+def destroy(context, yes_also_the_bucket=False, s3cfg='~/.s3cfg'):
   openstack = 'openstack keypair delete {}'
   context.run(openstack.format(keypair_name(context)), warn=True)
   if yes_also_the_bucket:
-    run_s3cmd(context, s3cfg, 'rb {bucket}')
+    run_s3cmd(context, s3cfg, 'rb {}'.format(bucket_name(context)))
 
