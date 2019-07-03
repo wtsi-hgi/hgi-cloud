@@ -50,10 +50,10 @@
 - name: Clone provisioning repo
   git:
     repo: "{{ provisioning_repo }}"
-    dest: "/usr/src/provisioning"
+    dest: "/root/provisioning"
     version: "{{ provisioning_version }}"
 
 - name: Ensure python requirements for the provisioning are installed
   pip:
-    requirements: "/usr/src/provisioning/requirements.txt"
+    requirements: "/root/provisioning/requirements.txt"
     executable: /usr/bin/pip3
