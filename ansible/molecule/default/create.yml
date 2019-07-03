@@ -26,11 +26,11 @@
       os_server:
         state: present
         userdata: "{{ lookup('file', '../../../packer/scripts/user_data.sh') }}"
-        name: "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ item.role }}-{{ item.name }}"
+        name: "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ item.role }}-{{ item.name }}"
         image: "{{ item.image }}"
         flavor: "{{ item.flavor }}"
         floating_ip_pools: public
-        key_name: "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-keypair-{{ keypair_user }}"
+        key_name: "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-keypair-{{ keypair_user }}"
         # Whatever service you are going to install, it is not going to be
         # accessed from the outside, therefore you don't need specific security
         # groups. Molecule's tests need to assert the configuration and the
@@ -39,9 +39,9 @@
         # and/or an entire deployment, which will be addressed by terraform &
         # terratest.
         security_groups:
-          - "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-base"
-          - "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-ssh"
-        network: "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-network-main"
+          - "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-base"
+          - "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-ssh"
+        network: "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-network-main"
         meta: "{{ metadata | combine({ 'molecule_platform': item.name, 'molecule_scenario': molecule_yml.scenario['name'], 'role_name': item.role }) }}"
         boot_from_volume: yes
         terminate_volume: yes
