@@ -7,10 +7,10 @@ that you safely store and keep all your files.
 ### Create ssh keys
 In order to create / destroy your cluster, you need a pair of `ssh` keys. To
 create the keys, you can run the command `ssh-keygen`. `ssh-keygen` is part of
-the standard distribution of the `ssh` software. If you can't find it, ask the Help Desk.
-Unless you know that you need specific values, just press enter to any input.
-```
-$ ssh-keygen 
+the standard distribution of the `ssh` software. If you can't find it, ask the
+Help Desk. Unless you know that you need specific values, just press enter to 
+any input. Here is an example output:
+``` 
 Generating public/private rsa key pair.
 Enter file in which to save the key (/home/ld14/.ssh/id_rsa): 
 Created directory '/home/ld14/.ssh'.
@@ -39,7 +39,7 @@ The key's randomart image is:
 This command is going to be used internally by the provisioning software, and
 it needs to be configured. `.s3cfg` needs to be located in your home directory.
 It should look like this:
-```
+```ini
 [default]
 encrypt = False
 host_base = cog.sanger.ac.uk
@@ -56,7 +56,7 @@ information, and therfore they have been omitted.
 `openrc.sh` files contains a list of environment variables that are going to be
 used throughout the provisioning software.
 
-```
+```bash
 #!/usr/bin/env bash
 # To use an OpenStack cloud you need to authenticate against the Identity
 # service named keystone, which returns a **Token** and **Service Catalog**.
@@ -101,7 +101,7 @@ export OS_IDENTITY_API_VERSION=3
 There are some modules of the provisioning software that require other
 environment variables. Given the values of the `.s3cfg` file, add the following
 snippet to the `openrc.sh` file:
-```
+```bash
 # Fixed value that represnts the name of the internal S3 service
 export AWS_S3_ENDPOINT="cog.sanger.ac.uk"
 # Fixed value for something that does not apply to our Openstack, but will be
@@ -125,7 +125,7 @@ software has been released).
 Here follows an example of the simplest way to copy your files over. Before
 typing the command, make sure that the username and the Console server's IP
 address are correct.
-```
+```bash
 scp -r .ssh .s3cfg openrc.sh ld14@172.27.83.155:
 ```
 
@@ -133,23 +133,42 @@ scp -r .ssh .s3cfg openrc.sh ld14@172.27.83.155:
 Here follows an example of the simplest way to log in the Console server.
 Before typing the command, make sure that the username and the Console server's
 IP address are correct.
-```
+```bash
 ssh ld14@172.27.83.155
 ```
 
-7) Run the container:
-	# --tty							# Allocate a terminal so you can see what you are typing
-	# --interactive	 					# Create an interactive session
-	# --workdir /root					# change working directory to software location
-	# --volume /var/run/docker.sock:/var/run/docker.sock	# Use the docker daemon socket of the host
-	# --volume ${HOME}:/root				# Make the user's home available in the container
-	# hgi/provisioning-base:0.0.3				# Name and version of the image to use
-	# bash							# Shell to run inside the container
+### Run the container
+The provisioning software is shipped inside a Docker container and each user is
+supposed to run his/her own container. There are multiple advantages:
+* Isolation of the provisioning software from the software installed on the
+  Console server.
+* Isolation of each user's working session: any number of users can work on the
+  same console server without ever interfering with other users, as long as the
+  Console server has enough resources. 
+* Portability: the same container can be run on the Console server, as well as
+  on any other computer on the campus i.e. your laptop.
 
-	$ docker run --tty --interactive --workdir /root --volume /var/run/docker.sock:/var/run/docker.sock --volume ${HOME}:/root hgi/provisioning-base:v0.5 bash
+The command I suggest to run the provisioning container is:
+```bash
+docker run --tty --interactive --workdir /root --volume ${HOME}:/root hgi/provisioning-base:v0.5 bash
+```
+The following is a simple explanation of the option that I'm suggesting you to
+use:
+* `--tty`: Allocates a terminal so you can see what you are typing
+* `--interactive`: Creates an interactive session
+* `--workdir /root`: Changes the working directory to `root`'s home directory
+* `--volume ${HOME}:/root`: Makes the user's current home direcotry available
+   inside the container
+* `hgi/provisioning-base:v0.5`: This represents the name and version of the
+  provisioning container. Keep in mind that `v0.5` reprensents the version of
+  the provisioning software and this is subject to change.
+* `bash`: This is the name of the shell to run inside the container
 
-8) Load the openrc.sh file:
-	$ source openrc.sh
+### Prepare to run the provisioning software
+It's now time to prepare the provisioning software to run:
+```bash
+source openrc.sh
+```
 9) Setup the user:
 	$ bash invoke.sh user create --public-key=~/.ssh/id_rsa.pub
 10) Create the hail cluster:
