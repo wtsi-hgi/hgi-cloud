@@ -1,11 +1,53 @@
 # How to get ready to use use your cluster
+In order to create, destroy or use a Hail cluster, users need to run the
+provisioning software distributed in this repository. This software needs
+configuration files from the shell environment (each user has to provide their
+own), properly compiled property files (already organized and stored in this
+repository) and other required software and libraries. In order to make it easy
+to distribute / use this software, and to allow it to be used the most flexible
+range of scenarios, the team has produced a Docker container (**TODO**: make the
+location public).
+
+## Glossary
+* **Provisioning software**:
+  Is the software that is required to create the the cluster. The term
+  [provisioning](https://en.wikipedia.org/wiki/Provisioning_\(telecommunications\))
+  is used in many different ways and its meaning may slightly change according
+  to the context it is used in
+  ([server provisioning](https://en.wikipedia.org/wiki/Provisioning_\(telecommunications\)#Server_provisioning),
+  [cloud provisioning](https://en.wikipedia.org/wiki/Provisioning_\(telecommunications\)#Self-service_provisioning_for_cloud_computing_services),
+  ecc)
+* **Docker container**: is a form of
+  [OS-level virtualisation](https://en.wikipedia.org/wiki/OS-level_virtualisation)
+  whose [purpose is](https://www.docker.com/resources/what-container) to (quote):
+
+  > package up code and all its dependencies so the application runs quickly
+  > and reliably from one computing environment to another
+
+* **Console Server**: is the name we decided to give to the server that can run
+  the `Provisioning software` the we ship inside a `Docker container` 
+* **SSH**
+  [Secure Shell](https://en.wikipedia.org/wiki/Secure_Shell): is a tool commonly
+  used to execute command or login on remote server. Its security model is based
+  on [Asimmetric Cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography)
+  and is more effective when used with a set of
+  [keys](https://en.wikipedia.org/wiki/Key_\(cryptography\)) spcifically made
+  for eac user. SSH is the tool the the user needs to login on the `Console Server`.
+* **AWS S3 / Red Hat's Ceph**: are
+  [Object Storage](https://en.wikipedia.org/wiki/Object_storage) services.
+  Sanger does not actuallt relay on [AWS S3](https://aws.amazon.com/s3/), but
+  rather uses an S3 compatible service that runs on top of the
+  [Ceph](http://docs.ceph.com/docs/giant/) service in our OpenStack
+  infrastructure.
 
 ## Preparing the required files
-The following are preparatory steps that you are supposed to do just once, given
-that you safely store and keep all your files.
+The following are preparatory steps that you are supposed to do just once,
+regardles of the scenario in which you want to use the provisioning software,
+given that you safely store and keep all your files that you are going to
+create.
 
 ### Create ssh keys
-In order to create / destroy your cluster, you need a pair of `ssh` keys. To
+If you haven't created them yet, you need a pair of `ssh` keys. To
 create the keys, you can run the command `ssh-keygen`. `ssh-keygen` is part of
 the standard distribution of the `ssh` software. If you can't find it, ask the
 Help Desk. Unless you know that you need specific values, just press enter to 
@@ -35,10 +77,10 @@ The key's randomart image is:
 ```
 
 ### Copy / Create .s3cfg file
-`.s3cfg` is the name of the configuration file for a command called `s3cmd`.
-This command is going to be used internally by the provisioning software, and
-it needs to be configured. `.s3cfg` needs to be located in your home directory.
-It should look like this:
+`.s3cfg` is the name of the configuration file for a tool called `s3cmd`.
+This tool is let's the user manage any aspects of their S3 objects buckets.
+`.s3cfg` needs to be located in your home directory on the `Console server` and
+it should look like this:
 ```ini
 [default]
 encrypt = False
@@ -98,7 +140,7 @@ export OS_IDENTITY_API_VERSION=3
 ```
 
 ### Add AWS environment variables to opnerc.sh
-There are some modules of the provisioning software that require other
+There are some modules of the provisioning software that require more shell
 environment variables. Given the values of the `.s3cfg` file, add the following
 snippet to the `openrc.sh` file:
 ```bash
@@ -169,9 +211,3 @@ It's now time to prepare the provisioning software to run:
 ```bash
 source openrc.sh
 ```
-9) Setup the user:
-	$ bash invoke.sh user create --public-key=~/.ssh/id_rsa.pub
-10) Create the hail cluster:
-	$ bash invoke.sh hail create
-11) Login on Jupyter
-	# HOWTO
