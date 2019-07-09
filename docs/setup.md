@@ -1,3 +1,5 @@
+{:toc}
+
 # How to get ready to use use your cluster
 In order to create, destroy or use a Hail cluster, users need to run the
 provisioning software distributed in this repository. This software needs
