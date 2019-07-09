@@ -8,7 +8,7 @@ locals {
   deployment_name     = "hail"
   dependency          = { }
   other_data          = {
-    password          = "password"
+    password                      = "${var.password}"
     spark_master_external_address = "${var.spark_master_external_address}"
     aws_access_key_id             = "${var.aws_access_key_id}"
     aws_secret_access_key         = "${var.aws_secret_access_key}"
