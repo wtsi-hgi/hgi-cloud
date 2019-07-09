@@ -1,6 +1,4 @@
-
-1. TOC
-{:toc}
+[[_TOC_]]
 
 # How to get ready to use use your cluster
 In order to create, destroy or use a Hail cluster, users need to run the
