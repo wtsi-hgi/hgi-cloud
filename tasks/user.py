@@ -28,18 +28,12 @@ def run_s3cmd(context, s3cfg, command):
   context.run(s3cmd, warn=True)
 
 @invoke.task
-def create(context, public_key='~/.ssh/id_rsa.pub', s3cfg='~/.s3cfg', secret=None):
+def create(context, public_key='~/.ssh/id_rsa.pub', s3cfg='~/.s3cfg'):
   openstack = 'openstack keypair create --public-key={} {}'
   key_path = os.path.expanduser(public_key)
   context.run(openstack.format(key_path, keypair_name(context)), warn=True)
   bucket = bucket_name(context)
   run_s3cmd(context, s3cfg, 'mb {}'.format(bucket))
-  if secret:
-    temp_fd, temp_filename = tempfile.mkstemp()
-    os.write(temp_fd, secret)
-    os.close(temp_fd)
-    run_s3cmd(context, s3cfg, 'put {} {}/secret'.format(temp_filename, bucket))
-    os.remove(temp_filename)
 
 @invoke.task
 def destroy(context, yes_also_the_bucket=False, s3cfg='~/.s3cfg'):
