@@ -18,7 +18,8 @@ def create_terraform_vars(order):
   created = []
 
   for name in order:
-    os.path.exists(dirname) or os.mkdir(dirname)
+    if not os.path.exists(dirname): 
+      os.mkdir(dirname)
     tfvars = os.path.join(dirname, '{}.tfvars'.format(name))
     if not os.path.exists(tfvars):
       with open(tfvars, 'w') as f:
@@ -33,7 +34,8 @@ def create_ansible_vars(order, masters_roles, slaves_role):
   created = []
 
   for name in order:
-    os.path.exists(dirname) or os.mkdir(dirname)
+    if not os.path.exists(dirname):
+      os.mkdir(dirname)
     yml = os.path.join(dirname, '{}.yml'.format(name))
     if not os.path.exists(yml):
       with open(yml, 'w') as f:
@@ -51,7 +53,7 @@ def create_ansible_vars(order, masters_roles, slaves_role):
 
   return created
 
-def hail_volume(context, owner):
+def get_hail_volume_name(context, owner):
   volume_name = '-'.join([
       context.config['meta']['datacenter'],
       context.config['meta']['programme'],
@@ -60,22 +62,20 @@ def hail_volume(context, owner):
   return [ v.id for v in openstack.volume.volumes() if v.name == volume_name][0]
 
 @invoke.task
-def init(context, masters_roles, slaves_role):
+def init(context, owner=None, masters_roles='hail-master', slaves_role='hail-slave'):
   created = []
   order = [
     context.config['meta']['datacenter'],
     context.config['meta']['programme'],
     context.config['meta']['env'],
-    context.config['deployment']['owner'],
+    owner or os.environ['OS_USERNAME'],
     context.config['deployment']['name']
   ]
   created += create_terraform_vars(order) + \
              create_ansible_vars(order, masters_roles, slaves_role)
 
   hail_cluster_conf = ['terraform', 'vars'] + order
-  user_conf = hail_cluster_conf[:]
   hail_cluster_conf[-1] = hail_cluster_conf[-1] + '.tfvars'
-  user_conf[-1] = 'user.tfvars'
 
   with open(os.path.join(*hail_cluster_conf), 'a') as conf:
     conf.write("spark_masters_role_name = \"{}\"\n".format(masters_roles))
@@ -85,7 +85,7 @@ def init(context, masters_roles, slaves_role):
   for conf in created:
     print('  {}'.format(conf))
 
-  context.run('git add {}'.format(' '.join(created)))
+  # context.run('git add {}'.format(' '.join(created)))
 
 @invoke.task
 def create(context, owner=None, networking=False):
@@ -94,7 +94,7 @@ def create(context, owner=None, networking=False):
     context.run('bash invoke.sh deployment create --name networking --owner {}'.format(owner))
   context.run('bash invoke.sh deployment create --name hail_volume --owner {}'.format(owner))
   env = {
-    'TF_VAR_hail_volume': hail_volume(context, owner)
+    'TF_VAR_hail_volume': get_hail_volume_name(context, owner)
   }
   context.run('bash invoke.sh deployment create --name hail_cluster --owner {}'.format(owner), env=env)
 
@@ -102,7 +102,7 @@ def create(context, owner=None, networking=False):
 def destroy(context, owner=None, networking=False, yes_also_hail_volume=False):
   owner = owner or os.environ['OS_USERNAME']
   env = {
-    'TF_VAR_hail_volume': hail_volume(context, owner)
+    'TF_VAR_hail_volume': get_hail_volume_name(context, owner)
   }
   context.run('bash invoke.sh deployment destroy --name hail_cluster --owner {}'.format(owner), env=env)
   if networking:
