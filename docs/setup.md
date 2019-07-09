@@ -9,6 +9,7 @@ range of scenarios, the team has produced a Docker container (**TODO**: make the
 location public).
 
 ## Glossary
+Please, also consider reading the [Openstack Glossary on the internal SSG Confluence](https://ssg-confluence.internal.sanger.ac.uk/display/OPENSTACK/OpenStack+glossary)
 * **Provisioning software**:
   Is the software that is required to create the the cluster. The term
   [provisioning](https://en.wikipedia.org/wiki/Provisioning_\(telecommunications\))
