@@ -24,7 +24,7 @@ locals {
 #   }
 # }
 
-module "hail_masters" {
+module "hail_master" {
   source              = "../../infrastructure/instances/standard/"
   datacenter          = "${var.datacenter}"
   programme           = "${var.programme}"
@@ -49,13 +49,13 @@ module "hail_masters" {
 
 resource "openstack_compute_floatingip_associate_v2" "public_ip" {
   floating_ip = "${var.spark_master_external_address}"
-  instance_id = "${module.spark_masters.instance_ids[0]}"
+  instance_id = "${module.hail_master.instance_ids[0]}"
 }
 
 module "hail_volume" {
   source              = "../../infrastructure/instances/extra/persistent_volume"
   volume_ids          = ["${var.hail_volume}"]
-  instance_ids        = "${module.spark_masters.instance_ids}"
+  instance_ids        = "${module.hail_master.instance_ids}"
 }
 
 module "hail_slaves" {
@@ -69,7 +69,7 @@ module "hail_slaves" {
   role_name           = "hail-slave"
   role_version        = "${var.spark_slaves_role_version}"
   image_name          = "${var.spark_slaves_image_name}"
-  other_data          = "${merge(local.other_data, map("spark_master_private_address", module.spark_masters.access_ip_v4s[0]))}"
+  other_data          = "${merge(local.other_data, map("spark_master_private_address", module.hail_master.access_ip_v4s[0]))}"
   security_groups     = [
     "${var.datacenter}-${var.programme}-${var.env}-secgroup-base",
     "${var.datacenter}-${var.programme}-${var.env}-secgroup-ssh",
@@ -79,5 +79,5 @@ module "hail_slaves" {
   flavor_name         = "${var.spark_slaves_flavor_name}"
   affinity            = "${var.spark_slaves_affinity}"
   network_name        = "${var.spark_slaves_network_name}"
-  depends_on          = ["${module.spark_masters.instance_ids}" ]
+  depends_on          = ["${module.hail_master.instance_ids}" ]
 }
