@@ -24,7 +24,7 @@ locals {
 #   }
 # }
 
-module "spark_masters" {
+module "hail_masters" {
   source              = "../../infrastructure/instances/standard/"
   datacenter          = "${var.datacenter}"
   programme           = "${var.programme}"
@@ -32,7 +32,7 @@ module "spark_masters" {
   deployment_name     = "${local.deployment_name}"
   deployment_color    = "${var.deployment_color}"
   deployment_owner    = "${var.deployment_owner}"
-  role_name           = "${var.spark_masters_role_name}"
+  role_name           = "hail-master"
   role_version        = "${var.spark_masters_role_version}"
   image_name          = "${var.spark_masters_image_name}"
   other_data          = "${merge(local.other_data, map("spark_master_private_address", ""))}"
@@ -58,7 +58,7 @@ module "hail_volume" {
   instance_ids        = "${module.spark_masters.instance_ids}"
 }
 
-module "spark_slaves" {
+module "hail_slaves" {
   source              = "../../infrastructure/instances/standard/"
   datacenter          = "${var.datacenter}"
   programme           = "${var.programme}"
@@ -66,7 +66,7 @@ module "spark_slaves" {
   deployment_name     = "${local.deployment_name}"
   deployment_color    = "${var.deployment_color}"
   deployment_owner    = "${var.deployment_owner}"
-  role_name           = "${var.spark_slaves_role_name}"
+  role_name           = "hail-slave"
   role_version        = "${var.spark_slaves_role_version}"
   image_name          = "${var.spark_slaves_image_name}"
   other_data          = "${merge(local.other_data, map("spark_master_private_address", module.spark_masters.access_ip_v4s[0]))}"

@@ -61,11 +61,6 @@ variable "spark_masters_image_name" {
   description = "The name of the image to deploy on the Spark master"
 }
 
-variable "spark_masters_role_name" {
-  description = "The name of the role that the Spark master has to assume in the cluster"
-  default     = "hail-master"
-}
-
 # Any value that can be used in a "git checkout" command
 variable "spark_masters_role_version" {
   description = "The version of the role that the Spark master has to assume in the cluster"
@@ -74,11 +69,6 @@ variable "spark_masters_role_version" {
 
 variable "spark_slaves_image_name" {
   description = "The name of the image to deploy on the Spark slaves"
-}
-
-variable "spark_slaves_role_name" {
-  description = "The name of the role that the Spark slaves have to assume in the cluster"
-  default     = "hail-slave"
 }
 
 # Any value that can be used in a "git checkout" command
