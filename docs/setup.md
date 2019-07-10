@@ -233,7 +233,7 @@ Before typing the command, make sure that the username and the Console
 Server's IP address are correct.
 
 ```bash
-scp ~/.ssh/id_rsa.pub ~/.s3cfg openrc.sh ld14@172.27.83.155:
+scp -r ~/.ssh ~/.s3cfg openrc.sh ld14@172.27.83.155:
 ```
 
 This assumes that the `openrc.sh` file is in your current working
