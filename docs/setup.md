@@ -1,15 +1,10 @@
-# How to get ready to use use your cluster
-In order to create, destroy or use a Hail cluster, users need to run the
-provisioning software distributed in this repository. This software needs
-configuration files from the shell environment (each user has to provide their
-own), properly compiled property files (already organized and stored in this
-repository) and other required software and libraries. In order to make it easy
-to distribute / use this software, and to allow it to be used the most flexible
-range of scenarios, the team has produced a Docker container (**TODO**: make the
-location public).
+# Introduction
+Before you continuereading, there are some terms and values you are supposed
+to know.
 
 ## Glossary
 Please, also consider reading the [Openstack Glossary on the internal SSG Confluence](https://ssg-confluence.internal.sanger.ac.uk/display/OPENSTACK/OpenStack+glossary)
+
 * **Provisioning software**:
   Is the software that is required to create the the cluster. The term
   [provisioning](https://en.wikipedia.org/wiki/Provisioning_\(telecommunications\))
@@ -40,6 +35,27 @@ Please, also consider reading the [Openstack Glossary on the internal SSG Conflu
   rather uses an S3 compatible service that runs on top of the
   [Ceph](http://docs.ceph.com/docs/giant/) service in our OpenStack
   infrastructure.
+
+## Required informations
+The following is a list of values / information you need to know. If unsure, ask
+to a memeber of the hgi staff. Some of these values are subject to change, and
+may be different from the one in the examples below.
+
+1. Your Openstack username (i.e. `ld14`)
+2. Your Openstack password
+3. Your common (LDAP) password
+4. The Fully Qualified Domain Name or IP address of the Console Server (i.e. `172.27.83.155`)
+5. The version of the provisioning software (i.e. `v0.5`)
+
+# How to get ready to use use your Hail cluster
+In order to create, destroy or use a Hail cluster, users need to run the
+provisioning software distributed in this repository. This software needs
+configuration files from the shell environment (each user has to provide their
+own), properly compiled property files (already organized and stored in this
+repository) and other required software and libraries. In order to make it easy
+to distribute / use this software, and to allow it to be used in the most
+flexible range of scenarios, the team has produced a Docker container
+(**TODO**: make the location public).
 
 ## Preparing the required files
 The following are preparatory steps that you are supposed to do just once,
@@ -79,7 +95,7 @@ The key's randomart image is:
 
 ### Copy / Create .s3cfg file
 `.s3cfg` is the name of the configuration file for a tool called `s3cmd`.
-This tool is let's the user manage any aspects of their S3 objects buckets.
+This tool let's the user manage any aspect of their S3 objects and buckets.
 `.s3cfg` needs to be located in your home directory on the `Console server` and
 it should look like this:
 ```ini
@@ -211,4 +227,6 @@ use:
 It's now time to prepare the provisioning software to run:
 ```bash
 source openrc.sh
+cd /usr/src/provisioning
+git pull
 ```
