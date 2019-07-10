@@ -124,7 +124,7 @@ done
 bash invoke.sh image create --role-name hail-base --role-version v1.1
 ```
 
-## Promote (share) a base image
+## Promote (share) a base image
 ```bash
 bash invoke.sh image promote --to hgi-dev --role-name hail-base --role-version v1.1
 ```
