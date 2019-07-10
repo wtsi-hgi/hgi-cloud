@@ -40,7 +40,7 @@ on the internal SSG Confluence.
 
 * **AWS S3 / Red Hat's Ceph**
   are [object storage](https://en.wikipedia.org/wiki/Object_storage)
-  services. Sanger does not actually relay on [AWS S3](https://aws.amazon.com/s3/),
+  services. Sanger does not actually use [AWS S3](https://aws.amazon.com/s3/),
   but rather uses an S3-compatible service that runs on top of the
   [Ceph](http://docs.ceph.com/docs/giant/) service in our OpenStack
   infrastructure.
