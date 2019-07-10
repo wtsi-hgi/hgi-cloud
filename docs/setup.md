@@ -45,16 +45,27 @@ on the internal SSG Confluence.
   [Ceph](http://docs.ceph.com/docs/giant/) service in our OpenStack
   infrastructure.
 
-## Required informations
-The following is a list of values / information you need to know. If unsure, ask
-to a memeber of the hgi staff. Some of these values are subject to change, and
-may be different from the one in the examples below.
+## Required Information
 
-1. Your Openstack username (i.e. `ld14`)
-2. Your Openstack password
-3. Your common (LDAP) password
-4. The Fully Qualified Domain Name or IP address of the Console Server (i.e. `172.27.83.155`)
-5. The version of the provisioning software (i.e. `v0.5`)
+The following is a list of values / information you will need to know to
+continue. If unsure, ask to a member of the HGI team. Some of these
+values are subject to change, and may be different from the ones used in
+the examples below.
+
+1. Your Openstack username: This will typically match your normal
+   network password (e.g., `ld14`).
+
+2. Your Openstack password: This will not match your normal network
+   password at first, but can be changed manually later. To obtain or
+   reset this password, you can follow the [documentation provided by
+   SSG](https://ssg-confluence.internal.sanger.ac.uk/display/OPENSTACK/FAQ#FAQ-HowdoIgetorresetmypassword?).
+
+3. Your common (LDAP) password: This *is* your normal network password.
+
+4. The Fully Qualified Domain Name or IP address of the Console Server
+   (e.g., `172.27.83.155`)
+
+5. The version of the provisioning software (e.g., `v0.5`)
 
 # How to get ready to use use your Hail cluster
 In order to create, destroy or use a Hail cluster, users need to run the
