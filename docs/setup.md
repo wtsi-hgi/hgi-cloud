@@ -1,38 +1,47 @@
 # Introduction
-Before you continuereading, there are some terms and values you are supposed
-to know.
+
+This is the documentation for bringing up a Hail cluster, intended for
+end-users. Before you continue reading, there are some terms and values
+that you need to know.
 
 ## Glossary
-Please, also consider reading the [Openstack Glossary on the internal SSG Confluence](https://ssg-confluence.internal.sanger.ac.uk/display/OPENSTACK/OpenStack+glossary)
 
-* **Provisioning software**:
-  Is the software that is required to create the the cluster. The term
+Please, also consider reading the [Openstack
+Glossary](https://ssg-confluence.internal.sanger.ac.uk/display/OPENSTACK/OpenStack+glossary)
+on the internal SSG Confluence.
+
+* **Provisioning Software**
+  is the software that is required to create the cluster. The term
   [provisioning](https://en.wikipedia.org/wiki/Provisioning_\(telecommunications\))
-  is used in many different ways and its meaning may slightly change according
-  to the context it is used in
-  ([server provisioning](https://en.wikipedia.org/wiki/Provisioning_\(telecommunications\)#Server_provisioning),
+  is used in many different ways and its meaning may slightly change
+  according to the context it is used in
+  (e.g., [server provisioning](https://en.wikipedia.org/wiki/Provisioning_\(telecommunications\)#Server_provisioning),
   [cloud provisioning](https://en.wikipedia.org/wiki/Provisioning_\(telecommunications\)#Self-service_provisioning_for_cloud_computing_services),
-  ecc)
-* **Docker container**: is a form of
-  [OS-level virtualisation](https://en.wikipedia.org/wiki/OS-level_virtualisation)
-  whose [purpose is](https://www.docker.com/resources/what-container) to (quote):
+  etc.)
 
-  > package up code and all its dependencies so the application runs quickly
-  > and reliably from one computing environment to another
+* **Docker Containerisation**
+  is a form of [OS-level virtualisation](https://en.wikipedia.org/wiki/OS-level_virtualisation)
+  whose [purpose](https://www.docker.com/resources/what-container) is,
+  to quote:
 
-* **Console Server**: is the name we decided to give to the server that can run
-  the `Provisioning software` the we ship inside a `Docker container` 
-* **SSH**
-  [Secure Shell](https://en.wikipedia.org/wiki/Secure_Shell): is a tool commonly
-  used to execute command or login on remote server. Its security model is based
-  on [Asimmetric Cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography)
-  and is more effective when used with a set of
-  [keys](https://en.wikipedia.org/wiki/Key_\(cryptography\)) spcifically made
-  for eac user. SSH is the tool the the user needs to login on the `Console Server`.
-* **AWS S3 / Red Hat's Ceph**: are
-  [Object Storage](https://en.wikipedia.org/wiki/Object_storage) services.
-  Sanger does not actuallt relay on [AWS S3](https://aws.amazon.com/s3/), but
-  rather uses an S3 compatible service that runs on top of the
+  > [P]ackage up code and all its dependencies so the application runs
+  > quickly and reliably from one computing environment to another
+
+* **Console Server** is the name we have given to the server that can
+  run the *provisioning software* which we ship inside a *Docker
+  container*.
+
+* **SSH ([Secure Shell](https://en.wikipedia.org/wiki/Secure_Shell))**
+  is a tool commonly used to execute commands or login to a remote
+  server. Its security model is based on [asymmetric cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography)
+  and is most effective when used with a set of [keys](https://en.wikipedia.org/wiki/Key_\(cryptography\))
+  specifically made to identify each user. SSH is the tool the user
+  needs to login to the *Console Server*.
+
+* **AWS S3 / Red Hat's Ceph**
+  are [object storage](https://en.wikipedia.org/wiki/Object_storage)
+  services. Sanger does not actually relay on [AWS S3](https://aws.amazon.com/s3/),
+  but rather uses an S3-compatible service that runs on top of the
   [Ceph](http://docs.ceph.com/docs/giant/) service in our OpenStack
   infrastructure.
 
