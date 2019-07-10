@@ -6,13 +6,13 @@ contains a short glossary and other usefull links.
 The following is a list of values / information you need to know. If unsure, ask
 to a memeber of the hgi staff.
 
-1. The current name-tag of the datacenter (i.e. `eta`)
+1. The name-tag of the datacenter (i.e. `eta`)
 2. The name-tag of the programme / team that is hosting your cluster (i.e. `hgi`)
 3. The name-tag of the working environment (i.e. `dev`)
 4. Your Openstack's username (i.e. `ld14`)
 5. The name of the deployment (i.e. `hail`)
 
-Using a bash-like syntax:
+Using bash syntax:
 ```bash
 datacenter="eta"
 programme="hgi"
@@ -67,6 +67,8 @@ There are 2 sets of configuration files:
    ```
 
 # For the Operators of the provisioning system
+Be aware of the user you run the commands as. Most deployments and images
+must be created as `hermes`.
 
 ## Add an Openstack project to the provisioning system
 Each new supported openstack project needs a configuration files named
@@ -74,7 +76,7 @@ Each new supported openstack project needs a configuration files named
 following values:
 
 ```bash
-# The provider of the project
+# The cloud provider
 META_PROVIDER="openstack"
 # The name-tag of the datacenter
 META_DATACENTER="eta"
@@ -90,11 +92,19 @@ mkdir --parents {teraform/vars,ansible/vars}/${META_DATACENTER}/${META_PROGRAMME
 touch terraform/vars/${META_DATACENTER}.tfvars \
       terraform/vars/${META_DATACENTER}/${META_PROGRAMME}.tfvars \
       terraform/vars/${META_DATACENTER}/${META_PROGRAMME}/${META_ENV}.tfvars
-touch ansible/vars/${META_DATACENTER}.yml \
-      ansible/vars/${META_DATACENTER}/${META_PROGRAMME}.yml \
-      ansible/vars/${META_DATACENTER}/${META_PROGRAMME}/${META_ENV}.yml
+for yml in ansible/vars/${META_DATACENTER}.yml \
+           ansible/vars/${META_DATACENTER}/${META_PROGRAMME}.yml \
+           ansible/vars/${META_DATACENTER}/${META_PROGRAMME}/${META_ENV}.yml do
+  test -f ${yml} || echo "---\n{}" > ${yml}
+done
 ```
-## Add a new user to the provisioning system
+
+## Setting up the networking in an environment
+```bash
+bash invoke.sh deployment create --name networking
+```
+
+## Allow a new user to provision a Hail cluster in a given Openstack project
 Each new Hail user requires his/her own configuration files and they need to be syntactically correct:
 ```bash
 touch terraform/vars/${META_DATACENTER}/${META_PROGRAMME}/${META_ENV}/${OS_USERNAME}.tfvars \
@@ -110,7 +120,25 @@ done
 ```
 
 ## Create a new base image
+```bash
+bash invoke.sh image create --role-name hail-base --role-version v1.1
+```
 
-## Promote a base image through the environments
+## Promote (share) a base image
+```bash
+bash invoke.sh image promote --to hgi-dev --role-name hail-base --role-version v1.1
+```
+
+## Create a new docker image
+```bash
+bash invoke.sh docker_image create --role-name provisioning-base --role-version v0.6
+```
 
 ## Test any ansible role
+The testing framework currently used on for Ansible roles is called
+[Molecule](https://molecule.readthedocs.io/en/stable/index.html). Each role
+should already be configured.
+```bash
+cd ansible/role/${role_name}
+molecule test
+```
