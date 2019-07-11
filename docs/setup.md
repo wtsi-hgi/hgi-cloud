@@ -274,6 +274,7 @@ The command we suggest to run the provisioning container is:
 ```bash
 docker run --tty --interactive --workdir /root --volume ${HOME}:/root hgi/provisioning-base:v0.5 bash
 ```
+* do this docker run every time you want to actually do runbook commands
 
 The following is a simple explanation of the suggested options:
 
