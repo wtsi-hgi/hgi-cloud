@@ -36,6 +36,8 @@ bash invoke.sh user destroy
 bash invoke.sh user create
 ```
 
+* you may want to do this because you have lost / replace your keypair
+
 ## Remove yourself from the provisioning system
 ```bash
 bash invoke.sh user destroy --yes-also-the-bucket
