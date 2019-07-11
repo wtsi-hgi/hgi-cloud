@@ -299,6 +299,8 @@ cd /usr/src/provisioning
 git pull
 ```
 
+* do this docker run every time you want to actually do runbook commands
+
 Once this step is complete, we can now provision the Hail cluster. To do
 this, please follow the appropriate guide in the Runbooks:
 
