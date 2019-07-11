@@ -44,6 +44,9 @@ on the internal SSG Confluence.
   but rather uses an S3-compatible service that runs on top of the
   [Ceph](http://docs.ceph.com/docs/giant/) service in our OpenStack
   infrastructure.
+* **A Cluster** or a [Computer Cluster](https://en.wikipedia.org/wiki/Computer_cluster)
+  is a set of loosely or tightly connected computers that work together so that,
+  in many respects, they can be viewed as a single system.
 
 ## Required Information
 
