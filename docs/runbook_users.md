@@ -71,7 +71,42 @@ There are 2 sets of configuration files:
    ls -la ansible/vars/${datacenter}/${programme}/${environment}/${os_username}/${deployment_name}/
    ```
 
-## Restart the Jupyter Notebook Service
+# Using your Hail Cluster
+
+In the following guides, `${ip_address}` is the IP address of your Hail
+master node. This can be looked up by examining the configuration files
+for the infrastructure provisioning (see above).
+
+**Important**
+Any data which you need to process in Hail must be accessible to the
+Hail workers. Ideally, you should keep such data (e.g., VCF files, etc.)
+in S3. However, you may also put data in Hail's temporary working
+directory, which is shared amongst all workers in your Hail cluster. The
+path for which is:
+
+  ${HAIL_HOME}/tmp
+
+`${HAIL_HOME}`, as of writing, is `/opt/sanger.ac.uk/hgi/hail`. By
+default, this directory is 31GB in size. Note that this is different to
+the Jupyter directory, where your Jupyter notebooks will live; this
+space (1GB, by default) is only meant for your source code and any data
+files placed here won't be accessible to your Hail workers.
+
+See the SSH documentation, below, for instructions on how to get data on
+to your cluster, if you can't use S3 for the purpose.
+
+## The Jupyter Notebook Service
+
+Your Jupyter Notebook will be accessible on the internal network at
+`http://${ip_address}`, which will redirect you to
+`http://${ip_address}/jupyter/tree`. You will be prompted for the
+password to allow you to log in.
+
+Note that the underlying Spark service status can be accessed at
+`http://${ip_address}/spark/`. This exists largely as a curiosity for
+end users, but can be useful to help debugging.
+
+### Restart the Jupyter Notebook Service
 
 In early versions of the provisioned Notebook, there was a "Quit" button
 in the upper right corner. If this button was pressed, it would shut
@@ -88,3 +123,7 @@ button:
 
    From a machine on which your private key exists, where
    `${ip_address}` is the IP address of your Hail master node.
+
+## SSH to Your Master Node
+
+You can SSH into your master node, to run 
