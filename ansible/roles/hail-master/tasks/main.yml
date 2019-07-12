@@ -70,13 +70,18 @@
     path: "{{ hail_install_dir }}/jupyter/data"
 
 # Fixes permissions on first time mount
-- name: Ensure Jupyter Notebook App's data directory correct ownership and permission
+- name: Ensure Hail and Jupyter directories correct ownership and permission
   file:
     state: directory
-    path: "{{ hail_install_dir }}/jupyter/data"
+    path: "{{ dir }}"
     mode: "0700"
     owner: "{{ hail_install_owner }}"
     group: "{{ hail_install_group }}"
+  loop:
+    - "{{ hail_home }}/tmp"
+    - "{{ hail_install_dir }}/jupyter/data"
+  loop_control:
+    loop_var: dir
 
 - name: Enable and start Jupyter Notebook App
   become: yes
