@@ -126,4 +126,44 @@ button:
 
 ## SSH to Your Master Node
 
-You can SSH into your master node, to run 
+You can SSH into your master node, to get data on-and-off, if needed, as
+well as running non-interactive Hail jobs.
+
+### Shipping Data To-and-From Your Cluster
+
+**Note**
+You are advised to store data in S3, rather than embargoing it in the
+Hail working temporary directory. Sometimes, however, this is not an
+option; for example, if your Hail script needs to save output (e.g., a
+plot) and doesn't support writing to S3.
+
+To upload data, available to the Hail cluster for processing:
+
+    scp my_files ${ip_address}:/opt/sanger.ac.uk/hgi/hail/tmp/
+
+To download data from the Hail cluster:
+
+    scp ${ip_address}:/path/to/your/file /destination/path/
+
+For additional documentation, please see the `scp` manpages.
+
+### Starting a Login Shell on Your Cluster
+
+You have SSH access to your cluster, from which you can launch
+non-interactive Hail jobs. The default user on your Hail master node is
+`ubuntu`, so you can log in with:
+
+    ssh ubuntu@${ip_address}
+
+Once you've established a session, you will need to change to the `hgi`
+user in order to run Hail scripts:
+
+    sudo -iu hgi
+
+#### Running Non-Interactive Hail Jobs
+
+<!-- TODO -->
+
+## Setting-Up S3 Access
+
+<!-- TODO -->
