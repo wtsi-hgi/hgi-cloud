@@ -7,5 +7,4 @@ Each contributor is expected to abide the Code of Conduct outlined in the provid
 
 ## How to contribute code to implement new features or bugfix 
 
-
 TODO: create a better stub for this document.
