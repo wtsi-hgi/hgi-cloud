@@ -207,4 +207,73 @@ This is the same boilerplate that you would use in a Jupyter session.
 
 ## Setting-Up S3 Access
 
-<!-- TODO -->
+### In a Jupyter Notebook
+
+To get your S3 credentials into your Jupyter Notebook, you need to add
+the following commands after acquiring the Spark Context and before
+initialising Hail:
+
+```python
+import os
+import pyspark
+import hail
+
+sc = pyspark.SparkContext()
+tmp_dir = os.path.join(os.environ["HAIL_HOME"], "tmp")
+
+## This bit is for configuring S3 access:
+hadoop_config = sc._jsc.hadoopConfiguration()
+hadoop_config.set("fs.s3a.access.key", "XXX")  # Replace XXX with your AWS Access Key
+hadoop_config.set("fs.s3a.secret.key", "YYY")  # Replace YYY with your AWS Secret Key
+
+hail.init(sc=sc, tmp_dir=tmp_dir)
+```
+
+The `XXX` and `YYY` in the above need to be replaced with your AWS
+access key and secret key, respectively. These can be found in you
+`.s3cfg` file.
+
+**Important**
+If you are using source control (e.g., Git), take care not to check in
+secrets such as your AWS keys. If you accidentally push these to, say,
+GitHub, the whole world now has access to your S3 credentials. Ideally
+these should be kept in a separate configuration file, which is not
+checked in, and loaded in to your Jupyter Notebook. HGI can assist with
+setting this up.
+
+### In a Spark Shell
+
+When running a script using `pyspark` or `spark-submit`, you do not have
+to explicitly set the AWS keys within your script. Instead, these are
+determined by Spark from the environment. To this end, you must set the
+appropriate environment variables before running your script:
+
+```bash
+export AWS_ACCESS_KEY_ID="XXX"
+export AWS_SECRET_ACCESS_KEY="YYY"
+```
+
+The `XXX` and `YYY` in the above need to be replaced with your AWS
+access key and secret key, respectively. These can be found in you
+`.s3cfg` file.
+
+**Tip**
+The environment variables only need to be set once per session and, to
+avoid the session terminating prematurely, you can do this within a
+`tmux` or `screen` session. You can then log back in to your master
+node, with its working state preserved.
+
+## Collective Wisdom on S3 Usage
+
+* Do not use underscores in your bucket names, they are not supported by
+  Spark's S3 driver and using them will give you misleading errors.
+
+* Do not include colons or other special characters in your object
+  names. To be safe, limit yourself to alphanumeric characters, full
+  stops (`.`), dashes (`-`) and underscores (`_`).
+
+* When reading and writing S3, using Hail, you must use the URL scheme
+  `s3a://`, rather than `s3://`. So, say you have a file named
+  `chr10.vcf.gz` in a bucket called `my-project`, then its address
+  (inasmuch as Hail can understand) would be
+  `s3a://my-project/chr10.vcf.gz`.
