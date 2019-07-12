@@ -44,6 +44,9 @@ on the internal SSG Confluence.
   but rather uses an S3-compatible service that runs on top of the
   [Ceph](http://docs.ceph.com/docs/giant/) service in our OpenStack
   infrastructure.
+* **A Cluster** or a [Computer Cluster](https://en.wikipedia.org/wiki/Computer_cluster)
+  is a set of loosely or tightly connected computers that work together so that,
+  in many respects, they can be viewed as a single system.
 
 ## Required Information
 
@@ -271,6 +274,7 @@ The command we suggest to run the provisioning container is:
 ```bash
 docker run --tty --interactive --workdir /root --volume ${HOME}:/root hgi/provisioning-base:v0.5 bash
 ```
+* do this docker run every time you want to actually do runbook commands
 
 The following is a simple explanation of the suggested options:
 
@@ -294,6 +298,8 @@ source openrc.sh
 cd /usr/src/provisioning
 git pull
 ```
+
+* do this source openrc.sh ... run every time you want to actually do runbook commands
 
 Once this step is complete, we can now provision the Hail cluster. To do
 this, please follow the appropriate guide in the Runbooks:

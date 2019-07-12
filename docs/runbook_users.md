@@ -36,6 +36,8 @@ bash invoke.sh user destroy
 bash invoke.sh user create
 ```
 
+* you may want to do this because you have lost / replace your keypair
+
 ## Remove yourself from the provisioning system
 ```bash
 bash invoke.sh user destroy --yes-also-the-bucket
@@ -68,3 +70,21 @@ There are 2 sets of configuration files:
    ```
    ls -la ansible/vars/${datacenter}/${programme}/${environment}/${os_username}/${deployment_name}/
    ```
+
+## Restart the Jupyter Notebook Service
+
+In early versions of the provisioned Notebook, there was a "Quit" button
+in the upper right corner. If this button was pressed, it would shut
+down the Jupyter service on your Hail master node. This button has since
+been disabled, but if you are using an older version and have this
+button:
+
+1. **Do not press the "Quit" button!**
+
+2. If you do press it, reflect on your life choices and then, to restart
+   the Jupyter Notebook service, run the following command:
+
+       ssh ${ip_address} sudo systemctl restart jupyter-notebook.service
+
+   From a machine on which your private key exists, where
+   `${ip_address}` is the IP address of your Hail master node.
