@@ -607,6 +607,10 @@
 c.NotebookApp.password = "{{ jupyter_notebookapp_password.stdout }}"
 c.NotebookApp.token = "{{ password | hash('sha1') }}"
 
+# Disable the Quit button on the notebook as it shuts down the service
+# on the master node, which is quite unexpected from an end-user's POV
+c.NotebookApp.quit_button = False
+
 {% for key, value in jupyter_notebookapp_config.items() | sort %}
 {{ key }} = {{ value }}
 {% endfor %}
