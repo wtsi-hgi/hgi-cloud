@@ -84,7 +84,7 @@ in S3. However, you may also put data in Hail's temporary working
 directory, which is shared amongst all workers in your Hail cluster. The
 path for which is:
 
-  ${HAIL_HOME}/tmp
+    ${HAIL_HOME}/tmp
 
 `${HAIL_HOME}`, as of writing, is `/opt/sanger.ac.uk/hgi/hail`. By
 default, this directory is 31GB in size. Note that this is different to
@@ -145,7 +145,7 @@ To download data from the Hail cluster:
 
     scp ${ip_address}:/path/to/your/file /destination/path/
 
-For additional documentation, please see the `scp` manpages.
+For additional documentation, please see the `scp` man-pages.
 
 ### Starting a Login Shell on Your Cluster
 
