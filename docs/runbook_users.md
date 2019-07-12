@@ -160,6 +160,22 @@ user in order to run Hail scripts:
 
     sudo -iu hgi
 
+### SSH Configuration
+
+To avoid remembering `${ip_addess}`, you can create an SSH configuration
+using a more memorable name. For example, in your `~/.ssh/config` file,
+replacing `${ip_address}` appropriately in the following:
+
+```ssh
+Host hail
+  Hostname ${ip_addess}
+  User ubuntu
+```
+
+Will allow you to access your cluster's master node, either as a login
+shell or copying data, using the name `hail` instead of
+`ubuntu@${ip_address}`.
+
 #### Running the Spark Shell
 
 The Spark shell can be used to run non-interactive Hail scripts (e.g.,
