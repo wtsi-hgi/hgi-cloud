@@ -160,9 +160,50 @@ user in order to run Hail scripts:
 
     sudo -iu hgi
 
-#### Running Non-Interactive Hail Jobs
+#### Running the Spark Shell
 
-<!-- TODO -->
+The Spark shell can be used to run non-interactive Hail scripts (e.g.,
+those which aren't exploratory in nature and potentially require a long
+run time) as well as a REPL ([*r*ead-*e*valuate-*p*rint *l*oop](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop)),
+not conceptually dissimilar to a Jupyter notebook.
+
+If you need S3 access, you should first configure your environment (see
+below). Otherwise, to start a REPL, run:
+
+    pyspark
+
+You can then initiate an interactive Hail session using the following
+code:
+
+```python
+import os
+import hail
+
+tmp_dir = os.path.join(os.environ["HAIL_HOME"], "tmp")
+hail.init(sc=sc, tmp_dir=tmp_dir)
+```
+
+Alternatively, to run a non-interactive script, it can be submitted
+using:
+
+    spark-submit /path/to/your/script.py
+
+The "boilerplate" for non-interactive scripts is slightly different than
+the code run in the REPL, because you need to acquire a Spark Context
+(the REPL provides this for you automatically). The code should change
+to:
+
+```python
+import os
+import pyspark
+import hail
+
+sc = pyspark.SparkContext()
+tmp_dir = os.path.join(os.environ["HAIL_HOME"], "tmp")
+hail.init(sc=sc, tmp_dir=tmp_dir)
+```
+
+This is the same boilerplate that you would use in a Jupyter session.
 
 ## Setting-Up S3 Access
 
