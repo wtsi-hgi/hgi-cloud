@@ -151,7 +151,10 @@ sensitive information, so have therefore been omitted here.
 ### Download / Create the `openrc.sh` File of the HGI Project
 
 The `openrc.sh` file contains a list of environment variables that are
-going to be used throughout the provisioning software.
+going to be used throughout the provisioning software. The name of this
+file is not important; we will refer to it as `openrc.sh` throughout,
+for consistency, but those downloaded from Openstack (see below) may be
+named differently.
 
 For example:
 
@@ -196,10 +199,20 @@ export OS_INTERFACE=public
 export OS_IDENTITY_API_VERSION=3
 ```
 
-This file can be downloaded from the Openstack web frontend (Horizon)
-for your user and project. [Documentation](https://ssg-confluence.internal.sanger.ac.uk/display/OPENSTACK/FAQ#FAQ-Whydoesn'tmyAPIfilework?I'mabletologintotheHorizonwebinterface.)
-for which is available from SSG. *It is important that you use the
-**v3** RC file.*
+This file can be downloaded from the Openstack web-frontend (Horizon)
+for your user and project:
+
+* Select the appropriate project from the menu in the upper right
+  corner.
+
+* Download the file by navigating to:
+
+  Project > API Access > Download OpenStack RC File > OpenStack RC File
+  (Identity API v3)
+
+It is important to use the v3 `openrc.sh` for the correct user and
+project. Further [documentation](https://ssg-confluence.internal.sanger.ac.uk/display/OPENSTACK/FAQ#FAQ-Whydoesn'tmyAPIfilework?I'mabletologintotheHorizonwebinterface.)
+for this service is available from SSG.
 
 ### Add AWS (S3) Environment Variables to `openrc.sh`
 
