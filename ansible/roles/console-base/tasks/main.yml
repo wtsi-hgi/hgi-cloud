@@ -116,3 +116,11 @@
     source: load
     load_path: "/usr/src/{{ provisioning_image_basename }}"
 
+# FIXME: I could not figure out why logged-in user, in the docker group, were
+# not able to use the socket. This is bad, but not "awfull": after all, each
+# logged-in user is supposed to be able to run a container.
+- name: Open up docker socket
+  file:
+    state: present
+    path: /var/run/docker.sock
+    mode: "0666"
