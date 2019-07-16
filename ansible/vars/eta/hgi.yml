@@ -7,6 +7,7 @@ java_jdk_version: "8"
 hadoop_version: "2.7.7"
 spark_hadoop_profile: "hadoop-2.7"
 spark_version: "2.4.3"
+aws_java_sdk: "1.7.5"
 
 volumes: []
 
@@ -86,8 +87,6 @@ spark_env_extras: {}
 
 spark_jars:
   - "{{ anaconda_install_dir }}/anaconda3/lib/python{{ anaconda_python_version }}/site-packages/hail/hail-all-spark.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-1.7.4.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/hadoop-aws-{{ hadoop_version }}.jar"
 
 spark_defaults_extras:
   # SparkContext Configuration
@@ -224,3 +223,11 @@ provisioning_version: v0.5
 provisioning_image_version: v0.5
 provisioning_image_basename: "{{ datacenter }}-{{ programme }}-docker-provisioning-base-{{ provisioning_image_version }}.tar"
 provisioning_image_url: "https://{{ datacenter }}-{{ programme }}-bucket-ld14.cog.sanger.ac.uk/download/containers/docker"
+
+hail_extra_jars:
+  - filename: "aws-java-sdk-{{ aws_java_sdk }}.jar"
+    url: "https://search.maven.org/remotecontent?filepath=com/emc/vipr/aws-java-sdk/{{ aws_java_sdk }}/aws-java-sdk-{{ aws_java_sdk }}.jar"
+  - filename: "hadoop-aws-{{ hadoop_version }}.jar"
+    url: "https://search.maven.org/remotecontent?filepath=org/apache/hadoop/hadoop-aws/{{ hadoop_version }}/hadoop-aws-{{ hadoop_version }}.jar"
+hail_extra_apt: []
+hail_extra_pip: []

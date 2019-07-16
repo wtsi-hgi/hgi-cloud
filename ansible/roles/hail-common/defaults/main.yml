@@ -1,2 +1,5 @@
 ---
 hail_version: 0.2.14
+hail_extra_jars: []
+hail_extra_apt: []
+hail_extra_pip: []
