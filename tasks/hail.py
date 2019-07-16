@@ -28,6 +28,8 @@ def create_terraform_vars(order):
     dirname = os.path.join(dirname, name)
 
   for deployment in ['hail_cluster', 'hail_volume', 'networking']:
+    if not os.path.exists(dirname): 
+      os.mkdir(dirname)
     tfvars = os.path.join(dirname, deployment + '.tfvars')
     with open(tfvars, 'w') as f:
       f.write("# Automatically generated\n")
