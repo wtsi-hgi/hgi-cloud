@@ -23,7 +23,7 @@ def create_terraform_vars(order):
     tfvars = os.path.join(dirname, '{}.tfvars'.format(name))
     if not os.path.exists(tfvars):
       with open(tfvars, 'w') as f:
-        f.wite("# Automatically generated\n")
+        f.write("# Automatically generated\n")
         created.append(tfvars)
     dirname = os.path.join(dirname, name)
 
@@ -39,7 +39,7 @@ def create_ansible_vars(order, masters_roles, slaves_role):
     yml = os.path.join(dirname, '{}.yml'.format(name))
     if not os.path.exists(yml):
       with open(yml, 'w') as f:
-        f.wite("---\n# Automatically generated\n{}\n")
+        f.write("---\n# Automatically generated\n{}\n")
       created.append(yml)
     dirname = os.path.join(dirname, name)
 
@@ -48,7 +48,7 @@ def create_ansible_vars(order, masters_roles, slaves_role):
     yml = os.path.join(dirname, '{}.yml'.format(name))
     if not os.path.exists(yml):
       with open(yml, 'w') as f:
-        f.wite("---\n# Automatically generated\n{}\n")
+        f.write("---\n# Automatically generated\n{}\n")
       created.append(yml)
 
   return created
