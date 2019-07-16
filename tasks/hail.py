@@ -28,7 +28,7 @@ def create_terraform_vars(order):
     dirname = os.path.join(dirname, name)
 
   for deployment in ['hail_cluster', 'hail_volume', 'networking']:
-    tfvar = os.path.join(dirname, deployment + '.tfvars')
+    tfvars = os.path.join(dirname, deployment + '.tfvars')
     with open(tfvars, 'w') as f:
       f.write("# Automatically generated\n")
       created.append(tfvars)
@@ -39,7 +39,7 @@ def create_ansible_vars(order):
   dirname = os.path.join('ansible', 'vars')
   created = []
 
-  for name in order:
+  for name in order + ['hail']:
     if not os.path.exists(dirname):
       os.mkdir(dirname)
     yml = os.path.join(dirname, '{}.yml'.format(name))
