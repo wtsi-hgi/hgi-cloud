@@ -69,7 +69,7 @@ def init(context, owner=None, masters_roles='hail-master', slaves_role='hail-sla
     context.config['meta']['programme'],
     context.config['meta']['env'],
     owner or os.environ['OS_USERNAME'],
-    context.config['deployment']['name']
+    'hail'
   ]
   created += create_terraform_vars(order) + \
              create_ansible_vars(order, masters_roles, slaves_role)
