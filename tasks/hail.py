@@ -27,9 +27,15 @@ def create_terraform_vars(order):
         created.append(tfvars)
     dirname = os.path.join(dirname, name)
 
+  for deployment in ['hail_cluster', 'hail_volume', 'networking']:
+    tfvar = os.path.join(dirname, deployment + '.tfvars')
+    with open(tfvars, 'w') as f:
+      f.write("# Automatically generated\n")
+      created.append(tfvars)
+
   return created
 
-def create_ansible_vars(order, masters_roles, slaves_role):
+def create_ansible_vars(order):
   dirname = os.path.join('ansible', 'vars')
   created = []
 
@@ -44,7 +50,7 @@ def create_ansible_vars(order, masters_roles, slaves_role):
     dirname = os.path.join(dirname, name)
 
   os.path.exists(dirname) or os.mkdir(dirname)
-  for name in (masters_roles, slaves_role):
+  for name in ('hail-master', 'hail-slave'):
     yml = os.path.join(dirname, '{}.yml'.format(name))
     if not os.path.exists(yml):
       with open(yml, 'w') as f:
@@ -62,24 +68,16 @@ def get_hail_volume_name(context, owner):
   return [ v.id for v in openstack.volume.volumes() if v.name == volume_name][0]
 
 @invoke.task
-def init(context, owner=None, masters_roles='hail-master', slaves_role='hail-slave'):
+def init(context, owner=None):
   created = []
   order = [
     context.config['meta']['datacenter'],
     context.config['meta']['programme'],
     context.config['meta']['env'],
-    owner or os.environ['OS_USERNAME'],
-    'hail'
+    owner or os.environ['OS_USERNAME']
   ]
   created += create_terraform_vars(order) + \
-             create_ansible_vars(order, masters_roles, slaves_role)
-
-  hail_cluster_conf = ['terraform', 'vars'] + order
-  hail_cluster_conf[-1] = hail_cluster_conf[-1] + '.tfvars'
-
-  with open(os.path.join(*hail_cluster_conf), 'a') as conf:
-    conf.write("spark_masters_role_name = \"{}\"\n".format(masters_roles))
-    conf.write("spark_slaves_role_name = \"{}\"\n".format(slaves_role))
+             create_ansible_vars(order)
 
   print('The following files have been created:')
   for conf in created:
