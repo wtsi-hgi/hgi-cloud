@@ -16,3 +16,26 @@
     executable: "{{ anaconda_install_dir }}/anaconda3/bin/pip"
   become: yes
   become_user: "{{ hail_install_owner }}"
+
+- name: Install custom jars list
+  get_url:
+    url: "{{ jar.url }}"
+    dest: "{{ spark_home }}/jars/{{ jar.filename }}"
+  loop: "{{ hail_extra_jars }}"
+  loop_control:
+    loop_var: jar
+
+- name: Install custom python modules
+  pip:
+    state: present
+    name: "{{ hail_extra_pip }}"
+    executable: "{{ anaconda_install_dir }}/anaconda3/bin/pip"
+  become: yes
+  become_user: "{{ hail_install_owner }}"
+
+- name: Install sustom system packages
+  apt:
+    state: present
+    name: "{{ hail_extra_apt }}"
+    install_recommends: yes
+    force_apt_get: yes
