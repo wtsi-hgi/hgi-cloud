@@ -39,53 +39,20 @@
   loop_control:
     loop_var: spark_build_dir
 
-# - name: Download Spark distribution
-#   get_url:
-#     url: "{{ spark_mirror }}/spark-{{ spark_version }}/spark-{{ spark_version }}.tgz"
-#     dest: "{{ spark_download_dir }}/spark-{{ spark_version }}.tgz"
-# 
-# TODO: This should really be implemented
-#
-# - name: Verify downloaded Spark distribution
-#   command: /bin/true
-# 
-# - name: Extract Spark distribution
-#   unarchive:
-#     src: "{{ spark_download_dir }}/spark-{{ spark_version }}.tgz"
-#     dest: "{{ spark_source_dir }}"
-#     copy: no
-#     creates: "{{ spark_source_dir }}/spark-{{ spark_version }}/README.md"
-# 
-# - name: Build Spark
-#   shell: |
-#     R_HOME=/usr/lib/R \
-#     JAVA_HOME=/usr/lib/jvm/java-{{ java_jdk_version }}-openjdk-amd64 \
-#     MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn" \
-#     ./dev/make-distribution.sh \
-#         --name {{ spark_distribution_name }} \
-#         --tgz \
-#         -B \
-#         -Dhadoop.version={{ hadoop_version }} \
-#         -Pnetlib-lgpl \
-#         -Psparkr \
-#         -Pyarn \
-#         -P{{ spark_hadoop_profile }} \
-#         -Phive \
-#         -Phive-thriftserver \
-#         -Pmesos
-#   args:
-#     chdir: "{{ spark_source_dir }}/spark-{{ spark_version }}"
-#     creates: "{{ spark_source_dir }}/spark-{{ spark_version }}/spark-{{ spark_version }}-bin-{{ spark_distribution_name }}.tgz"
+- name: Download Spark distribution
+  get_url:
+    url: "{{ spark_distribution_url }}"
+    dest: "{{ spark_download_dir }}/{{ spark_distribution_basename }}.tgz"
 
-- name: Install Spark
+- name: Extract Spark distribution
   unarchive:
-    src: "{{ spark_source_dir }}/spark-{{ spark_version }}/spark-{{ spark_version }}-bin-{{ spark_distribution_name }}.tgz"
+    src: "{{ spark_download_dir }}/{{ spark_distribution_basename }}.tgz"
     dest: "{{ spark_install_dir }}"
     copy: no
     owner: "{{ spark_install_owner }}"
     group: "{{ spark_install_group }}"
     mode: "{{ spark_install_mode }}"
-    creates: "{{ spark_install_dir }}/spark-{{ spark_version }}-bin-{{ spark_distribution_name }}/README.md"
+    creates: "{{ spark_home }}"
 
 - name: Ensure Spark runtime directories exist
   file:
@@ -106,9 +73,9 @@
   file:
     state: directory
     path: "{{ local_dir }}"
-    owner: "{{ spark_local_owner }}"
-    group: "{{ spark_local_group }}"
-    mode: "{{ spark_local_mode }}"
+    owner: "{{ spark_install_owner }}"
+    group: "{{ spark_install_group }}"
+    mode: "{{ spark_install_mode }}"
   when: local_dir != "/tmp"
   loop: "{{ spark_local_dirs }}"
   loop_control:
