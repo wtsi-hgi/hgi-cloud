@@ -112,7 +112,7 @@ def upload(context):
   s3.Object(bucket_name, object_path).put(ACL='public-read', Body=body)
 
 @invoke.task(post=[upload])
-def create(context, version='2.4.3', user=None, jdk_version=8, hadoop_version='2.7.7', hadoop_profile=None, force=False):
+def create(context, version='2.4.3', user=None, jdk_version=8, hadoop_version='2.7.1', hadoop_profile=None, force=False):
   default_profile = '.'.join(hadoop_version.split('.')[:2])
   name = 'netlib-hadoop{}'.format(hadoop_profile or default_profile)
   basename = 'spark-{}-bin-{}.tgz'.format(version, name)

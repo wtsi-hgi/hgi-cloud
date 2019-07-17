@@ -2,10 +2,10 @@
 anaconda_distribution: 2019.03-Linux-x86_64
 anaconda_extra_modules: []
 
-hail_version: "0.2.14"
+hail_version: "0.2.18"
 java_jdk_version: "8"
-hadoop_version: "2.7.7"
-spark_hadoop_profile: "hadoop2.7"
+hadoop_version: "2.7.1"
+spark_hadoop_profile: "2.7"
 spark_version: "2.4.3"
 aws_java_sdk: "1.7.5"
 
@@ -71,7 +71,7 @@ spark_install_owner: "{{ base_install_owner }}"
 spark_install_group: "{{ base_install_group }}"
 spark_install_mode: "ug+rw,o-rw"
 
-spark_distribution_name: "netlib-{{ spark_hadoop_profile }}"
+spark_distribution_name: "netlib-hadoop{{ spark_hadoop_profile }}"
 spark_distribution_basename: "spark-{{ spark_version }}-bin-{{ spark_distribution_name }}"
 spark_distribution_url: "https://eta-hgi-bucket-hermes.cog.sanger.ac.uk/download/spark-{{ spark_version }}/{{ spark_distribution_basename }}.tgz"
 spark_home: "{{ spark_install_dir }}/{{ spark_distribution_basename }}"
@@ -89,6 +89,7 @@ spark_local_dirs:
 
 spark_jars:
   - "{{ anaconda_install_dir }}/anaconda3/lib/python{{ anaconda_python_version }}/site-packages/hail/hail-all-spark.jar"
+  - "{{ spark_home }}/jars/*.jar"
 
 spark_defaults_extras:
   # SparkContext Configuration
