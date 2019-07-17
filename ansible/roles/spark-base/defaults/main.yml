@@ -10,7 +10,7 @@ spark_install_owner: "{{ base_install_owner }}"
 spark_install_group: "{{ base_install_group }}"
 spark_install_mode: "ug+rw,o-rw"
 
-spark_distribution_name: "netlib-{{ spark_hadoop_profile }}"
+spark_distribution_name: "netlib-hadoop{{ spark_hadoop_profile }}"
 spark_distribution_basename: "spark-{{ spark_version }}-bin-{{ spark_distribution_name }}"
 spark_distribution_url: "https://eta-hgi-bucket-hermes.cog.sanger.ac.uk/download/spark-{{ spark_version }}/{{ spark_distribution_basename }}.tgz"
 spark_home: "{{ spark_install_dir }}/{{ spark_distribution_basename }}"
