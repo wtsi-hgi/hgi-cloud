@@ -5,7 +5,7 @@ anaconda_extra_modules: []
 hail_version: "0.2.14"
 java_jdk_version: "8"
 hadoop_version: "2.7.7"
-spark_hadoop_profile: "hadoop-2.7"
+spark_hadoop_profile: "hadoop2.7"
 spark_version: "2.4.3"
 aws_java_sdk: "1.7.5"
 
@@ -71,19 +71,21 @@ spark_install_owner: "{{ base_install_owner }}"
 spark_install_group: "{{ base_install_group }}"
 spark_install_mode: "ug+rw,o-rw"
 
+spark_distribution_name: "netlib-{{ spark_hadoop_profile }}"
+spark_distribution_basename: "spark-{{ spark_version }}-bin-{{ spark_distribution_name }}"
+spark_distribution_url: "https://eta-hgi-bucket-hermes.cog.sanger.ac.uk/download/spark-{{ spark_version }}/{{ spark_distribution_basename }}.tgz"
+spark_home: "{{ spark_install_dir }}/{{ spark_distribution_basename }}"
 spark_pid_dir: "{{ spark_home }}/run"
 spark_log_dir: "{{ spark_home }}/log"
 spark_work_dir: "{{ spark_home }}/work"
 spark_conf_dir: "{{ spark_home }}/conf"
-spark_local_dirs:
-  - /mnt/tmpfs
-
-spark_distribution_name: "hgi-hadoop{{ hadoop_version }}"
-spark_home: "{{ spark_install_dir }}/spark-{{ spark_version }}-bin-{{ spark_distribution_name }}"
 
 spark_master_port: 7077
 
 spark_env_extras: {}
+
+spark_local_dirs:
+  - /mnt/tmpfs
 
 spark_jars:
   - "{{ anaconda_install_dir }}/anaconda3/lib/python{{ anaconda_python_version }}/site-packages/hail/hail-all-spark.jar"
