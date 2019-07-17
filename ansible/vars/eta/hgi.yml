@@ -229,7 +229,7 @@ provisioning_image_url: "https://{{ datacenter }}-{{ programme }}-bucket-ld14.co
 
 hail_extra_jars:
   - filename: "aws-java-sdk-{{ aws_java_sdk }}.jar"
-    url: "https://search.maven.org/remotecontent?filepath=com/emc/vipr/aws-java-sdk/{{ aws_java_sdk }}/aws-java-sdk-{{ aws_java_sdk }}.jar"
+    url: "http://search.maven.org/remotecontent?filepath=com/amazonaws/aws-java-sdk/{{ aws_java_sdk }}/aws-java-sdk-{{ aws_java_sdk }}.jar"
   - filename: "hadoop-aws-{{ hadoop_version }}.jar"
     url: "https://search.maven.org/remotecontent?filepath=org/apache/hadoop/hadoop-aws/{{ hadoop_version }}/hadoop-aws-{{ hadoop_version }}.jar"
 hail_extra_apt: []
