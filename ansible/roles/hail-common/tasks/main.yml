@@ -17,10 +17,18 @@
   become: yes
   become_user: "{{ hail_install_owner }}"
 
+- name: Create extra jars path
+  file:
+    state: directory
+    path: "{{ hail_install_dir }}/jars"
+    mode: "{{ hail_install_mode }}"
+    owner: "{{ hail_install_owner }}"
+    group: "{{ hail_install_group }}"
+
 - name: Install custom jars list
   get_url:
     url: "{{ jar.url }}"
-    dest: "{{ spark_home }}/jars/{{ jar.filename }}"
+    dest: "{{ hail_install_dir }}/jars/{{ jar.filename }}"
   loop: "{{ hail_extra_jars }}"
   loop_control:
     loop_var: jar

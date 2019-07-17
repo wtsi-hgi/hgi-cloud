@@ -89,7 +89,7 @@ spark_local_dirs:
 
 spark_jars:
   - "{{ anaconda_install_dir }}/anaconda3/lib/python{{ anaconda_python_version }}/site-packages/hail/hail-all-spark.jar"
-  - "{{ spark_home }}/jars/*.jar"
+  - "{{ spark_install_dir }}/jars/*.jar"
 
 spark_defaults_extras:
   # SparkContext Configuration
