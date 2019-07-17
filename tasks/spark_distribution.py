@@ -78,13 +78,17 @@ MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMave
 ./dev/make-distribution.sh \
   --name {} \
   --tgz \
-  -B \
+  --pip \
+  --r \
+  --batch-mode \
+  -DskipTests \
   -Dhadoop.version={} \
-  -Pnetlib-lgpl \
-  -Psparkr \
   -Pyarn \
   -Phadoop-{} \
+  -Pnetlib-lgpl \
+  -Psparkr \
   -Phive \
+  -Pkubernetes \
   -Phive-thriftserver \
   -Pmesos""".format(context.config['spark_distribution']['jdk_version'],
                     context.config['spark_distribution']['name'],
