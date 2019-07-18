@@ -104,7 +104,7 @@ def create(context, owner=None, networking=False):
 def destroy(context, owner=None, networking=False, yes_also_hail_volume=False):
   owner = owner or os.environ['OS_USERNAME']
   volume = get_hail_volume_name(context, owner)
-  env = {'TF_VAR_hail_volume': volume} if volume else {}
+  env = {'TF_VAR_hail_volume': volume or ""}
 
   context.run('bash invoke.sh deployment destroy --name hail_cluster --owner {}'.format(owner), env=env)
 
