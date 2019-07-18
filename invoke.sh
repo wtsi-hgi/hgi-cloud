@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # This wants to be an handy script to wrap the usage of invoke.
 # This tool is supposed to work only from the base project directory.
 
@@ -12,6 +12,10 @@ die() {
 # User needs to source the right openrc.sh file.
 if [ -z "${OS_PROJECT_NAME}" ] ; then
   die 1 "OS_PROJECT_NAME is empty: you need to source the right openrc.sh file"
+fi
+
+if [[ -z "${AWS_ACCESS_KEY_ID}" ]] || [[ -z "${AWS_SECRET_ACCESS_KEY}" ]]; then
+  die 1 "S3 access and secret keys not fully set"
 fi
 
 source "metadata/${OS_PROJECT_NAME}.rc"
