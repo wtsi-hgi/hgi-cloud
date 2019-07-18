@@ -64,22 +64,24 @@ HELP
   ;;
 esac
 
-# Create virtual environment, if it doesn't exist
-# NOTE Updating the packages in the virtualenv is a manual process
-if ! [[ -d "${PWD}/py3" ]]; then
-  if ! PYTHON="$(command -v python3)"; then
-    die 3 "Cannot find python3 in PATH"
+if ! command -v invoke >/dev/null; then
+  # Create virtual environment, if it doesn't exist
+  # NOTE Updating the packages in the virtualenv is a manual process
+  if ! [[ -d "${PWD}/py3" ]]; then
+    if ! PYTHON="$(command -v python3)"; then
+      die 3 "Cannot find python3 in PATH"
+    fi
+
+    "${PYTHON}" -m venv "${PWD}/py3"
+    source "${PWD}/py3/bin/activate"
+    pip --no-cache-dir install \
+        --upgrade pip setuptools wheel \
+        --requirement requirements.txt
   fi
 
-  "${PYTHON}" -m venv "${PWD}/py3"
-  source "${PWD}/py3/bin/activate"
-  pip --no-cache-dir install \
-      --upgrade pip setuptools wheel \
-      --requirement requirements.txt
+  # Activate virtual environment
+  [[ -z "${VIRTUAL_ENV}" ]] && source "${PWD}/py3/bin/activate"
 fi
-
-# Activate virtual environment
-[[ -z "${VIRTUAL_ENV}" ]] && source "${PWD}/py3/bin/activate"
 
 # These variables will describe the exact cloud / project in which to operate, in invoke
 export INVOKE_META_PROGRAMME="${META_PROGRAMME:?"META_PROGRAMME is null or unset"}"
