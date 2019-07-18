@@ -12,12 +12,12 @@ variable "spark_slaves_flavor_name" {
   default     = "m1.medium"
 }
 
-variable "spark_masters_flavor_name" {
-  description = "The name of the flavour of the Spark masters instance"
+variable "spark_master_flavor_name" {
+  description = "The name of the flavour of the Spark master instance"
   default     = "m1.medium"
 }
 
-# This is temporarily necessary. This value is manually assigned to the user.
+# This value is manually assigned to the user.
 variable "spark_master_external_address" {
   description = "The public network IP address for the Spark master"
 }
@@ -47,8 +47,8 @@ variable "deployment_color" {
   default     = "blue"
 }
 
-variable "spark_masters_affinity" {
-  description = "The type of affinity of the Spark masters instances"
+variable "spark_master_affinity" {
+  description = "The type of affinity of the Spark master instances"
   default     = "soft-anti-affinity"
 }
 
@@ -57,12 +57,12 @@ variable "spark_slaves_affinity" {
   default     = "soft-anti-affinity"
 }
 
-variable "spark_masters_image_name" {
+variable "spark_master_image_name" {
   description = "The name of the image to deploy on the Spark master"
 }
 
 # Any value that can be used in a "git checkout" command
-variable "spark_masters_role_version" {
+variable "spark_master_role_version" {
   description = "The version of the role that the Spark master has to assume in the cluster"
   default     = "HEAD"
 }
@@ -77,7 +77,7 @@ variable "spark_slaves_role_version" {
   default     = "HEAD"
 }
 
-variable "spark_masters_network_name" {
+variable "spark_master_network_name" {
   description = "The name-tag of the network where the spark master has to be deployed in"
   default     = "main"
 }

@@ -33,8 +33,8 @@ module "hail_master" {
   deployment_color    = "${var.deployment_color}"
   deployment_owner    = "${var.deployment_owner}"
   role_name           = "hail-master"
-  role_version        = "${var.spark_masters_role_version}"
-  image_name          = "${var.spark_masters_image_name}"
+  role_version        = "${var.spark_master_role_version}"
+  image_name          = "${var.spark_master_image_name}"
   other_data          = "${merge(local.other_data, map("spark_master_private_address", ""))}"
   security_groups     = [
     "${var.datacenter}-${var.programme}-${var.env}-secgroup-base",
@@ -42,9 +42,9 @@ module "hail_master" {
     "${var.datacenter}-${var.programme}-${var.env}-secgroup-spark-master"
   ]
   count               = 1
-  flavor_name         = "${var.spark_masters_flavor_name}"
-  affinity            = "${var.spark_masters_affinity}"
-  network_name        = "${var.spark_masters_network_name}"
+  flavor_name         = "${var.spark_master_flavor_name}"
+  affinity            = "${var.spark_master_affinity}"
+  network_name        = "${var.spark_master_network_name}"
 }
 
 resource "openstack_compute_floatingip_associate_v2" "public_ip" {
