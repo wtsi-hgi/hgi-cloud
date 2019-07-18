@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # This wants to be an handy script to wrap the usage of invoke.
 # This tool is supposed to work only from the base project directory.
 
@@ -12,6 +12,10 @@ die() {
 # User needs to source the right openrc.sh file.
 if [ -z "${OS_PROJECT_NAME}" ] ; then
   die 1 "OS_PROJECT_NAME is empty: you need to source the right openrc.sh file"
+fi
+
+if [[ -z "${AWS_ACCESS_KEY_ID}" ]] || [[ -z "${AWS_SECRET_ACCESS_KEY}" ]]; then
+  die 1 "S3 access and secret keys not fully set"
 fi
 
 source "metadata/${OS_PROJECT_NAME}.rc"
@@ -64,32 +68,24 @@ HELP
   ;;
 esac
 
-# # Creates python3's virtualenv
-# if [ ! -d "${PWD}/py3" ] ; then
-#   PYTHON=$(which python3)
-#   if [ -x "${PYTHON}" ] ; then
-#     VIRTUALENV=$(which virtualenv)
-#     if [ -x "${VIRTUALENV}" ] ; then
-#       ${VIRTUALENV} --python "${PYTHON}" "${PWD}/py3"
-#     else
-#       die 2 "Cannot find virtualenv in PATH, or \`${VIRTUALENV}' is not executable"
-#     fi
-#   else
-#     die 3 "Cannot find python3 in PATH, or \`${PYTHON}' is not executable"
-#   fi
-# fi
-#
-# # Activates python3's virtualenv
-# if [ -z "${VIRTUAL_ENV}" ] ; then
-#   if [ -f "${PWD}/py3/bin/activate" ] ; then
-#     source ./py3/bin/activate
-#   else
-#     die 4 "Cannot find ${PWD}/py3/bin/activate\n\tvirtualenv is broken, you can remove the direcotry and run ${0} again"
-#   fi
-# fi
-#
-# # Install all python modules
-# pip --no-cache-dir show invoke >/dev/null || pip --no-cache-dir install --requirement requirements.txt
+if ! command -v invoke >/dev/null; then
+  # Create virtual environment, if it doesn't exist
+  # NOTE Updating the packages in the virtualenv is a manual process
+  if ! [[ -d "${PWD}/py3" ]]; then
+    if ! PYTHON="$(command -v python3)"; then
+      die 3 "Cannot find python3 in PATH"
+    fi
+
+    "${PYTHON}" -m venv "${PWD}/py3"
+    source "${PWD}/py3/bin/activate"
+    pip --no-cache-dir install \
+        --upgrade pip setuptools wheel \
+        --requirement requirements.txt
+  fi
+
+  # Activate virtual environment
+  [[ -z "${VIRTUAL_ENV}" ]] && source "${PWD}/py3/bin/activate"
+fi
 
 # These variables will describe the exact cloud / project in which to operate, in invoke
 export INVOKE_META_PROGRAMME="${META_PROGRAMME:?"META_PROGRAMME is null or unset"}"

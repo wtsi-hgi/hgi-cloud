@@ -67,7 +67,9 @@ def get_hail_volume_name(context, owner):
       context.config['meta']['programme'],
       context.config['meta']['env'],
       'volume', owner, 'hail-data-01'])
-  return [ v.id for v in openstack.volume.volumes() if v.name == volume_name][0]
+
+  volumes = [v.id for v in openstack.volume.volumes() if v.name == volume_name]
+  return volumes[0] if volumes else None
 
 @invoke.task
 def init(context, owner=None):
@@ -101,13 +103,15 @@ def create(context, owner=None, networking=False):
 @invoke.task
 def destroy(context, owner=None, networking=False, yes_also_hail_volume=False):
   owner = owner or os.environ['OS_USERNAME']
-  env = {
-    'TF_VAR_hail_volume': get_hail_volume_name(context, owner)
-  }
+  volume = get_hail_volume_name(context, owner)
+  env = {'TF_VAR_hail_volume': volume or ""}
+
   context.run('bash invoke.sh deployment destroy --name hail_cluster --owner {}'.format(owner), env=env)
+
   if networking:
     context.run('bash invoke.sh deployment destroy --name networking --owner {}'.format(owner))
-  if yes_also_hail_volume:
+
+  if yes_also_hail_volume and volume is not None:
     context.run('bash invoke.sh deployment destroy --name hail_volume --owner {}'.format(owner))
 
 ns = invoke.Collection()
