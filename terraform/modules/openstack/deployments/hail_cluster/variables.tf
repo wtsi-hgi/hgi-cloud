@@ -42,21 +42,6 @@ variable "deployment_owner" {
   description = "The userid of the owner of the deployment"
 }
 
-variable "deployment_color" {
-  description = "The color of the deployment"
-  default     = "blue"
-}
-
-variable "spark_master_affinity" {
-  description = "The type of affinity of the Spark master instances"
-  default     = "soft-anti-affinity"
-}
-
-variable "spark_slaves_affinity" {
-  description = "The type of affinity of the Spark slaves instances"
-  default     = "soft-anti-affinity"
-}
-
 variable "spark_master_image_name" {
   description = "The name of the image to deploy on the Spark master"
 }

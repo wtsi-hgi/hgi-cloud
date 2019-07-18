@@ -30,7 +30,7 @@ module "hail_master" {
   programme           = "${var.programme}"
   env                 = "${var.env}"
   deployment_name     = "${local.deployment_name}"
-  deployment_color    = "${var.deployment_color}"
+  deployment_color    = "blue"
   deployment_owner    = "${var.deployment_owner}"
   role_name           = "hail-master"
   role_version        = "${var.spark_master_role_version}"
@@ -43,7 +43,7 @@ module "hail_master" {
   ]
   count               = 1
   flavor_name         = "${var.spark_master_flavor_name}"
-  affinity            = "${var.spark_master_affinity}"
+  affinity            = "soft-anti-affinity"
   network_name        = "${var.spark_master_network_name}"
 }
 
@@ -64,7 +64,7 @@ module "hail_slaves" {
   programme           = "${var.programme}"
   env                 = "${var.env}"
   deployment_name     = "${local.deployment_name}"
-  deployment_color    = "${var.deployment_color}"
+  deployment_color    = "blue"
   deployment_owner    = "${var.deployment_owner}"
   role_name           = "hail-slave"
   role_version        = "${var.spark_slaves_role_version}"
@@ -77,7 +77,7 @@ module "hail_slaves" {
   ]
   count               = "${var.spark_slaves_count}"
   flavor_name         = "${var.spark_slaves_flavor_name}"
-  affinity            = "${var.spark_slaves_affinity}"
+  affinity            = "soft-anti-affinity"
   network_name        = "${var.spark_slaves_network_name}"
   depends_on          = ["${module.hail_master.instance_ids}" ]
 }
