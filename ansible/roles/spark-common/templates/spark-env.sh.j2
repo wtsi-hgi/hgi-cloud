@@ -60,6 +60,6 @@ export SPARK_MASTER_HOST="{{ spark_master_private_address | default('0.0.0.0', t
 export SPARK_LOCAL_DIRS="{{ spark_local_dirs | join(',') }}"
 {% endif %}
 
-{% for key, value in spark_env_extras.items() | sort %}
+{% for key, value in spark_env_sh.items() | sort %}
 export {{ key }}="{{ value }}"
 {% endfor %}

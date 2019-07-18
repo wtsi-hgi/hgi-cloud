@@ -7,6 +7,7 @@
     autoremove: yes
     autoclean: yes
     force_apt_get: yes
+  changed_when: false
 
 - name: Install base packages
   apt:
@@ -79,9 +80,9 @@
   file:
     state: directory
     path: "{{ base_dir }}"
-    owner: "{{ base_dir_owner }}"
-    group: "{{ base_dir_group }}"
-    mode: "{{ base_dir_mode }}"
+    owner: "{{ base_install_owner }}"
+    group: "{{ base_install_group }}"
+    mode: "{{ base_install_mode }}"
   loop:
     - "{{ base_source_dir }}"
     - "{{ base_download_dir }}"

@@ -28,9 +28,9 @@
   file:
     state: directory
     path: "{{ spark_build_dir }}"
-    owner: "{{ spark_user_name }}"
-    group: "{{ spark_group_name }}"
-    mode: 0775
+    owner: "{{ spark_install_owner }}"
+    group: "{{ spark_install_group }}"
+    mode: "{{ spark_install_mode }}"
     follow: true
   loop:
     - "{{ spark_download_dir }}"

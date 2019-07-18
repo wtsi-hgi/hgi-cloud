@@ -1,15 +1,40 @@
 ---
-anaconda_distribution: 2019.03-Linux-x86_64
-anaconda_extra_modules: []
+# Do not change the values in this file, unless you know what are you doing.
+# Aa a rule of thumb, never change a value unless you are sure of the implications.
 
-hail_version: "0.2.18"
-java_jdk_version: "8"
+# Basic Configuration.
+
+# The following values are safe for the user to copy in their own file and
+# customize. Being safe, doesn't mean the result will be a working cluster: for
+# instance, if you change the version of spark, you also want to be sure there
+# is a spark binary distribution with the same version, available to be
+# downloaded and installed.
+
+anaconda_distribution: 2019.03-Linux-x86_64
+anaconda_python_version: "3.7"
+aws_java_sdk_version: "1.7.4"
 hadoop_version: "2.7.1"
+java_jdk_version: "8"
 spark_hadoop_profile: "2.7"
 spark_version: "2.4.3"
-aws_java_sdk: "1.7.4"
+hail_version: "0.2.18"
 
-volumes: []
+# A list of extra jars that the users might want to install. It is possible to
+# install them with a different name.
+hail_extra_jars:
+  - filename: "aws-java-sdk-{{ aws_java_sdk_version }}.jar"
+    url: "http://search.maven.org/remotecontent?filepath=com/amazonaws/aws-java-sdk/{{ aws_java_sdk_version }}/aws-java-sdk-{{ aws_java_sdk_version }}.jar"
+  - filename: "hadoop-aws-{{ hadoop_version }}.jar"
+    url: "https://search.maven.org/remotecontent?filepath=org/apache/hadoop/hadoop-aws/{{ hadoop_version }}/hadoop-aws-{{ hadoop_version }}.jar"
+
+# A list of extra Debian/Ubuntu packages that the users might want to install.
+hail_extra_apt: []
+
+# A list of extra python modules (in the anaconda distribution) that the user
+# might want to install.
+hail_extra_pip: []
+
+# Advanced Configuration
 
 base_user_name: hgi
 base_user_uid: 10000
@@ -26,15 +51,10 @@ base_source_dir: "{{ base_user_home }}/src"
 base_download_dir: "{{ base_user_home }}/download"
 base_bin_dir: "{{ base_user_home }}/bin"
 
-base_dir_owner: "{{ base_user_name }}"
-base_dir_group: "{{ base_group_name }}"
-base_dir_mode: 0775
-
 base_install_owner: "{{ base_user_name }}"
 base_install_group: "{{ base_group_name }}"
 base_install_dir: "{{ base_user_home }}"
-
-anaconda_python_version: "3.7"
+base_install_mode: "ug+rw,o-w"
 
 anaconda_source_dir: "{{ base_source_dir }}"
 anaconda_download_dir: "{{ base_download_dir }}"
@@ -42,7 +62,7 @@ anaconda_install_dir: "{{ base_install_dir }}"
 
 anaconda_install_owner: "{{ base_install_owner }}"
 anaconda_install_group: "{{ base_install_group }}"
-anaconda_install_mode: "u+rw,go+r"
+anaconda_install_mode: "{{ base_install_mode }}"
 
 hadoop_user_name: "{{ base_user_name }}"
 hadoop_group_name: "{{ hadoop_user_name }}"
@@ -54,7 +74,7 @@ hadoop_home: "{{ hadoop_install_dir }}/hadoop-{{ hadoop_version }}"
 
 hadoop_install_owner: "{{ hadoop_user_name }}"
 hadoop_install_group: "{{ hadoop_group_name }}"
-hadoop_install_mode: "ug+rw,o+r"
+hadoop_install_mode: "{{ base_install_mode }}"
 
 hadoop_pid_dir: "{{ hadoop_home }}/run"
 hadoop_log_dir: "{{ hadoop_home }}/log"
@@ -69,7 +89,7 @@ spark_install_dir: "{{ base_user_home }}"
 
 spark_install_owner: "{{ base_install_owner }}"
 spark_install_group: "{{ base_install_group }}"
-spark_install_mode: "ug+rw,o-rw"
+spark_install_mode: "{{ base_install_mode }}"
 
 spark_distribution_name: "netlib-hadoop{{ spark_hadoop_profile }}"
 spark_distribution_basename: "spark-{{ spark_version }}-bin-{{ spark_distribution_name }}"
@@ -82,7 +102,7 @@ spark_conf_dir: "{{ spark_home }}/conf"
 
 spark_master_port: 7077
 
-spark_env_extras: {}
+spark_env_sh: {}
 
 spark_local_dirs:
   - /mnt/tmpfs
@@ -91,7 +111,7 @@ spark_jars:
   - "{{ anaconda_install_dir }}/anaconda3/lib/python{{ anaconda_python_version }}/site-packages/hail/hail-all-spark.jar"
   - "{{ spark_install_dir }}/jars/*.jar"
 
-spark_defaults_extras:
+spark_defaults_conf:
   # SparkContext Configuration
   spark.master: "spark://spark-master:{{ spark_master_port }}"
   spark.sql.files.maxPartitionBytes: "42949672960"
@@ -99,10 +119,10 @@ spark_defaults_extras:
 
   spark.driver.host: spark-master
   spark.driver.bindAddress: 0.0.0.0
-  spark.driver.memory: "{{ (ansible_memtotal_mb * 0.94) | int() }}m"
+  spark.driver.memory: "{{ (ansible_memtotal_mb - 2048) | int() }}m"
   spark.driver.maxResultSize: 0
 
-  spark.executor.memory: "{{ (ansible_memtotal_mb * 0.94) | int() }}m"
+  spark.executor.memory: "{{ (ansible_memtotal_mb - 2048) | int() }}m"
   spark.executor.instances: 1
 
   spark.jars: "{{ spark_jars | join(',') }}"
@@ -199,7 +219,7 @@ spark_sysctl_params:
 hail_install_dir: "{{ base_install_dir }}"
 hail_install_owner: "{{ base_install_owner }}"
 hail_install_group: "{{ base_install_group }}"
-hail_install_mode: "ug+rw,o+r"
+hail_install_mode: "{{ base_install_mode }}"
 
 hail_home: "{{ hail_install_dir }}/hail"
 hail_volume_keyfile: "{{ hail_install_dir }}/keyfile"
@@ -226,11 +246,3 @@ provisioning_version: v0.5
 provisioning_image_version: v0.5
 provisioning_image_basename: "{{ datacenter }}-{{ programme }}-docker-provisioning-base-{{ provisioning_image_version }}.tar"
 provisioning_image_url: "https://{{ datacenter }}-{{ programme }}-bucket-ld14.cog.sanger.ac.uk/download/containers/docker"
-
-hail_extra_jars:
-  - filename: "aws-java-sdk-{{ aws_java_sdk }}.jar"
-    url: "http://search.maven.org/remotecontent?filepath=com/amazonaws/aws-java-sdk/{{ aws_java_sdk }}/aws-java-sdk-{{ aws_java_sdk }}.jar"
-  - filename: "hadoop-aws-{{ hadoop_version }}.jar"
-    url: "https://search.maven.org/remotecontent?filepath=org/apache/hadoop/hadoop-aws/{{ hadoop_version }}/hadoop-aws-{{ hadoop_version }}.jar"
-hail_extra_apt: []
-hail_extra_pip: []
