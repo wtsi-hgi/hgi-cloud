@@ -82,7 +82,9 @@ spark_conf_dir: "{{ spark_home }}/conf"
 
 spark_master_port: 7077
 
-spark_env_extras: {}
+spark_env_extras:
+  AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
+  AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
 
 spark_local_dirs:
   - /mnt/tmpfs
