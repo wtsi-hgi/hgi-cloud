@@ -223,6 +223,12 @@ This is the same boilerplate that you would use in a Jupyter session.
 
 ## Setting-Up S3 Access
 
+**Note**
+The following guidance is for older clusters, where your S3 credentials
+weren't set automatically. On newer clusters, you no longer need to do
+this, unless you wish to access data that exists under a different set
+of keys.
+
 ### In a Jupyter Notebook
 
 To get your S3 credentials into your Jupyter Notebook, you need to add
