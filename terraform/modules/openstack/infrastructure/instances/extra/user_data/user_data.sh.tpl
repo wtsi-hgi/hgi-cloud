@@ -4,7 +4,7 @@
 exec >> /var/log/user_data.log 2>&1
 
 if [ ! -d "/usr/src/provisioning/ansible" ] ; then
-  git clone https://gitlab.internal.sanger.ac.uk/hgi/hgi-systems-cluster-spark.git /usr/src/provisioning
+  git clone https://github.com/wtsi-hgi/hgi-cloud.git /usr/src/provisioning
 fi
 
 # cp --archive /usr/src/provisioning/ansible /opt/sanger.ac.uk

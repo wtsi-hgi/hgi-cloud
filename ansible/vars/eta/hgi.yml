@@ -246,7 +246,7 @@ terraform_sha256sum: 9b9a4492738c69077b079e595f5b2a9ef1bc4e8fb5596610f69a6f322a8
 packer_version: 1.4.1
 packer_sha256sum: b713ea79a6fb131e27d65ec3f2227f36932540e71820288c3c5ad770b565ecd7
 
-provisioning_repo: https://gitlab.internal.sanger.ac.uk/hgi/hgi-systems-cluster-spark.git
+provisioning_repo: https://github.com/wtsi-hgi/hgi-cloud.git
 provisioning_version: v0.5
 provisioning_image_version: v0.5
 provisioning_image_basename: "{{ datacenter }}-{{ programme }}-docker-provisioning-base-{{ provisioning_image_version }}.tar"
