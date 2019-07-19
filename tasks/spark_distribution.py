@@ -11,7 +11,6 @@ import urllib.request
 
 import boto3
 import botocore
-import gnupg
 import invoke
 
 @invoke.task
