@@ -43,17 +43,6 @@
   loop_control:
     loop_var: jupyter_dir
 
-# Symlink Hail temporary directory to Jupyter data directory, so there
-# is at least some visibility to the end user
-- name: Ensure symlink to Hail tmp_dir exists
-  file:
-    state: link
-    src:   "{{ hail_home }}/tmp"
-    dest:  "{{ hail_install_dir }}/jupyter/data/working"
-    owner: "{{ hail_install_owner }}"
-    group: "{{ hail_install_group }}"
-    mode:  "ug+rw,o-rw"
-
 - name: Install Jupyter Notebook App's service
   template:
     src: jupyter-notebook.service.j2
@@ -79,6 +68,17 @@
     src: "/dev/mapper/jupyter_data"
     fstype: "ext4"
     path: "{{ hail_install_dir }}/jupyter/data"
+
+# Symlink Hail temporary directory to Jupyter data directory, so there
+# is at least some visibility to the end user
+- name: Ensure symlink to Hail tmp_dir exists
+  file:
+    state: link
+    src:   "{{ hail_home }}/tmp"
+    dest:  "{{ hail_install_dir }}/jupyter/data/working"
+    owner: "{{ hail_install_owner }}"
+    group: "{{ hail_install_group }}"
+    mode:  "ug+rw,o-rw"
 
 # Fixes permissions on first time mount
 - name: Ensure Hail and Jupyter directories correct ownership and permission
