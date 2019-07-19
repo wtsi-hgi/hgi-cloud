@@ -1,5 +1,5 @@
 ---
-provisioning_repo: https://gitlab.internal.sanger.ac.uk/hgi/hgi-systems-cluster-spark.git
+provisioning_repo: https://github.com/wtsi-hgi/hgi-cloud.git
 provisioning_version: v0.5
 provisioning_image_version: 0.0.2
 provisioning_image_basename: "{{ datacenter }}-{{ programme }}-docker-provisioning-base-{{ provisioning_image_version }}.tar"
