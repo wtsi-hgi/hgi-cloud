@@ -148,15 +148,21 @@ secret_key = ...
 The values for `access_key` and `secret_key` are very important and also
 sensitive information, so have therefore been omitted here.
 
-### Download / Create the `openrc.sh` File of the HGI Project
+### Download / Create the `openrc` file
 
-The `openrc.sh` file contains a list of environment variables that are
-going to be used throughout the provisioning software. The name of this
-file is not important; we will refer to it as `openrc.sh` throughout,
-for consistency, but those downloaded from Openstack (see below) may be
-named differently.
+Each Openstack project can be described through 2 kinds of configuration files
+that you can download from the Openstack Web insterface:
 
-For example:
+1. `sh` environment configuration file generally called `openrc`. At the time
+   of this writing, you can download the configuration with the values for the
+   Identity API version 2.0 or 3.0
+2. `yaml` configuration file calles `clouds.yml`.
+
+For the provisioning software to work properly, you need to download the `sh`
+environment configuration file, with the values for the Identity API version
+3.0. The actual name of the file may vary and will reflect the name of project
+it refers to. For semplicity, from now on, we will refer to the configuration
+file as `openrc.sh`. The file should look like the following:
 
 ```bash
 #!/usr/bin/env bash
@@ -199,19 +205,15 @@ export OS_INTERFACE=public
 export OS_IDENTITY_API_VERSION=3
 ```
 
-This file can be downloaded from the Openstack web-frontend (Horizon)
-for your user and project:
-
-* Select the appropriate project from the menu in the upper right
-  corner.
-
-* Download the file by navigating to:
+To download the `openrc.sh` file from the Openstack web-frontend (i.e. Horizon)
+1. Log in Horizon from the web browser
+2. Select the appropriate project from the menu in the upper right corner.
+3. Download the file by navigating to:
 
   Project > API Access > Download OpenStack RC File > OpenStack RC File
   (Identity API v3)
 
-It is important to use the v3 `openrc.sh` for the correct user and
-project. Further [documentation](https://ssg-confluence.internal.sanger.ac.uk/display/OPENSTACK/FAQ#FAQ-Whydoesn'tmyAPIfilework?I'mabletologintotheHorizonwebinterface.)
+Further [documentation](https://ssg-confluence.internal.sanger.ac.uk/display/OPENSTACK/FAQ#FAQ-Whydoesn'tmyAPIfilework?I'mabletologintotheHorizonwebinterface.)
 for this service is available from SSG.
 
 ### Add AWS (S3) Environment Variables to `openrc.sh`
