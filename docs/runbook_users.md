@@ -106,6 +106,15 @@ Note that the underlying Spark service status can be accessed at
 `http://${ip_address}/spark/`. This exists largely as a curiosity for
 end users, but can be useful to help debugging.
 
+### The `working` Directory
+
+In newer versions of the Hail cluster, in the Jupyter file browser you
+will see a `working` directory. This is a symlink to `${HAIL_HOME}/tmp`
+which will allow you to get working data in to your cluster, more
+easily (i.e., using the Jupyter interface, rather than `scp`). You will
+still need to refer to this location as `${HAIL_HOME}/tmp` in your
+notebooks, for access.
+
 ### Restart the Jupyter Notebook Service
 
 In early versions of the provisioned Notebook, there was a "Quit" button
