@@ -3,17 +3,15 @@ import glob
 import os
 import os.path
 import sys
+import urllib3
 
+import infoblox_client.connector
+import infoblox_client.objects
 import openstack as openstack_client
 
-openstack = openstack_client.connect(auth_url=os.environ['OS_AUTH_URL'],
-                                     project_name=os.environ['OS_PROJECT_NAME'],
-                                     username=os.environ['OS_USERNAME'],
-                                     password=os.environ['OS_PASSWORD'],
-                                     region_name=os.environ['OS_REGION_NAME'],
-                                     app_name='invoke')
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-def create_terraform_vars(order):
+def create_terraform_vars(order, public_ip, network_cidr, volume_size):
   dirname = os.path.join('terraform', 'vars')
   created = []
 
@@ -27,13 +25,32 @@ def create_terraform_vars(order):
         created.append(tfvars)
     dirname = os.path.join(dirname, name)
 
-  for deployment in ['hail_cluster', 'hail_volume', 'networking']:
-    if not os.path.exists(dirname): 
-      os.mkdir(dirname)
-    tfvars = os.path.join(dirname, deployment + '.tfvars')
-    with open(tfvars, 'w') as f:
-      f.write("# Automatically generated\n")
-      created.append(tfvars)
+  if not os.path.exists(dirname):
+    os.mkdir(dirname)
+
+  tfvars = os.path.join(dirname, 'hail_cluster.tfvars')
+  if not os.path.exists(tfvars):
+    with open(tfvars, 'w') as conf:
+      conf.write('spark_master_external_address = "{}"\n'.format(public_ip))
+    created.append(tfvars)
+  else:
+    print('Skipping {}: it already exists'.format(tfvars))
+
+  tfvars = os.path.join(dirname, 'networking.tfvars')
+  if network_cidr and not os.path.exist(tfvars):
+    with open(tfvars, 'w') as conf:
+      conf.write('main_subnet_cidr = "{}"\n'.format(network_cidr))
+    created.append(tfvars)
+  else:
+    print('Skipping {}: it already exists'.format(tfvars))
+
+  tfvars = os.path.join(dirname, 'hail_volume.tfvars')
+  if volume_size and not os.path.exist(tfvars):
+    with open(tfvars, 'w') as conf:
+      conf.write('hail_volume_size = "{}"\n'.format(volume_size))
+    created.append(tfvars)
+  else:
+    print('Skipping {}: it already exists'.format(tfvars))
 
   return created
 
@@ -62,6 +79,13 @@ def create_ansible_vars(order):
   return created
 
 def get_hail_volume_name(context, owner):
+
+  openstack = openstack_client.connect(auth_url=os.environ['OS_AUTH_URL'],
+                                       project_name=os.environ['OS_PROJECT_NAME'],
+                                       username=os.environ['OS_USERNAME'],
+                                       password=os.environ['OS_PASSWORD'],
+                                       region_name=os.environ['OS_REGION_NAME'],
+                                       app_name='invoke')
   volume_name = '-'.join([
       context.config['meta']['datacenter'],
       context.config['meta']['programme'],
@@ -72,15 +96,14 @@ def get_hail_volume_name(context, owner):
   return volumes[0] if volumes else None
 
 @invoke.task
-def init(context, owner=None):
-  created = []
+def init(context, public_ip, network_cidr=None, volume_size=None, owner=None):
   order = [
     context.config['meta']['datacenter'],
     context.config['meta']['programme'],
     context.config['meta']['env'],
     owner or os.environ['OS_USERNAME']
   ]
-  created += create_terraform_vars(order) + \
+  created = create_terraform_vars(order, public_ip, network_cidr, volume_size) + \
              create_ansible_vars(order)
 
   print('The following files have been created:')
@@ -88,6 +111,22 @@ def init(context, owner=None):
     print('  {}'.format(conf))
 
   # context.run('git add {}'.format(' '.join(created)))
+
+@invoke.task
+def register(context, public_ip, owner=None):
+  infoblox = {
+    'host': 'infoblox-gm.internal.sanger.ac.uk',
+    'username': os.environ['INFOBLOX_USERNAME'],
+    'password': os.environ['INFOBLOX_PASSWORD']
+  }
+  zone = '{}.sanger.ac.uk'.format(os.environ['OS_PROJECT_NAME'])
+  name = 'hail-master-{}'.format(owner or os.environ['OS_USERNAME'])
+  connector = infoblox_client.connector.Connector(infoblox)
+  record = infoblox_client.objects.ARecord.create(connector,
+                                                  name='.'.join([name, zone]),
+                                                  view='internal',
+                                                  ip=public_ip,
+                                                  update_if_exists=True)
 
 @invoke.task
 def create(context, owner=None, networking=False):
@@ -116,5 +155,6 @@ def destroy(context, owner=None, networking=False, yes_also_hail_volume=False):
 
 ns = invoke.Collection()
 ns.add_task(init)
+ns.add_task(register)
 ns.add_task(create)
 ns.add_task(destroy)
