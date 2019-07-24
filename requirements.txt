@@ -3,4 +3,5 @@ invoke
 keystoneauth1
 openstacksdk
 python-glanceclient
+python-keystoneclient
 infoblox-client

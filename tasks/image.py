@@ -100,6 +100,7 @@ def promote(context, to, role_name, role_version):
 
 @invoke.task()
 def accept(context, image_id):
+  _, _, glance = get_clients()
   glance.image_members.update(image_id, os.environ['OS_PROJECT_ID'], 'accepted')
 
 @invoke.task()

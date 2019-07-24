@@ -45,7 +45,7 @@ EXAMPLES
   $ bash invoke.sh image build --role-name base --role-version 0.1.0
   $ bash invoke.sh image promote --role-name hail-base --role-version 0.3.0 --to hgi-dev
   $ bash invoke.sh image share --role-name spark-base --role-version 1.2.0 --with f1c35e83bca7412f847211257c73b5f4
-  $ bash invoke.sh image accept --image-name random-image-from-somebody
+  $ bash invoke.sh image accept --image-id openstack_image_id
 
   # High level automation. They need to be run by the actual user
   $ bash invoke.sh user create --public-key=~/.ssh/id_rsa_dev.pub
