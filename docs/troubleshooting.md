@@ -68,7 +68,7 @@ master node and the worker nodes (a heterogeneous cluster), then the
 configuration of Spark -- which is driven from the master node -- will
 be incorrect. Specifically, the amount of memory available to the worker
 nodes is defined to be 2GiB less than the instance's memory. The
-instance, in this case, is *always* the master node.
+instance that matters, in this case, is *always* the master node.
 
 If, say, the master is using a smaller flavour than the workers, then
 the workers will be undercommitted and thus waste resources. If the
@@ -87,7 +87,11 @@ spark_slaves_flavor_name  = "m1.medium"
 
 # This is bad
 spark_master_flavor_name  = "m1.tiny"
-spark_slaves_flavor_name  = "m1.3xlarge"
+spark_slaves_flavor_name  = "m1.3xlarge"  # Undercommitted workers
+
+# This is really bad
+spark_master_flavor_name  = "m1.3xlarge"
+spark_slaves_flavor_name  = "m1.tiny"     # Overcommitted workers
 ```
 
 ## Hail Hangs
