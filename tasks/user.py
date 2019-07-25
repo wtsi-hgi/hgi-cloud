@@ -40,5 +40,6 @@ def destroy(context, yes_also_the_bucket=False, s3cfg='~/.s3cfg'):
   openstack = 'openstack keypair delete {}'
   context.run(openstack.format(keypair_name(context)), warn=True)
   if yes_also_the_bucket:
+    run_s3cmd(context, s3cfg, 'del --force --recursive {}'.format(bucket_name(context)))
     run_s3cmd(context, s3cfg, 'rb {}'.format(bucket_name(context)))
 
