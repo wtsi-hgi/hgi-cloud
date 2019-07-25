@@ -13,6 +13,7 @@
     expect eof
   args:
     executable: /usr/bin/expect
+  changed_when: false
 
 # parted module refuses to modify devices which are in use
 - name: Copy partition script
@@ -43,10 +44,12 @@
 
 - name: Enable swap from /dev/vda2
   shell: swapon --all
+  changed_when: false
 
 - name: Get swap size
   shell: swapon --show --bytes | awk '$1~/vda2$/ {printf ("%d", $3*75/100/(1024*1024*1024) ); }'
   register: swapon_show
+  changed_when: false
 
 - name: Create tmpfs mountpoint
   file:
