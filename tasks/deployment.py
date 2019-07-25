@@ -1,3 +1,7 @@
+'''
+This group of tasks deals with the life cycle of any terraform deployment.
+'''
+
 import invoke
 import glob
 import os
@@ -5,11 +9,23 @@ import os.path
 import sys
 
 def iac_path(context):
+  '''
+  Returns the path of the deployment code inside this repository.
+
+  :param context: pyinvoke context
+  :return: path of the deployment code
+  '''
   path = 'terraform/modules/{}/deployments/{}'
   return path.format(context.config['meta']['provider'],
                      context.config['deployment']['name'])
 
 def var_files(context):
+  '''
+  Returns the list of the terraform variables files
+
+  :param context: pyinvoke context
+  :return: the list of the terraform variables files
+  '''
   order = [
     context.config['meta']['datacenter'],
     context.config['meta']['programme'],
@@ -23,18 +39,6 @@ def var_files(context):
     basename = os.path.join(basename, path)
     paths.append('{}.tfvars'.format(basename))
   return paths
-
-def tfstate_file(context):
-  return [
-    os.path.join(
-      'terraform', 'deployments',
-      context.config['meta']['datacenter'],
-      context.config['meta']['programme'],
-      context.config['meta']['env'],
-      context.config['deployment']['owner'],
-      context.config['deployment']['name']),
-    'tfstate'
-  ]
 
 def tfplan_file(context, to):
   return [
@@ -75,6 +79,13 @@ def clean(context):
 
 @invoke.task(pre=[clean])
 def init(context):
+  tfstate = os.path.join('terraform', 'deployments',
+                         context.config['meta']['datacenter'],
+                         context.config['meta']['programme'],
+                         context.config['meta']['env'],
+                         context.config['deployment']['owner'],
+                         context.config['deployment']['name'],
+                         'tfstate')
   bucket = '-'.join([
     context.config['meta']['datacenter'],
     context.config['meta']['programme'],
@@ -85,7 +96,7 @@ def init(context):
     '-backend-config="region=eu-west-1"',
     '-backend-config="skip_credentials_validation=true"',
     '-backend-config="bucket={}"'.format(bucket),
-    '-backend-config="key={}"'.format(os.path.join(*tfstate_file(context)))
+    '-backend-config="key={}"'.format(tfstate)
   ])
   run_terraform(context, 'init {} {}'.format(options, iac_path(context)))
 
