@@ -120,7 +120,7 @@ def register(context, public_ip, owner=None):
     'password': os.environ['INFOBLOX_PASSWORD']
   }
   zone = '{}.sanger.ac.uk'.format(os.environ['OS_PROJECT_NAME'])
-  name = 'hail-master-{}'.format(owner or os.environ['OS_USERNAME'])
+  name = 'hail-{}'.format(owner or os.environ['OS_USERNAME'])
   connector = infoblox_client.connector.Connector(infoblox)
   record = infoblox_client.objects.ARecord.create(connector,
                                                   name='.'.join([name, zone]),

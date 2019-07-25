@@ -66,7 +66,7 @@ the examples below.
 3. Your common (LDAP) password: This *is* your normal network password.
 
 4. The Fully Qualified Domain Name or IP address of the Console Server
-   (e.g., `172.27.83.155`)
+   (e.g., `cloud.hgi.sanger.ac.uk`)
 
 5. The version of the provisioning software (e.g., `v0.5`)
 
@@ -251,7 +251,7 @@ Before typing the command, make sure that the username and the Console
 Server's IP address are correct.
 
 ```bash
-scp -r ~/.ssh ~/.s3cfg openrc.sh ld14@172.27.83.155:
+scp -r ~/.ssh ~/.s3cfg openrc.sh ld14@cloud.hgi.sanger.ac.uk:
 ```
 
 This assumes that the `openrc.sh` file is in your current working
@@ -265,7 +265,7 @@ Server.  Before typing the command, make sure that the username and the
 Console Server's IP address are correct.
 
 ```bash
-ssh ld14@172.27.83.155
+ssh ld14@cloud.hgi.sanger.ac.uk
 ```
 
 ### Run the Container

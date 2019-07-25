@@ -1,7 +1,9 @@
 boto3
+infoblox-client
 invoke
 keystoneauth1
 openstacksdk
 python-glanceclient
 python-keystoneclient
-infoblox-client
+python-openstackclient
+s3cmd

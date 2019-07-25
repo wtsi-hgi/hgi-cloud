@@ -121,6 +121,6 @@
 # logged-in user is supposed to be able to run a container.
 - name: Open up docker socket
   file:
-    state: present
+    state: file
     path: /var/run/docker.sock
     mode: "0666"
