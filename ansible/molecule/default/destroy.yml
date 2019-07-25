@@ -10,6 +10,20 @@
         file: ../../molecule/default/metadata.yml
         name: metadata
 
+    - name: Detach volume from the host
+      os_server_volume:
+        state: absent
+        server: "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ item.role }}-{{ item.name }}"
+        volume: "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-volume-{{ metadata['deployment_name'] }}-{{ item.role }}-{{ item.name }}"
+      with_items: "{{ molecule_yml.platforms }}"
+      ignore_errors: true
+
+    - name: Destroy molecule extra volume
+      os_volume:
+        state: absent
+        display_name: "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-volume-{{ metadata['deployment_name'] }}-{{ item.role }}-{{ item.name }}"
+      with_items: "{{ molecule_yml.platforms }}"
+
     - name: Destroy molecule instance
       os_server:
         state: absent

@@ -7,8 +7,8 @@ lint:
   name: yamllint
 platforms:
   - name: default
-    image: eta-hgi-image-hail-base-0.0.9
-    flavor: o2.medium
+    image: eta-hgi-image-hail-base-0.2.3
+    flavor: o2.xlarge
     role: hail-master
 provisioner:
   name: ansible

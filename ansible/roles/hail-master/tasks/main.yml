@@ -5,12 +5,13 @@
     state: directory
     owner: "{{ hail_install_owner }}"
     group: "{{ hail_install_group }}"
-    mode: "{{ hail_install_mode }}"
+    # mode: "{{ hail_install_mode }}"
 
 - name: Mount tmp_dir from attached volume
   mount:
     state: mounted
     src: /dev/mapper/hail-tmp_dir
+    # src: "{{ hail_volume_device }}2"
     fstype: ext4
     path: "{{ hail_home }}/tmp"
 
@@ -19,7 +20,7 @@
   lineinfile:
     path: /etc/exports
     state: present
-    regexp: "^{{ hail_home }}/tmp"
+    # regexp: "^{{ hail_home }}/tmp"
     # Security groups will take care of the connection restrictions
     line: "{{ hail_home }}/tmp *(rw,sync,no_root_squash,no_subtree_check)"
 
@@ -39,7 +40,6 @@
   loop:
     - "{{ hail_install_dir }}/jupyter"
     - "{{ hail_install_dir }}/jupyter/config"
-    - "{{ hail_install_dir }}/jupyter/data"
   loop_control:
     loop_var: jupyter_dir
 
@@ -52,6 +52,7 @@
 - name: Generate Jupyter Notebook App's password
   shell: "{{ anaconda_install_dir }}/anaconda3/bin/python -c \"from notebook.auth import passwd ; print(passwd('{{ password }}'))\""
   register: jupyter_notebookapp_password
+  changed_when: false
 
 - name: Install Jupyter Notebook App's configuration file
   become: yes
@@ -61,11 +62,13 @@
     owner: "{{ hail_install_owner }}"
     group: "{{ hail_install_group }}"
     mode: 0600
+  changed_when: false
 
 - name: Mount Jupyter Notebooks App's data directory from attached volume
   mount:
     state: mounted
     src: "/dev/mapper/jupyter_data"
+    # src: "{{ hail_volume_device }}1"
     fstype: "ext4"
     path: "{{ hail_install_dir }}/jupyter/data"
 
@@ -74,11 +77,12 @@
 - name: Ensure symlink to Hail tmp_dir exists
   file:
     state: link
-    src:   "{{ hail_home }}/tmp"
-    dest:  "{{ hail_install_dir }}/jupyter/data/working"
+    src: "{{ hail_home }}/tmp"
+    dest: "{{ hail_install_dir }}/jupyter/data/working"
     owner: "{{ hail_install_owner }}"
     group: "{{ hail_install_group }}"
-    mode:  "ug+rw,o-rw"
+    mode: "ug+rw,o-rw"
+  changed_when: false
 
 # Fixes permissions on first time mount
 - name: Ensure Hail and Jupyter directories correct ownership and permission
@@ -93,6 +97,7 @@
     - "{{ hail_install_dir }}/jupyter/data"
   loop_control:
     loop_var: dir
+  changed_when: false
 
 - name: Enable and start Jupyter Notebook App
   become: yes
