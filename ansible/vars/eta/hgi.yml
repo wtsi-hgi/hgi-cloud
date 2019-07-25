@@ -229,7 +229,7 @@ hail_home: "{{ hail_install_dir }}/hail"
 hail_volume_keyfile: "{{ hail_install_dir }}/keyfile"
 hail_volume_password: "{{ password }}"
 hail_volume_device: /dev/vdb
-hail_master_name: "hail-{{ deployment_owner | default('undef') }}"
+hail_master_name: "hail-{{ deployment_owner | default('undef') }}.{{ domain_name | default('localdomain') }}"
 
 jupyter_notebookapp_base_url: jupyter
 jupyter_notebookapp_config:

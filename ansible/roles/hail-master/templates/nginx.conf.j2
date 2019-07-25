@@ -1,5 +1,5 @@
 server {
-  server_name {{ spark_master_external_address }} {{ hail_master_name }};
+  server_name {{ spark_master_external_address }} {{ hail_master_name }} ;
   client_max_body_size 0;
 
   location ~ /{{ jupyter_notebookapp_base_url }}/ {

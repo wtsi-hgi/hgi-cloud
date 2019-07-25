@@ -1,4 +1,2 @@
 ---
-infoblox_username: mercury
-infoblox_password: ''
-infoblox_host: infoblox-gm.internal.sanger.ac.uk
+domain_name: hgi.sanger.ac.uk
