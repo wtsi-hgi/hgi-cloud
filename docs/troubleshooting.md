@@ -2,23 +2,27 @@
 
 When in doubt, always check the log files!
 
-* Provisioning: During the start-up phase of your cluster, logs are
-  written to `/var/log/user_data.log`.
+#### Provisioning
+During the start-up phase of your cluster, logs are written to
+`/var/log/user_data.log`.
 
-* Spark: Spark's runtime logs are written to [<!-- TODO -->]. Also, the
-  current status of your Spark cluster can be found using its web
-  interface at `http://${ip_address}/spark/`.
+#### Spark
+Spark's runtime logs are written to `${SPARK_HOME}/log`. Also, the
+current status of your Spark cluster can be found using its web
+interface at `http://${ip_address}/spark/`.
 
-* Hail: Hail's runtime logs are, by default, written to the current
-  working directory, in a file starting `hail-` followed by the date and
-  start time. This can be overridden in the `hail.init` function.
+#### Hail
+Hail's runtime logs are, by default, written to the current working
+directory, in a file starting `hail-` followed by the date and start
+time. This can be overridden in the `hail.init` function.
 
 # Troubleshooting
 
 ## The Cluster Won't Start
 
-Check the provisioning logs. It can take a few minutes, when you first
-build your cluster, for each node to fully initialise itself.
+Check the [provisioning logs](#provisioning). It can take a few minutes,
+when you first build your cluster, for each node to fully initialise
+itself.
 
 ### Unparsable Password
 
@@ -26,11 +30,12 @@ The password you choose for Jupyter and your encrypted volume, to be
 safe, should be limited to (Latin) alphanumeric characters (i.e.,
 `[a-zA-Z0-9]`). The more characters you have, the better. Symbols and
 other special characters *may* work in your password, per the [YAML
-specifications](https://yaml.org/spec/1.1/), but you use these at your
+specifications](https://yaml.org/spec/1.1/), but you use them at your
 own risk.
 
 If you use special characters that the provisioning software can't
-understand, you will see an error like this in your provisioning logs:
+understand, you will see an error like this in your [provisioning
+logs](#provisioning):
 
 ```
 ERROR! Syntax Error while loading YAML.
@@ -54,12 +59,12 @@ empty. If you have any doubts about this, please contact HGI first.
 
 ## Hail Hangs
 
-Check the Hail logs; if those aren't helpful, check the Spark logs and
-status.
+Check the [Hail logs](#hail); if those aren't helpful, check the [Spark
+logs](#spark) and status.
 
 ### Lack of Resources
 
-If you see the following in your Hail logs:
+If you see the following in your [Hail logs](#hail):
 
 ```
 TaskSchedulerImpl: WARN: Initial job has not accepted any resources; check your cluster UI to ensure that workers are registered and have sufficient resources
