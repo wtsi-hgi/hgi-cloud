@@ -6,7 +6,7 @@ that you need to know.
 
 ## Glossary
 
-Please, also consider reading the [Openstack
+Please, also consider reading the [OpenStack
 Glossary](https://ssg-confluence.internal.sanger.ac.uk/display/OPENSTACK/OpenStack+glossary)
 on the internal SSG Confluence.
 
@@ -27,9 +27,11 @@ on the internal SSG Confluence.
   > [P]ackage up code and all its dependencies so the application runs
   > quickly and reliably from one computing environment to another
 
-* **Console Server** is the name we have given to the server that can
-  run the *provisioning software* which we ship inside a *Docker
-  container*.
+* **Console Server**
+  is the name we have given to the server that can run the *provisioning
+  software* which we ship inside a *Docker container*. This isn't
+  necessary to run the *provisioning software*, but is provided as a
+  convenience.
 
 * **SSH ([Secure Shell](https://en.wikipedia.org/wiki/Secure_Shell))**
   is a tool commonly used to execute commands or login to a remote
@@ -38,49 +40,54 @@ on the internal SSG Confluence.
   specifically made to identify each user. SSH is the tool the user
   needs to login to the *Console Server*.
 
-* **AWS S3 / Red Hat's Ceph**
+* **AWS S3/Red Hat's Ceph**
   are [object storage](https://en.wikipedia.org/wiki/Object_storage)
   services. Sanger does not actually use [AWS S3](https://aws.amazon.com/s3/),
   but rather uses an S3-compatible service that runs on top of the
   [Ceph](http://docs.ceph.com/docs/giant/) service in our OpenStack
   infrastructure.
-* **A Cluster** or a [Computer Cluster](https://en.wikipedia.org/wiki/Computer_cluster)
-  is a set of loosely or tightly connected computers that work together so that,
-  in many respects, they can be viewed as a single system.
+
+* **[Compute Clusters](https://en.wikipedia.org/wiki/Computer_cluster)**
+  are a set of loosely or tightly connected computers that work together
+  so that, in many respects, they can be viewed as a single system. The
+  farm, for example, could be regarded as a cluster.
 
 ## Required Information
 
-The following is a list of values / information you will need to know to
-continue. If unsure, ask to a member of the HGI team. Some of these
-values are subject to change, and may be different from the ones used in
-the examples below.
+The following is a list of values/information you will need to know to
+continue. If unsure, ask a member of the HGI team. Some of these values
+are subject to change, and may be different from the ones used in the
+examples below.
 
-1. Your Openstack username: This will typically match your normal
-   network password (e.g., `ld14`).
+1. Your OpenStack username: This will typically match your normal
+   network username (e.g., `ld14`).
 
-2. Your Openstack password: This will not match your normal network
+2. Your OpenStack password: This will not match your normal network
    password at first, but can be changed manually later. To obtain or
    reset this password, you can follow the [documentation provided by
    SSG](https://ssg-confluence.internal.sanger.ac.uk/display/OPENSTACK/FAQ#FAQ-HowdoIgetorresetmypassword?).
 
 3. Your common (LDAP) password: This *is* your normal network password.
 
-4. The Fully Qualified Domain Name or IP address of the Console Server
-   (e.g., `cloud.hgi.sanger.ac.uk`)
+4. The Fully Qualified Domain Name or IP address of the *Console
+   Server*: For the production environment, this is
+   `cloud.hgi.sanger.ac.uk` (within the internal network); HGI will be
+   able to provide the addresses of *Console Servers* for different
+   environments.
 
-5. The version of the provisioning software (e.g., `v0.5`)
+5. The version of the *provisioning software* (e.g., `v0.5`)
 
-# Running the Provisioning Software
+# Running the *Provisioning Software*
 
 In order to create, destroy or use a Hail cluster, users need to run the
-provisioning software distributed in this repository. This software
+*provisioning software* distributed in this repository. This software
 needs configuration files from the shell environment (each user has to
 provide their own), properly compiled property files (already organised
 and stored in this repository) and other required software and
-libraries. In order to make it easy to distribute / use this software,
+libraries. In order to make it easy to distribute/use this software,
 and to allow it to be used in the most flexible range of scenarios, the
-team has produced a Docker container, which is run from the Console
-Server.
+team has produced a Docker container, which is run from the *Console
+Server*.
 
 <!-- TODO Make the Docker container public, so it can be run outside the
 context of the console server -->
@@ -88,7 +95,7 @@ context of the console server -->
 ## Preparing the Required Files
 
 The following preparatory steps are required, just once, regardless of
-the scenario in which you want to use the provisioning software, given
+the scenario in which you want to use the *provisioning software*, given
 that you safely store and keep all your files that you are going to
 create.
 
@@ -100,7 +107,7 @@ If you don't have these, you will need to create a pair of keys.
 
 To create the keys, you can run the command `ssh-keygen`. `ssh-keygen`
 is part of the standard distribution of the `ssh` software. If you can't
-find it, ask the Help Desk. Unless you know that you need specific
+find it, ask Service Desk. Unless you know that you need specific
 values, just press enter to any input. Here is an example output:
 
 ```
@@ -127,12 +134,12 @@ The key's randomart image is:
 +----[SHA256]-----+
 ```
 
-### Copy / Create Your S3 Configuration
+### Copy/Create Your S3 Configuration
 
 `.s3cfg` is the name of the configuration file for a tool called
-`s3cmd`. This tool let's the user manage any aspect of their S3 objects
+`s3cmd`. This tool lets the user manage any aspect of their S3 objects
 and buckets. `.s3cfg` needs to be located in your home directory on the
-`Console server` and it should look like this:
+*Console Server* and it should look something like this:
 
 ```ini
 [default]
@@ -148,21 +155,24 @@ secret_key = ...
 The values for `access_key` and `secret_key` are very important and also
 sensitive information, so have therefore been omitted here.
 
-### Download / Create the `openrc` file
+### Download/Create the `openrc` file
 
-Each Openstack project can be described through 2 kinds of configuration files
-that you can download from the Openstack Web insterface:
+Each OpenStack project can be described through two kinds of
+configuration files, which you can download from the OpenStack Web
+interface (Horizon):
 
-1. `sh` environment configuration file generally called `openrc`. At the time
-   of this writing, you can download the configuration with the values for the
-   Identity API version 2.0 or 3.0
-2. `yaml` configuration file calles `clouds.yml`.
+1. `sh` environment configuration, generally called `openrc`. At the
+   time of writing, you can download the configuration with the values
+   for the Identity API, versions 2.0 or 3.0.
 
-For the provisioning software to work properly, you need to download the `sh`
-environment configuration file, with the values for the Identity API version
-3.0. The actual name of the file may vary and will reflect the name of project
-it refers to. For semplicity, from now on, we will refer to the configuration
-file as `openrc.sh`. The file should look like the following:
+2. YAML configuration, called `clouds.yml`.
+
+For the *provisioning software* to work properly, you need to download
+the `sh` environment configuration file, with the values for the
+Identity API version 3.0. The actual name of the file may vary and will
+reflect the name of project it refers to. This doesn't matter and, for
+simplicity, we will refer to the configuration file as just `openrc.sh`
+throughout. The file should look similar to the following:
 
 ```bash
 #!/usr/bin/env bash
@@ -205,28 +215,33 @@ export OS_INTERFACE=public
 export OS_IDENTITY_API_VERSION=3
 ```
 
-To download the `openrc.sh` file from the Openstack web-frontend (i.e. Horizon)
-1. Log in Horizon from the web browser
-2. Select the appropriate project from the menu in the upper right corner.
+To download the `openrc.sh` file from the OpenStack web interface
+(Horizon):
+
+1. Log in to [Horizon](https://eta.internal.sanger.ac.uk/) from your web
+   browser.
+
+2. Select the appropriate project from the menu in the upper right
+   corner.
+
 3. Download the file by navigating to:
 
-  Project > API Access > Download OpenStack RC File > OpenStack RC File
-  (Identity API v3)
+   Project > API Access > Download OpenStack RC File > OpenStack RC File (Identity API v3)
 
 Further [documentation](https://ssg-confluence.internal.sanger.ac.uk/display/OPENSTACK/FAQ#FAQ-Whydoesn'tmyAPIfilework?I'mabletologintotheHorizonwebinterface.)
 for this service is available from SSG.
 
 ### Add AWS (S3) Environment Variables to `openrc.sh`
 
-There are some modules of the provisioning software that require more
+There are some modules of the *provisioning software* that require more
 shell environment variables. Given the values of the `.s3cfg` file, add
-the following snippet to the end of the `openrc.sh` file from the
+the following snippet to the end of your `openrc.sh` file from the
 previous step:
 
 ```bash
 # Fixed value that represnts the name of the internal S3 service
 export AWS_S3_ENDPOINT="cog.sanger.ac.uk"
-# Fixed value for something that does not apply to our Openstack, but will be
+# Fixed value for something that does not apply to our OpenStack, but will be
 # used to satisfy the requirements of some services
 export AWS_DEFAULT_REGION="eu-west-1"
 # Please fill in the value you'll find for access_key in .s3cfg file
@@ -235,20 +250,28 @@ export AWS_ACCESS_KEY_ID="..."
 export AWS_SECRET_ACCESS_KEY="..."
 ```
 
-## Setting up Your Home on the Console Server
+i.e., Where the elided values for `AWS_ACCESS_KEY_ID` and
+`AWS_SECRET_ACCESS_KEY` are replaced with the actual values from your
+`.s3cfg` file.
 
-The Console is the server that has the provisioning container installed
-and will let you create and destroy your clusters. Since there is no way
-to persist or import your home directories from the farm (at the time
-this document has been written), the following steps are meant to be
-performed each time a new Console Server is created by HGI (e.g., when a
-new version of the provisioning software has been released).
+## Setting up Your Home on the *Console Server*
 
-### Copy SSH Keys, `.s3cfg` and `openrc.sh` File to the Console Server
+The *Console* is the server that has the provisioning container
+installed and will let you create and destroy your clusters. Since there
+is no way to persist or import your home directories from the farm (at
+the time this document has been written), the following steps are meant
+to be performed each time a new *Console Server* is created by HGI
+(e.g., when a new version of the *provisioning software* has been
+released).
+
+You will need to follow these steps any time you wish to run
+provisioning commands (e.g., those listed in the various runbooks).
+
+### Copy SSH Keys, `.s3cfg` and `openrc.sh` File to the *Console Server*
 
 Herein follows an example of the simplest way to copy your files over.
-Before typing the command, make sure that the username and the Console
-Server's IP address are correct.
+Before typing the command, make sure that the username and the *Console
+Server*'s address are correct.
 
 ```bash
 scp -r ~/.ssh ~/.s3cfg openrc.sh ld14@cloud.hgi.sanger.ac.uk:
@@ -258,11 +281,11 @@ This assumes that the `openrc.sh` file is in your current working
 directory. You may change these values as needed (e.g., if you want to
 use a different key pair, etc.)
 
-### Getting on the Console server
+### Getting on the *Console Server*
 
-Herein follows an example of the simplest way to login to the Console
-Server.  Before typing the command, make sure that the username and the
-Console Server's IP address are correct.
+Herein follows an example of the simplest way to login to the *Console
+Server*. Before typing the command, make sure that the username and the
+*Console Server*'s address are correct.
 
 ```bash
 ssh ld14@cloud.hgi.sanger.ac.uk
@@ -270,18 +293,18 @@ ssh ld14@cloud.hgi.sanger.ac.uk
 
 ### Run the Container
 
-The provisioning software is shipped inside a Docker container and each
-user is supposed to run his/her own container. This has multiple
+The *provisioning software* is shipped inside a Docker container and
+each user is supposed to run his/her own container. This has multiple
 advantages:
 
-* Isolation of the provisioning software from the software installed on
-  the Console server.
+* Isolation of the *provisioning software* from the software installed
+  on the *Console Server*.
 
 * Isolation of each user's working session: any number of users can work
-  on the same Console Server without ever interfering with other users,
-  as long as the Console Server has enough resources.
+  on the same *Console Server* without ever interfering with other
+  users, as long as the *Console Server* has enough resources.
 
-* Portability: the same container can be run on the Console Server, as
+* Portability: the same container can be run on the *Console Server*, as
   well as on any other computer on the campus (e.g., your laptop).
 
 The command we suggest to run the provisioning container is:
@@ -289,8 +312,6 @@ The command we suggest to run the provisioning container is:
 ```bash
 docker run --tty --interactive --workdir /root --volume ${HOME}:/root hgi/provisioning-base:v0.5 bash
 ```
-* do this docker run every time you want to actually do runbook commands
-
 The following is a simple explanation of the suggested options:
 
 * `--tty`: Allocates a terminal so you can see what you are typing
@@ -306,15 +327,13 @@ The following is a simple explanation of the suggested options:
 
 ### Prepare to Run the Provisioning Software
 
-It's now time to prepare the provisioning software to run:
+It's now time to prepare the *provisioning software* to run:
 
 ```bash
 source openrc.sh
 cd /usr/src/provisioning
 git pull
 ```
-
-* do this source openrc.sh ... run every time you want to actually do runbook commands
 
 Once this step is complete, we can now provision the Hail cluster. To do
 this, please follow the appropriate guide in the Runbooks:
