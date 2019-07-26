@@ -1,3 +1,28 @@
+# Access
+
+The IP address of your Hail master node can be found in the appropriate
+Terraform variable, in the provisioning software's codebase. For
+example, if your username is `abc123` and you're looking for the IP
+address of your production cluster, you would look in:
+
+    terraform/vars/eta/hgi/prod/abc123/hail_cluster.tfvars
+
+HGI will be able to assist you if you are not able to find this.
+
+For newer clusters, we are able to register memorable names to allow you
+to access them (either through their web interface or SSH). These are
+set up by HGI and take the default form of:
+
+    hail-${OS_USERNAME}.${OS_PROJECT}.sanger.ac.uk
+
+For instance, `abc123`'s production Jupyter instance would be accessible
+at:
+
+    http://hail-abc123.hgi.sanger.ac.uk/jupyter/
+
+If your domain is not configured, please contact HGI and we can set it
+up for you immediately.
+
 # Logging
 
 When in doubt, always check the log files!
