@@ -14,6 +14,18 @@ locals {
     aws_secret_access_key         = "${var.aws_secret_access_key}"
     aws_s3_endpoint               = "${var.aws_s3_endpoint}"
     aws_default_region            = "${var.aws_default_region}"
+    available_flavours = [
+      {
+        name  = "m1.tiny"
+        ram   = 8600
+        cores = 1
+      },
+      {
+        name  = "m1.small"
+        ram   = 17200
+        cores = 2
+      },
+    ]
   }
 }
 
