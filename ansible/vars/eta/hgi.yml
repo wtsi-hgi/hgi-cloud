@@ -124,7 +124,7 @@ spark_defaults_conf:
   spark.driver.memory: "{{ (ansible_memtotal_mb - 2048) | int() }}m"
   spark.driver.maxResultSize: 0
 
-  spark.executor.memory: "{{ (ansible_memtotal_mb - 2048) | int() }}m"
+  spark.executor.memory: "{{ (openstack_flavours | selectattr('name', 'equalto', spark_slaves_flavor_name) | first | default({'ram': 2048})).ram - 2048 | int() }}m"
   spark.executor.instances: 1
 
   spark.jars: "{{ spark_jars | join(',') }}"
