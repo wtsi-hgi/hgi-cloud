@@ -11,6 +11,19 @@
     update_cache: true
     force_apt_get: true
 
+- name: Ensure a wide range of login shells are installed
+  apt:
+    state: present
+    update_cache: true
+    name:
+      - bash
+      - tcsh
+      - csh
+      - zsh
+      - dash
+    install_recommends: true
+    force_apt_get: true
+
 - name: Ensure nslcd is properly configured
   copy:
     dest: /etc/nslcd.conf
