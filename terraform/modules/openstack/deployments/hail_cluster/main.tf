@@ -14,7 +14,9 @@ locals {
     aws_secret_access_key         = "${var.aws_secret_access_key}"
     aws_s3_endpoint               = "${var.aws_s3_endpoint}"
     aws_default_region            = "${var.aws_default_region}"
-    available_flavours = [
+    spark_slaves_flavor_name      = "${var.spark_slaves_flavor_name}"
+    openstack_flavours            = "${var.openstack_flavours}"
+    nesting_test = [
       {
         name  = "m1.tiny"
         ram   = 8600
