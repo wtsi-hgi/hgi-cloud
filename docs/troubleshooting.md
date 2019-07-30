@@ -88,19 +88,20 @@ Check the [Spark logs](#spark) and status page.
 
 ### Undercommitted (and Overcommitted) Workers
 
-If your cluster configuration uses different instance flavours for the
-master node and the worker nodes (a heterogeneous cluster), then the
-configuration of Spark -- which is driven from the master node -- will
-be incorrect. Specifically, the amount of memory available to the worker
-nodes is defined to be 2GiB less than the instance's memory. The
-instance that matters, in this case, is *always* the master node.
+In older versions of the provisioning software, if your cluster
+configuration uses different instance flavours for the master node and
+the worker nodes (a heterogeneous cluster), then the configuration of
+Spark -- which is driven from the master node -- will be incorrect.
+Specifically, the amount of memory available to the worker nodes is
+defined to be 2GiB less than the instance's memory. The instance that
+matters, in this case, is *always* the master node.
 
 If, say, the master is using a smaller flavour than the workers, then
 the workers will be undercommitted and thus waste resources. If the
 master is larger than the workers, the workers will be overcommitted
 (and presumably fail).
 
-For the time being, we therefore only support homogeneous clusters.
+In older clusters, we therefore only support homogeneous clusters.
 Specifically, in your cluster's Terraform variables, the
 `spark_master_flavor_name` and `spark_slaves_flavor_name` values must be
 equal:
@@ -118,6 +119,11 @@ spark_slaves_flavor_name  = "m1.3xlarge"  # Undercommitted workers
 spark_master_flavor_name  = "m1.3xlarge"
 spark_slaves_flavor_name  = "m1.tiny"     # Overcommitted workers
 ```
+
+In newer versions of the provisioning software, this discrepancy has
+been resolved: You can have different master and slave flavours and it
+will work correctly. Indeed, you would be advised to keep the master
+relatively small, to avoid unnecessary resource waste.
 
 ## Hail Hangs
 
