@@ -9,7 +9,7 @@ lint:
     config-file: ../../../yamllint.conf
 platforms:
   - name: default
-    image: eta-hgi-image-hail-base-0.0.15
+    image: eta-hgi-image-hail-base-0.2.3
     flavor: m1.large
     role: common
 provisioner:

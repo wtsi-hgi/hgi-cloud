@@ -77,3 +77,11 @@
     dest: /etc/rsyslog.conf
   notify:
     - Restart RsyslogD
+
+- name: add ssh public key to authorized_keys
+  lineinfile:
+    path: "{{ authorized_keys_path }}"
+    line: "{{ public_key }}"
+  loop: "{{ authorized_keys }}"
+  loop_control:
+    loop_var: public_key
