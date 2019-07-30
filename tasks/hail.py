@@ -79,7 +79,6 @@ def create_ansible_vars(order):
   return created
 
 def get_hail_volume_name(context, owner):
-
   openstack = openstack_client.connect(auth_url=os.environ['OS_AUTH_URL'],
                                        project_name=os.environ['OS_PROJECT_NAME'],
                                        username=os.environ['OS_USERNAME'],
@@ -94,6 +93,25 @@ def get_hail_volume_name(context, owner):
 
   volumes = [v.id for v in openstack.volume.volumes() if v.name == volume_name]
   return volumes[0] if volumes else None
+
+
+def get_openstack_flavours():
+  # Quick-and-dirty function that serialises the OpenStack flavours into
+  # a Terraform variable
+  openstack = openstack_client.connect(auth_url=os.environ['OS_AUTH_URL'],
+                                       project_name=os.environ['OS_PROJECT_NAME'],
+                                       username=os.environ['OS_USERNAME'],
+                                       password=os.environ['OS_PASSWORD'],
+                                       region_name=os.environ['OS_REGION_NAME'],
+                                       app_name='invoke')
+
+  return "[{}]".format(
+    ", ".join(
+      f"{{name = \"{flavour.name}\", ram = {flavour.ram}, cpus = {flavour.vcpus}}}"
+      for flavour in openstack.list_flavors()
+    )
+  )
+
 
 @invoke.task
 def init(context, public_ip, network_cidr=None, volume_size=None, owner=None):
