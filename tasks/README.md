@@ -23,24 +23,15 @@ like:
    conventions, we can do this mapping before feeding the values to the tools.
 
 # Design choices
-There are 3 kinds of files inside this directory.
+There are 2 kinds of files inside this directory.
 
-## Configuration files
-These are files with a `.yaml` extension. They are meant to be configration
-files for `pyinvoke`, however there should not be the need for any
-configuration file other than `invoke.yaml`.
-
-## Tasks libraries
-These are python files with a name suffix of `_tasks`, i.e.
-`terraform_tasks.py`. They are meant to be libraries of tasks and namespaces
-definitions that can be imported by [tasks collections](#tasks-collections)
-
-## Tasks collections
-These are python files with a name suffix of `_collection`, i.e.
-`common_environment_collection.py`. They are meant to import and compose tasks
-and namespaces from [tasks libraries](#tasks-libraries) and create the
-interface through which the users are going to execute all the steps required
-to get their job done.
+1. **Configuration files**  
+  These are files with a `.yaml` extension. They are meant to be configration
+  files for `pyinvoke`, however there should not be the need for any
+  configuration file other than `invoke.yaml`.
+2. **Tasks collections**  
+  These are simple python files that uses `pyinvoke` module to create atomation
+  tasks.
 
 # Usage
 
@@ -54,7 +45,7 @@ Since you can run are so many tasks with so many different opsions, in order to
 run tasks using the `invoke` command (not to be confused with `invoke.sh`), you
 need to specify a task collection file with the `-c|--collection` option:
 ```
-invoke --collection "invoke/base_image_collection" build
+invoke --collection "tasks/spark_distribution" build
 ```
 For more details on how to run `invoke`, refer to `invoke`'s
 [documentation](http://docs.pyinvoke.org/en/1.2).
