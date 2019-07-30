@@ -154,7 +154,7 @@ def create(context, owner=None, networking=False):
   context.run('bash invoke.sh deployment create --name hail_volume --owner {}'.format(owner))
   env = {
     'TF_VAR_hail_volume': get_hail_volume_name(context, owner),
-    'TF_VAR_openstack_flavours': get_openstack_flavours()
+    "TF_VAR_openstack_flavours": get_openstack_flavours()
   }
 
   context.run('bash invoke.sh deployment create --name hail_cluster --owner {}'.format(owner), env=env)
@@ -165,7 +165,8 @@ def destroy(context, owner=None, networking=False, yes_also_hail_volume=False):
   volume = get_hail_volume_name(context, owner)
   env = {
     'TF_VAR_hail_volume': volume or "",
-    'TF_VAR_password': ""
+    "TF_VAR_password": "",
+    "TF_VAR_openstack_flavours": "[]"
   }
 
   context.run('bash invoke.sh deployment destroy --name hail_cluster --owner {}'.format(owner), env=env)
