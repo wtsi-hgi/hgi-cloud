@@ -16,18 +16,6 @@ locals {
     aws_default_region            = "${var.aws_default_region}"
     spark_slaves_flavor_name      = "${var.spark_slaves_flavor_name}"
     openstack_flavours            = "${var.openstack_flavours}"
-    nesting_test = [
-      {
-        name  = "m1.tiny"
-        ram   = 8600
-        cores = 1
-      },
-      {
-        name  = "m1.small"
-        ram   = 17200
-        cores = 2
-      },
-    ]
   }
 }
 
