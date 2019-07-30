@@ -1,6 +1,7 @@
 '''
 This group of tasks deals with the lifecycle of docker images.
 '''
+
 import datetime
 import glob
 import os

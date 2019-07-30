@@ -1,3 +1,7 @@
+'''
+This group of tasks deals with the lifecycle of Openstack images.
+'''
+
 import datetime
 import glob
 import os
@@ -14,7 +18,10 @@ import glanceclient
 
 __clients = {}
 
-def get_clients(os_project_name=None):
+def _get_clients(os_project_name=None):
+  '''
+  Returns all the clients objects for the specified project
+  '''
   project_name = os_project_name or os.environ['OS_PROJECT_NAME']
   try:
     return __clients[project_name]
@@ -40,12 +47,24 @@ def get_clients(os_project_name=None):
     return __clients[project_name]
 
 def default_version(context):
+  '''
+  Returns the default image version, based on context
+
+  :param context: PyInvoke context
+  '''
   now = datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S')
   config_version = context.config['role']['version']
   return now if (config_version == '0.0.0') else config_version
 
 def packer_options(context, role_name, role_version=None):
-  openstack, keystone, glance = get_clients()
+  '''
+  Returns the list of `packer` options
+
+  :param context: PyInvoke context
+  :param role_name: the name of the ansible role to deploy on the instance
+  :param role_version: the version of the ansible role to deploy on the instance
+  '''
+  openstack, keystone, glance = _get_clients()
   network_template = '{}-{}-{}-network-main'
   network_name = network_template.format(context.config['meta']['datacenter'],
                                          context.config['meta']['programme'],
@@ -61,7 +80,14 @@ def packer_options(context, role_name, role_version=None):
   ])
 
 def get_image(context, role_name, role_version):
-  openstack, keystone, glance = get_clients()
+  '''
+  Returns the image name
+
+  :param context: PyInvoke context
+  :param role_name: the name of the ansible role to deploy on the instance
+  :param role_version: the version of the ansible role to deploy on the instance
+  '''
+  openstack, keystone, glance = _get_clients()
   image_name = '-'.join([context.config['meta']['datacenter'],
                          context.config['meta']['programme'],
                          'image', role_name, role_version or default_version(context)])
@@ -70,11 +96,26 @@ def get_image(context, role_name, role_version):
 
 @invoke.task()
 def validate(context):
+  '''
+  Validates the packer template
+
+  :param context: PyInvoke context
+  '''
   with context.cd('packer'):
     context.run('packer validate {} image.json'.format(packer_options(context, 'validate', '0.0.0')))
 
 @invoke.task(validate, optional=['version', 'force', 'on_error', 'debug'])
 def create(context, role_name, role_version=None, on_error='cleanup', force=False, debug=False):
+  '''
+  Builds and uploads an image
+
+  :param context: PyInvoke context
+  :param role_name: the name of the ansible role to deploy on the instance
+  :param role_version: the version of the ansible role to deploy on the instance
+  :param on_error: see packer documentation
+  :param force: see packer documentation
+  :param debug: see packer documentation
+  '''
   image = get_image(context, role_name, role_version)
   if not image:
     options = packer_options(context, role_name, role_version) + \
@@ -90,21 +131,43 @@ def create(context, role_name, role_version=None, on_error='cleanup', force=Fals
 
 @invoke.task()
 def promote(context, to, role_name, role_version):
-  openstack, keystone, glance = get_clients()
+  '''
+  Promotes (share + accept) an image to an Openstack project of which the user
+  is a member.
+
+  :param context: PyInvoke context
+  :param role_name: the name of the ansible role to deploy on the instance
+  :param role_version: the version of the ansible role to deploy on the instance
+  '''
+  openstack, keystone, glance = _get_clients()
   user = openstack.identity.get_user_id()
   image_id = get_image(context, role_name, role_version).id
   project = next((p for p in keystone.projects.list(user=user) if p.name == to))
   glance.image_members.create(image_id, project.id)
-  openstack, keystone, glance = get_clients(project.name)
+  openstack, keystone, glance = _get_clients(project.name)
   glance.image_members.update(image_id, project.id, 'accepted')
 
 @invoke.task()
 def accept(context, image_id):
-  _, _, glance = get_clients()
+  '''
+  Accepts an image from a project of which the user is not a member.
+
+  :param context: PyInvoke context
+  :param image_id: the id of the image
+  '''
+  _, _, glance = _get_clients()
   glance.image_members.update(image_id, os.environ['OS_PROJECT_ID'], 'accepted')
 
 @invoke.task()
 def share(context, with_project_id, role_name, role_version):
+  '''
+  Shares an image with a project of which the user is not a member.
+
+  :param context: PyInvoke context
+  :param role_name: the name of the ansible role to deploy on the instance
+  :param role_version: the version of the ansible role to deploy on the instance
+  :param with_project_id: the id of the project
+  '''
   image_id = get_image(context, role_name, role_version).id
   glance.image_members.create(image_id, with_project_id)
 

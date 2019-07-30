@@ -1,3 +1,6 @@
+'''
+This group of tasks deals with high level operations on an Hail cluster.
+'''
 import invoke
 import glob
 import os
@@ -12,6 +15,15 @@ import openstack as openstack_client
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def create_terraform_vars(order, public_ip, network_cidr, volume_size):
+  '''
+  Creates and configures terraform input variables files
+
+  :param list order: the list of sub-directories where the `tfvars` files are
+  :param public_ip: the `public` network IP to associate to the cluster
+  :param network_cidr: the network CIDR to use for stand-alone isoleted
+                       Hail clusters
+  :param volume_size: the size of the extra volume for Hail's `tmp_dir`
+  '''
   dirname = os.path.join('terraform', 'vars')
   created = []
 
@@ -44,7 +56,7 @@ def create_terraform_vars(order, public_ip, network_cidr, volume_size):
   else:
     print('Skipping {}: it already exists'.format(tfvars))
 
-  tfvars = os.path.join(dirname, 'hail_volume.tfvars')
+  TFVARS = os.path.join(dirname, 'hail_volume.tfvars')
   if volume_size and not os.path.exist(tfvars):
     with open(tfvars, 'w') as conf:
       conf.write('hail_volume_size = "{}"\n'.format(volume_size))
@@ -55,6 +67,11 @@ def create_terraform_vars(order, public_ip, network_cidr, volume_size):
   return created
 
 def create_ansible_vars(order):
+  '''
+  Creates and configures Ansible's extra variables files
+
+  :param list order: the list of sub-directories where the `tfvars` files are
+  '''
   dirname = os.path.join('ansible', 'vars')
   created = []
 
@@ -79,7 +96,13 @@ def create_ansible_vars(order):
   return created
 
 def get_hail_volume_name(context, owner):
+  '''
+  Returns the name of the Hail's persistent volume, based on the context.
 
+  :param context: PyInvoke context
+  :param owner: the name of the user
+  :return: the name of the volume or `None`
+  '''
   openstack = openstack_client.connect(auth_url=os.environ['OS_AUTH_URL'],
                                        project_name=os.environ['OS_PROJECT_NAME'],
                                        username=os.environ['OS_USERNAME'],
@@ -97,6 +120,16 @@ def get_hail_volume_name(context, owner):
 
 @invoke.task
 def init(context, public_ip, network_cidr=None, volume_size=None, owner=None):
+  '''
+  Initialises an Hail cluster configuration
+
+  :param list order: the list of sub-directories where the `tfvars` files are
+  :param public_ip: the `public` network IP to associate to the cluster
+  :param network_cidr: the network CIDR to use for stand-alone isoleted
+                       Hail clusters
+  :param volume_size: the size of the extra volume for Hail's `tmp_dir`
+  :param owner: the name of the user
+  '''
   order = [
     context.config['meta']['datacenter'],
     context.config['meta']['programme'],
@@ -114,6 +147,13 @@ def init(context, public_ip, network_cidr=None, volume_size=None, owner=None):
 
 @invoke.task
 def register(context, public_ip, owner=None):
+  '''
+  Registers an Hail cluster to local DNS
+
+  :param context: PyInvoke context
+  :param public_ip: the `public` network IP to associate to the cluster
+  :param owner: the name of the user
+  '''
   infoblox = {
     'host': 'infoblox-gm.internal.sanger.ac.uk',
     'username': os.environ['INFOBLOX_USERNAME'],
@@ -130,6 +170,15 @@ def register(context, public_ip, owner=None):
 
 @invoke.task
 def create(context, owner=None, networking=False):
+  '''
+  Deploys an Hail cluster
+
+  :param context: PyInvoke context
+  :param networking: boolean flag to signal the need to create the networking
+                     layer as well. Mainly needed for isolated, stand-alone
+                     deployments.
+  :param owner: the name of the user
+  '''
   owner = owner or os.environ['OS_USERNAME']
   if networking:
     context.run('bash invoke.sh deployment create --name networking --owner {}'.format(owner))
@@ -141,6 +190,17 @@ def create(context, owner=None, networking=False):
 
 @invoke.task
 def destroy(context, owner=None, networking=False, yes_also_hail_volume=False):
+  '''
+  Decommission an Hail cluster
+
+  :param context: PyInvoke context
+  :param networking: boolean flag to signal the need to destroy the networking
+                     layer as well. Mainly needed for isolated, stand-alone
+                     deployments.
+  :param owner: the name of the user
+  :param yes_also_hail_volume: boolean flag to signal the decommission of the
+                               persistent volume along with the cluster.
+  '''
   owner = owner or os.environ['OS_USERNAME']
   volume = get_hail_volume_name(context, owner)
   env = {'TF_VAR_hail_volume': volume or ""}

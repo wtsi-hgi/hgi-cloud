@@ -1,3 +1,7 @@
+'''
+This group of tasks deals with building and storing customised spark
+distributions.
+'''
 import glob
 import hashlib
 import hmac
@@ -15,6 +19,11 @@ import invoke
 
 @invoke.task
 def clean(context):
+  '''
+  Cleans the build directory
+
+  :param context: PyInvoke context
+  '''
   build_prefix = context.config['build_prefix']
   for path in glob.glob(os.path.join(build_prefix, 'spark-*/')):
     if os.path.exists(path):
@@ -24,6 +33,12 @@ def clean(context):
 
 @invoke.task
 def download(context, spark_version=None):
+  '''
+  Downloads the source distribution
+
+  :param context: PyInvoke context
+  :param spark_version: the version to download
+  '''
   build_prefix = context.config['build_prefix']
   version = spark_version or context.config['spark_distribution']['version']
   basename = 'spark-{}.tgz'.format(version)
@@ -37,6 +52,12 @@ def download(context, spark_version=None):
 
 @invoke.task(pre=[download])
 def sha512(context, spark_version=None):
+  '''
+  Check the downloaded spark source against the configured sha512 checksum
+
+  :param context: PyInvoke context
+  :param spark_version: the downloaded version
+  '''
   build_prefix = context.config['build_prefix']
   version = spark_version or context.config['spark_distribution']['version']
   basename = 'spark-{}.tgz'.format(version)
@@ -53,6 +74,12 @@ def sha512(context, spark_version=None):
 
 @invoke.task(pre=[sha512])
 def extract(context, spark_version=None):
+  '''
+  Extracts the downloaded spark source
+
+  :param context: PyInvoke context
+  :param spark_version: the downloaded version
+  '''
   build_prefix = context.config['build_prefix']
   version = spark_version or context.config['spark_distribution']['version']
   basename = 'spark-{}.tgz'.format(version)
@@ -65,6 +92,12 @@ def extract(context, spark_version=None):
 
 @invoke.task(pre=[extract])
 def build(context, spark_version=None):
+  '''
+  Builds the downloaded spark source
+
+  :param context: PyInvoke context
+  :param spark_version: the downloaded version
+  '''
   version = spark_version or context.config['spark_distribution']['version']
   build_prefix = context.config['build_prefix']
   build_directory = os.path.join(build_prefix, 'spark-{}'.format(version))
@@ -98,6 +131,11 @@ MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMave
 
 @invoke.task(pre=[build])
 def upload(context):
+  '''
+  Uploads the binary distribution to the user's bucket
+
+  :param context: PyInvoke context
+  '''
   basename = context.config['spark_distribution']['basename']
   version = context.config['spark_distribution']['version']
   build_prefix = context.config['build_prefix']
@@ -116,6 +154,17 @@ def upload(context):
 
 @invoke.task(post=[upload])
 def create(context, version='2.4.3', user=None, jdk_version=8, hadoop_version='2.7.1', hadoop_profile=None, force=False):
+  '''
+  The entry point task to create a Spark binary distribution
+
+  :param context: PyInvoke context
+  :param version: Spark version to use
+  :param user: owner of the bucket to upload the binary distribution to
+  :param jdk_version: JDK version to use
+  :param hadoop_version: Hadoop version to use
+  :param hadoop_profile: Hadoop profile to use
+  :param force: forces the process
+  '''
   default_profile = '.'.join(hadoop_version.split('.')[:2])
   name = 'netlib-hadoop{}'.format(hadoop_profile or default_profile)
   basename = 'spark-{}-bin-{}.tgz'.format(version, name)
@@ -150,3 +199,7 @@ def create(context, version='2.4.3', user=None, jdk_version=8, hadoop_version='2
     else:
       print('Distribution already exists: {}'.format(object_name))
       sys.exit(0)
+
+ns = invoke.Collection()
+ns.add_task(clean)
+ns.add_task(create)
