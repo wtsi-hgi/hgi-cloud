@@ -1,6 +1,4 @@
 ---
-provisioning_repo: https://github.com/wtsi-hgi/hgi-cloud.git
-provisioning_version: v0.5
 provisioning_image_version: 0.0.2
 provisioning_image_basename: "{{ datacenter }}-{{ programme }}-docker-provisioning-base-{{ provisioning_image_version }}.tar"
 provisioning_image_url: "https://{{ datacenter }}-{{ programme }}-bucket-ld14.cog.sanger.ac.uk/download/containers/docker"

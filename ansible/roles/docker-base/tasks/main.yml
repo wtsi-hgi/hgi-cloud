@@ -51,6 +51,7 @@
     name: docker
     state: present
 
+# FIXME: you shouldn't use variables from other roles
 - name: Ensure base user belongs to the docker gorup
   user:
     name: "{{ base_user_name }}"

@@ -1,40 +1,42 @@
 Role Name
 =========
 
-A brief description of the role goes here.
-
-Requirements
-------------
-
-Any pre-requisites that may not be covered by Ansible itself or the role should
-be mentioned here. For instance, if the role uses the EC2 module, it may be a
-good idea to mention in this section that the boto package is required.
+This role installs Anaconda's python distribution and configures users' shell
+environment.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including
-any variables that are in defaults/main.yml, vars/main.yml, and any variables
-that can/should be set via parameters to the role. Any variables that are read
-from other roles and/or the global scope (ie. hostvars, group vars, etc.) should
-be mentioned here as well.
+* **anaconda\_python\_version**  
+  The python version of the Anaconda distribution
+* **anaconda\_distribution**  
+  The version of the Anaconda distribution
+* **anaconda\_mirror**  
+  The URL of the mirror from which to download the Anaconda distribution
+* **anaconda\_download\_dir**  
+  The directory to download the Anaconda distribution to
+* **anaconda\_install\_dir**  
+  The directory in which to install the Anaconda distribution
+* **anaconda\_install\_owner**  
+  The user owning the Anaconda distribution files
+* **anaconda\_install\_group**  
+  The group owning the Anaconda distribution files
+* **anaconda\_install\_mode**  
+  The Anaconda distribution files' mode
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in
-regards to parameters that may need to be set for other roles, or variables that
-are used from other roles.
+Refer to the [metadata](meta/main.yml).
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables
-passed in as parameters) is always nice for users too:
-
-    - hosts: servers
+```yaml
+    - hosts: localhost
       roles:
-         - { role: anaconda_base, x: 42 }
+         - { role: anaconda-base }
+```
 
 License
 -------
@@ -44,5 +46,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a
-website (HTML is not allowed).
+Refer to [AUTHORS.md](../../../AUTHORS.md) and [CREDITS.md](../../../CREDITS.md) files.

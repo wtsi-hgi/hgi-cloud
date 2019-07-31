@@ -3,18 +3,11 @@ hadoop_version: 2.8.2
 hadoop_mirror: https://archive.apache.org/dist/hadoop/common
 
 hadoop_user_name: "{{ base_user_name }}"
-# hadoop_user_uid: "{{ base_user_uid }}"
-# hadoop_user_groups: "{{ base_user_groups | map(attribute='name') | list }}"
-# hadoop_user_shell: /bin/false
-
+hadoop_home: "{{ hadoop_install_dir }}/hadoop-{{ hadoop_version }}"
 hadoop_group_name: "{{ hadoop_user_name }}"
-# hadoop_group_gid: "{{ hadoop_user_uid }}"
 
 hadoop_download_dir: "{{ base_download_dir }}"
 hadoop_install_dir: "{{ base_install_dir }}"
-
-hadoop_home: "{{ hadoop_install_dir }}/hadoop-{{ hadoop_version }}"
-
 hadoop_install_owner: "{{ hadoop_user_name }}"
 hadoop_install_group: "{{ hadoop_group_name }}"
 hadoop_install_mode: "ug+rw,o+r"

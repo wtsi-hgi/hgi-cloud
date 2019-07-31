@@ -1,31 +1,52 @@
 Role Name
 =========
 
-A brief description of the role goes here.
-
-Requirements
-------------
-
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+This role installs and configure the base image. This role is at the base of
+any image built within this system.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+* **base\_user\_name**  
+  The username for the base user. This should be an unprivileged,
+  application-user.
+* **base\_user\_uid**  
+  The `UID` of the base user.
+* **base\_user\_home**  
+  The path to the base user's home directory.
+* **base\_user\_groups**  
+  A list of groups the user sould be part of. This list should be made of
+  dictionaries with the following keys:
+  * **name**  
+    The name of the group
+  * **gid**
+    The `GID` of the group (in case it has to be created)
+* **base\_user\_shell**  
+  The shell of the base user.
+* **base\_group\_name**  
+  The primary group of the base user.
+* **base\_group\_gid**  
+  The `GID` of the promary group of the base user.
+* **base\_source\_dir**  
+  The path to the main source directory.
+* **base\_download\_dir**  
+  The path to the main download directory.
+* **base\_bin\_dir**  
+  The path to the base user `bin` directory.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Refer to the [metadata](meta/main.yml).
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
+```yaml
+    - hosts: localhost
       roles:
-         - { role: username.rolename, x: 42 }
+         - { role: base }
+```
 
 License
 -------
@@ -35,4 +56,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Refer to [AUTHORS.md](../../../AUTHORS.md) and [CREDITS.md](../../../CREDITS.md) files.

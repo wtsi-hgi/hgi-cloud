@@ -6,6 +6,7 @@
     autoremove: true
   changed_when: false
 
+# FIXME: You should not use variables from other roles
 - name: Remove source directory
   file:
     state: absent
