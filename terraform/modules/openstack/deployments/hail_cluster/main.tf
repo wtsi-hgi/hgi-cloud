@@ -14,6 +14,8 @@ locals {
     aws_secret_access_key         = "${var.aws_secret_access_key}"
     aws_s3_endpoint               = "${var.aws_s3_endpoint}"
     aws_default_region            = "${var.aws_default_region}"
+    spark_slaves_flavor_name      = "${var.spark_slaves_flavor_name}"
+    openstack_flavours            = "${var.openstack_flavours}"
   }
 }
 
