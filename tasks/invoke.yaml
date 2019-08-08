@@ -2,6 +2,30 @@
 run:
   echo: true
 
+packer:
+  on_error: cleanup
+  debug: false
+  force: false
+
+terraform:
+  parallelism: 32
+
+upload_prefix: download
+build_prefix: build
+
+spark_distribution:
+  version: 0.0.0
+  jdk_version: "0"
+  hadoop_version: 0.0.0
+  hadoop_profile: "0.0"
+  mirror: https://archive.apache.org/dist/spark
+  bucket_name: eta-default-bucket-anonimous
+  sha512:
+    2.4.3: |
+      3EAEA3B0 A81A717B B43CE6EE 0BB2C3B8 351EF080 DB9499AF 66F9F22C
+      8A18D38C 5E1426CB FEF04AFD 2A4002AC E5B28A6B EACBCE4E 5E42506F
+      4FD270B0 5D0DB379
+
 meta:
   env: default
   datacenter: default

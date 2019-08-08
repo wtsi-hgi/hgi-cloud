@@ -1,0 +1,139 @@
+---
+- name: Ensure remote users' home directory root exists
+  file:
+    path: /nfs/users
+    state: directory
+
+- name: Ensure LDAP packages are installed
+  apt:
+    name: libpam-ldapd
+    state: present
+    update_cache: true
+    force_apt_get: true
+
+- name: Ensure a wide range of login shells are installed
+  apt:
+    state: present
+    update_cache: true
+    name:
+      - bash
+      - tcsh
+      - csh
+      - zsh
+      - dash
+    install_recommends: true
+    force_apt_get: true
+
+- name: Ensure nslcd is properly configured
+  copy:
+    dest: /etc/nslcd.conf
+    content: |
+      uid nslcd
+      gid nslcd
+      uri ldaps://ldap-ro.internal.sanger.ac.uk
+      base dc=sanger,dc=ac,dc=uk
+      scope subtree
+      tls_reqcert never
+      tls_cacertfile /etc/ssl/certs/ca-certificates.crt
+      map passwd homeDirectory "/home/$uid"
+
+- name: Ensure LDAP clients are properly configured
+  copy:
+    dest: /etc/ldap/ldap.conf
+    content: |
+      base dc=sanger,dc=ac,dc=uk
+      uri ldaps://ldap-ro.internal.sanger.ac.uk
+      ldap_version 3
+      TLS_CACERTDIR /etc/ssl/certs
+      TLS_CACERT /etc/ssl/certs/ca-certificates.crt
+      NETWORK_TIMEOUT 3
+
+- name: Create security configuration to let logged in users to run docker
+  lineinfile:
+    path: /etc/security/group.conf
+    line: "*;*;*;Al0000-2400;docker"
+
+- name: Create PAM auth profile to let logged in users to run docker
+  copy:
+    dest: /usr/share/pam-configs/rundocker
+    content: |
+      Name: Let logged in users to run docker
+      Default: yes
+      Priority: 900
+      Auth-Type: Primary
+      Auth:
+              required        pam_group.so
+
+- name: Create a PAM auth profile to create users' home directories
+  copy:
+    dest: /usr/share/pam-configs/mkhomedir
+    content: |
+      Name: Create home directory during login
+      Default: yes
+      Priority: 900
+      Session-Type: Additional
+      Session:
+              required        pam_mkhomedir.so umask=0077 skel=/etc/skel
+
+- name: Enable ldap on nsswitch.conf
+  lineinfile:
+    path: /etc/nsswitch.conf
+    line: "{{ '%-16s%s' | format(lookup['db'] + ':', lookup['sources']) }}"
+    regex: "^{{ lookup['db'] }}:"
+  loop:
+    - db: passwd
+      sources: compat systemd ldap
+    - db: group
+      sources: compat systemd ldap
+    - db: shadow
+      sources: compat ldap
+  loop_control:
+    loop_var: lookup
+
+- name: Enable PAM auth profiles
+  shell: pam-auth-update --enable ldap mkhomedir rundocker --force
+  changed_when: false
+
+- name: Enable password login for ssh
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regex: ^PasswordAuthentication 
+    line: "PasswordAuthentication yes"
+
+- name: Restart nslcd
+  service:
+    name: nslcd
+    state: restarted
+
+- name: Restart nscd
+  service:
+    name: nscd
+    state: restarted
+
+- name: Reload sshd
+  service:
+    name: sshd
+    state: reloaded
+
+- name: Pull provisioning docker image from Cog
+  get_url:
+    url: "{{ provisioning_image_url }}/{{ provisioning_image_basename }}"
+    dest: "/usr/src/{{ provisioning_image_basename }}"
+
+- name: Ensure provisioning docker image is loaded
+  docker_image:
+    name: "hgi/provisioning-base:{{ provisioning_image_version }}"
+    repository: hgi/provisioning-base
+    tag: "{{ provisioning_image_version }}"
+    state: present
+    source: load
+    load_path: "/usr/src/{{ provisioning_image_basename }}"
+
+# FIXME: I could not figure out why logged-in user, in the docker group, were
+# not able to use the socket. This is bad, but not "awfull": after all, each
+# logged-in user is supposed to be able to run a container.
+- name: Open up docker socket
+  file:
+    state: file
+    path: /var/run/docker.sock
+    mode: "0666"

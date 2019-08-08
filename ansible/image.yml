@@ -5,3 +5,4 @@
   gather_facts: yes
   roles:
     - "{{role_name}}"
+    - cleanup-base

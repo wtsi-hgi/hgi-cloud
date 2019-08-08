@@ -1,9 +1,5 @@
-provider "openstack" {
-  version = "~> 1.16"
-}
-provider "template" {
-  version = "~> 2.1"
-}
+# provider "openstack" { version = "~> 1.16" }
+# provider "template" { version = "~> 2.1" }
 
 ###############################################################################
 # Configure Networks, Subnets, & Routers
@@ -29,5 +25,4 @@ module "main_network" {
   network_name          = "${var.network_name}"
   router_id             = "${openstack_networking_router_v2.main.id}"
   dns_nameservers       = "${var.dns_nameservers}"
-  deployment_owner      = "${var.deployment_owner}"
 }

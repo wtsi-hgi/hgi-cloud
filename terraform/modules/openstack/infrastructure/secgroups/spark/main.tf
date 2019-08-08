@@ -1,9 +1,5 @@
-provider "openstack" {
-  version = "~> 1.16"
-}
-provider "template" {
-  version = "~> 2.1"
-}
+# provider "openstack" { version = "~> 1.16" }
+# provider "template" { version = "~> 2.1" }
 
 resource "openstack_networking_secgroup_v2" "spark-master" {
   name                  = "${var.datacenter}-${var.programme}-${var.env}-secgroup-spark-master"

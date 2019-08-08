@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  author: De Vitis, Luca
+  description: Installs and prepare Spark on the system
+  company: Wellcome Sanger Institute, Genome Research Limited
+
+  issue_tracker_url: https://github.com/wtsi-hgi/hgi-cloud/issues
+
+  license: BSD
+
+  min_ansible_version: 2.4
+  platforms:
+    - name: Ubuntu
+      versions:
+        - 18.04
+
+  galaxy_tags: []
+dependencies:
+  - docker-base

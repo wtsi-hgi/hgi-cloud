@@ -1,7 +1,4 @@
 ---
-spark_version: 2.2.0
-spark_mirror: https://archive.apache.org/dist/spark/
-
 spark_user_name: "{{ base_user_name }}"
 spark_group_name: "{{ base_group_name }}"
 
@@ -11,54 +8,54 @@ spark_install_dir: "{{ base_user_home }}"
 
 spark_install_owner: "{{ base_install_owner }}"
 spark_install_group: "{{ base_install_group }}"
-spark_install_mode: "ug+rw,o+r"
+spark_install_mode: "ug+rw,o-rw"
 
-spark_hadoop_profile: hadoop-2.7
-
-spark_distribution_name: "hgi-hadoop{{ hadoop_version }}"
-spark_home: "{{ spark_install_dir }}/spark-{{ spark_version }}-bin-{{ spark_distribution_name }}"
-
-spark_local_owner: "{{ spark_user_name }}"
-spark_local_group: "{{ spark_group_name }}"
-spark_local_mode: "ug+rw,o+r,+t"
-spark_local_dirs: []
+spark_distribution_name: "netlib-hadoop{{ spark_hadoop_profile }}"
+spark_distribution_basename: "spark-{{ spark_version }}-bin-{{ spark_distribution_name }}"
+spark_distribution_url: "https://eta-hgi-bucket-hermes.cog.sanger.ac.uk/download/spark-{{ spark_version }}/{{ spark_distribution_basename }}.tgz"
+spark_home: "{{ spark_install_dir }}/{{ spark_distribution_basename }}"
+spark_pid_dir: "{{ spark_home }}/run"
+spark_log_dir: "{{ spark_home }}/log"
+spark_work_dir: "{{ spark_home }}/work"
+spark_conf_dir: "{{ spark_home }}/conf"
 
 spark_master_port: 7077
-spark_master_host: spark-master
 
 spark_env_extras: {}
+
+spark_local_dirs:
+  - /mnt/tmpfs
+
 spark_jars:
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-core-1.7.4.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-kms-1.7.4.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-s3-1.7.4.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/hadoop-aws-7.3.2.jar"
+  - "{{ anaconda_install_dir }}/anaconda3/lib/python{{ anaconda_python_version }}/site-packages/hail/hail-all-spark.jar"
 
 spark_defaults_extras:
   # SparkContext Configuration
   spark.master: "spark://spark-master:{{ spark_master_port }}"
-  spark.sql.files.maxPartitionBytes: "102400"
-  spark.sql.files.openCostInBytes: "102400"
+  spark.sql.files.maxPartitionBytes: "42949672960"
+  spark.sql.files.openCostInBytes: "42949672960"
 
-  spark.driver.memory: 1g
-  spark.executor.memory: 1g
+  spark.driver.host: spark-master
+  spark.driver.bindAddress: 0.0.0.0
+  spark.driver.memory: "{{ (ansible_memtotal_mb * 0.94) | int() }}m"
+  spark.driver.maxResultSize: 0
+
+  spark.executor.memory: "{{ (ansible_memtotal_mb * 0.94) | int() }}m"
+  spark.executor.instances: 1
+
+  spark.jars: "{{ spark_jars | join(',') }}"
 
   spark.serializer: "org.apache.spark.serializer.KryoSerializer"
   spark.kryo.registrator: "is.hail.kryo.HailKryoRegistrator"
-  spark.local.dir: /tmp
-
-  spark.driver.maxResultSize: 100
-
-  spark.jars: "{{ spark_jars | join(':') }}"
 
   # Hadoop Configuration for S3
   spark.hadoop.fs.s3a.impl: "org.apache.hadoop.fs.s3a.S3AFileSystem"
   spark.hadoop.fs.s3a.endpoint: cog.sanger.ac.uk
   spark.hadoop.fs.s3a.connection.maximum: 100
+  # spark.hadoop.fs.s3a.bucket.<bucket_name>.aws.credentials.provider:  org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider
+  spark.ui.reverseProxy: true
+  spark.ui.reverseProxyUrl: "http://{{ spark_master_external_address | default('localhost', true) }}/spark"
 
-spark_pid_dir: "{{ spark_home }}/run"
-spark_log_dir: "{{ spark_home }}/log"
-spark_work_dir: "{{ spark_home }}/work"
-spark_conf_dir: "{{ spark_home }}/conf"
 
 # Logger levels set to the official defaults
 # Ref: https://github.com/apache/spark/blob/master/conf/log4j.properties.template

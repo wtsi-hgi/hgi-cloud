@@ -9,6 +9,7 @@ variable "count" {
 variable "ip_addresses" {
   type = "list"
 }
+variable "deployment_owner" {}
 variable "deployment_name" {}
 variable "deployment_color" {
   default = "blue"

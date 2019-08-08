@@ -9,3 +9,4 @@ terraform/deployments/
 .yamllint
 __pycache__/
 vault_password.txt
+build/

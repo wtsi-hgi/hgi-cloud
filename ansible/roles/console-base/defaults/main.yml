@@ -1,0 +1,4 @@
+---
+provisioning_image_version: 0.0.2
+provisioning_image_basename: "{{ datacenter }}-{{ programme }}-docker-provisioning-base-{{ provisioning_image_version }}.tar"
+provisioning_image_url: "https://{{ datacenter }}-{{ programme }}-bucket-ld14.cog.sanger.ac.uk/download/containers/docker"

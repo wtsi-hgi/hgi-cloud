@@ -12,8 +12,6 @@
     {
       "type": "openstack",
       "ssh_username": "ubuntu",
-      "ssh_keypair_name": "{{user `datacenter`}}-{{user `programme`}}-{{user `env`}}-keypair-mercury",
-      "ssh_private_key_file": "~/.ssh/id_rsa",
       "source_image_filter": {
         "filters": {
           "name": "{{user `source_image_name`}}",
@@ -25,10 +23,7 @@
       "image_name": "{{user `datacenter`}}-{{user `programme`}}-image-{{user `role_name`}}-{{user `role_version`}}",
       "image_visibility": "shared",
       "instance_name": "{{user `datacenter`}}-{{user `programme`}}-{{user `env`}}-instance-packer-{{user `role_name`}}-{{user `role_version`}}",
-      "volume_name": "{{user `datacenter`}}-{{user `programme`}}-{{user `env`}}-volume-packer-{{user `role_name`}}-{{user `role_version`}}",
-      "volume_size": 32,
-      "use_blockstorage_volume": true,
-      "flavor": "o2.medium",
+      "flavor": "o2.large",
       "networks": ["{{user `network_id`}}"],
       "floating_ip_network": "public",
       "security_groups": [
@@ -48,10 +43,10 @@
       "playbook_dir": "../ansible",
       "playbook_file": "../ansible/image.yml",
       "extra_arguments": [
+        "--extra-vars \"datacenter={{user `datacenter`}} programme={{user `programme`}}\"",
         "--extra-vars \"role_name={{user `role_name`}} role_version={{user `role_version`}}\"",
         "--extra-vars @vars/{{user `datacenter`}}.yml",
-        "--extra-vars @vars/{{user `datacenter`}}/{{user `programme`}}.yml",
-        "--extra-vars @vars/{{user `datacenter`}}/{{user `programme`}}/{{user `env`}}.yml"
+        "--extra-vars @vars/{{user `datacenter`}}/{{user `programme`}}.yml"
       ],
       "role_paths": [ "../ansible/roles" ]
     },

@@ -4,7 +4,8 @@
     state: present
     name:
       - "openjdk-{{ java_jdk_version }}-jdk"
-    install_recommends: yes
+    install_recommends: true
+    force_apt_get: true
 
 - name: Set java_home fact
   set_fact:

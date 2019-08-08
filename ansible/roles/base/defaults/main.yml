@@ -14,10 +14,7 @@ base_source_dir: "{{ base_user_home }}/src"
 base_download_dir: "{{ base_user_home }}/download"
 base_bin_dir: "{{ base_user_home }}/bin"
 
-base_dir_owner: "{{ base_user_name }}"
-base_dir_group: "{{ base_group_name }}"
-base_dir_mode: 0775
-
 base_install_owner: "{{ base_user_name }}"
 base_install_group: "{{ base_group_name }}"
 base_install_dir: "{{ base_user_home }}"
+base_install_mode: "ug+rw,o-w"

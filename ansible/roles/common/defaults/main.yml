@@ -2,3 +2,5 @@
 # defaults file for common
 collectd_interval: 5
 collectd_load_plugins: []
+authorized_keys_path: /home/ubuntu/.ssh/authorized_keys
+authorized_keys: []

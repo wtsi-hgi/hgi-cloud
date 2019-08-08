@@ -1,9 +1,68 @@
 ---
 - name: Ensure spark-master address is set in /etc/hosts
-  # when: extra_user_data["spark_master_private_address"] is defined and extra_user_data["spark_master_private_address"] != ''
   lineinfile:
     path: /etc/hosts
-    line: "{{ extra_user_data['spark_master_private_address'] | default('127.0.0.1', true) }} spark-master"
+    line: "{{ spark_master_private_address | default('127.0.0.1', true) }} spark-master"
+
+- name: Fix GPT partition on /dev/vda
+  shell: |
+    eval spawn parted /dev/vda
+    send "print\r"
+    send "F\r"
+    send "q\r"
+    expect eof
+  args:
+    executable: /usr/bin/expect
+  changed_when: false
+
+# parted module refuses to modify devices which are in use
+- name: Copy partition script
+  copy:
+    dest: /usr/local/bin/make-vda2.sh
+    src: make-vda2.sh
+    mode: "0700"
+    owner: root
+    group: root
+
+- name: Create /dev/vda2 partition
+  shell: /usr/local/bin/make-vda2.sh
+  args:
+    creates: /dev/vda2
+
+- name: Create swap filesystem on /dev/vda2
+  filesystem:
+    dev: /dev/vda2
+    force: false
+    fstype: swap
+
+- name: Insert /dev/vda2 in /etc/fstab
+  mount:
+    path: swap
+    state: present
+    src: /dev/vda2
+    fstype: swap
+
+- name: Enable swap from /dev/vda2
+  shell: swapon --all
+  changed_when: false
+
+- name: Get swap size
+  shell: swapon --show --bytes | awk '$1~/vda2$/ {printf ("%d", $3*75/100/(1024*1024*1024) ); }'
+  register: swapon_show
+  changed_when: false
+
+- name: Create tmpfs mountpoint
+  file:
+    path: /mnt/tmpfs
+    state: directory
+
+- name: Mount tmpfs
+  mount:
+    path: /mnt/tmpfs
+    state: mounted
+    src: tmpfs
+    fstype: tmpfs
+    opts: "defaults,noatime,mode=1777,nosuid,size={{ swapon_show.stdout }}G"
 
 - name: Configure Collectd
   template:
@@ -18,3 +77,11 @@
     dest: /etc/rsyslog.conf
   notify:
     - Restart RsyslogD
+
+- name: add ssh public key to authorized_keys
+  lineinfile:
+    path: "{{ authorized_keys_path }}"
+    line: "{{ public_key }}"
+  loop: "{{ authorized_keys }}"
+  loop_control:
+    loop_var: public_key

@@ -3,12 +3,9 @@ anaconda_python_version: "3.7"
 anaconda_distribution: 2019.03-Linux-x86_64
 anaconda_mirror: https://repo.anaconda.com/archive
 
-anaconda_source_dir: "{{ base_source_dir }}"
 anaconda_download_dir: "{{ base_download_dir }}"
-anaconda_install_dir: "{{ base_install_dir }}"
 
+anaconda_install_dir: "{{ base_install_dir }}"
 anaconda_install_owner: "{{ base_install_owner }}"
 anaconda_install_group: "{{ base_install_group }}"
 anaconda_install_mode: "u+rw,go+r"
-
-anaconda_extra_modules: []

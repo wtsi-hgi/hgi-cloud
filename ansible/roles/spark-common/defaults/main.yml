@@ -26,22 +26,9 @@ spark_local_dirs: []
 spark_master_port: 7077
 spark_master_host: spark-master
 
-spark_env_extras: {}
-spark_executor_extra_classpath:
-  - "{{ hail_home }}/build/libs/hail-all-spark.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-core-1.7.4.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-kms-1.7.4.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-s3-1.7.4.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/hadoop-aws-7.3.2.jar"
+spark_env_sh: {}
 
-spark_driver_extra_classpath:
-  - "{{ hail_home }}/build/libs/hail-all-spark.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-core-1.7.4.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-kms-1.7.4.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/aws-java-sdk-s3-1.7.4.jar"
-  - "{{ hadoop_home }}/share/hadoop/tools/lib/hadoop-aws-2.7.3.jar"
-
-spark_defaults_extras:
+spark_defaults_conf:
   # SparkContext Configuration
   spark.master: "spark://spark-master:{{ spark_master_port }}"
   spark.sql.files.maxPartitionBytes: "102400"

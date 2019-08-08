@@ -1,2 +1,4 @@
 ---
 # defaults file for workstation
+hail_master_name: default
+jupyter_notebookapp_base_url: jupyer

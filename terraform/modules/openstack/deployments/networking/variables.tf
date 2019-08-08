@@ -7,7 +7,7 @@ variable "programme" {}
 
 variable "datacenter" {}
 
-variable "deployment_owner" {}
+# variable "deployment_owner" {}
 
 variable "external_network_name" {}
 variable "main_subnet_cidr" {}

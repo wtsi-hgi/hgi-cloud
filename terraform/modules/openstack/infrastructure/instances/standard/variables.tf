@@ -17,7 +17,6 @@ variable "count" {
   default = 1
 }
 variable "network_name" {}
-variable "key_pair" {}
 
 variable "security_groups" {
   type = "list"
@@ -35,12 +34,11 @@ variable "depends_on" {
   type = "list"
   default = []
 }
-variable "vault_password" {}
 variable "volume_size" {
   default = 64
 }
 
-variable "extra_user_data" {
+variable "other_data" {
   type = "map"
   default = {}
 }

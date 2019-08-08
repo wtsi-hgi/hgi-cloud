@@ -3,8 +3,23 @@
   apt:
     state: present
     name:
-      - g++
-      - liblz4-dev
+      - nfs-common
+      - nfs-kernel-server
+      - nginx
+    install_recommends: true
+    force_apt_get: true
+
+- name: Disable NFS
+  service:
+    name: nfs-server
+    enabled: no
+    state: stopped
+
+- name: Disable Nginx
+  service:
+    name: nginx
+    enabled: no
+    state: stopped
 
 - name: Ensure Hail home directory exists
   file:

@@ -1,0 +1,6 @@
+---
+# defaults file for workstation
+password: secret
+hail_volume_keyfile: /root/keyfile
+hail_volume_password: "{{ password }}"
+hail_volume_device: /dev/vdb

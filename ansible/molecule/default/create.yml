@@ -8,8 +8,8 @@
     ssh_user: ubuntu
     ssh_port: 22
     identity_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
-    # keypair_user: "{{ lookup('env', 'OS_USERNAME') }}"
-    keypair_user: mercury
+    keypair_user: "{{ lookup('env', 'OS_USERNAME') }}"
+    # keypair_user: mercury
 
   tasks:
     - name: Read metadata from file
@@ -17,6 +17,12 @@
         file: ../../molecule/default/metadata.yml
         name: metadata
 
+    - name: Create molecule extra volume
+      os_volume:
+        state: present
+        size: 2
+        display_name: "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-volume-{{ metadata['deployment_name'] }}-{{ item.role }}-{{ item.name }}"
+      with_items: "{{ molecule_yml.platforms }}"
 
     # We assume:
     #   1. A "build" network is already available.
@@ -26,11 +32,11 @@
       os_server:
         state: present
         userdata: "{{ lookup('file', '../../../packer/scripts/user_data.sh') }}"
-        name: "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ item.role }}-{{ item.name }}"
+        name: "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ item.role }}-{{ item.name }}"
         image: "{{ item.image }}"
         flavor: "{{ item.flavor }}"
         floating_ip_pools: public
-        key_name: "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-keypair-{{ keypair_user }}"
+        key_name: "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-keypair-{{ keypair_user }}"
         # Whatever service you are going to install, it is not going to be
         # accessed from the outside, therefore you don't need specific security
         # groups. Molecule's tests need to assert the configuration and the
@@ -39,14 +45,12 @@
         # and/or an entire deployment, which will be addressed by terraform &
         # terratest.
         security_groups:
-          - "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-base"
-          - "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-ssh"
-        network: "{{ metadata['datacentre'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-network-mercury-main"
+          - "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-base"
+          - "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-secgroup-ssh"
+        network: "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-network-main"
         meta: "{{ metadata | combine({ 'molecule_platform': item.name, 'molecule_scenario': molecule_yml.scenario['name'], 'role_name': item.role }) }}"
-        boot_from_volume: yes
-        terminate_volume: yes
-        volume_size: 32
-
+        volumes:
+          - "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-volume-{{ metadata['deployment_name'] }}-{{ item.role }}-{{ item.name }}"
       register: instance
       with_items: "{{ molecule_yml.platforms }}"
       async: 7200
@@ -59,6 +63,13 @@
       until: os_jobs.finished
       retries: 300
       with_items: "{{ instance.results }}"
+
+    - name: Attach volume to the host
+      os_server_volume:
+        state: present
+        server: "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-instance-{{ metadata['deployment_name'] }}-{{ item.role }}-{{ item.name }}"
+        volume: "{{ metadata['datacenter'] }}-{{ metadata['programme'] }}-{{ metadata['env'] }}-volume-{{ metadata['deployment_name'] }}-{{ item.role }}-{{ item.name }}"
+      with_items: "{{ molecule_yml.platforms }}"
 
     # Mandatory configuration for Molecule to function.
 

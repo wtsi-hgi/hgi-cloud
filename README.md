@@ -12,35 +12,44 @@ We chose to have a fresh start on the IaC, rather then refactoring legacy
 code. This will let us choose simple and effective objectives, outline better
 requirements, and design around operability from the very beginning.
 
-# Architecture
-TODO: include a simple design diagram
+# Guide
 
-# Design choices
-TODO: rewrite / update the design choices
+## Using this repository
+1. `terraform 0.11` executable anywhere in your `PATH`
+2. `packer 1.4` executable anywhere in your `PATH`
+3. `docker` distribution [installed](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
+4. Ensure that the following packages are installed:
+   * build-essential
+   * cmake
+   * g++
+   * libatlas3-base
+   * liblz4-dev
+   * libnetlib-java
+   * libopenblas-base
+   * make
+   * openjdk-8-jdk
+   * python3
+   * python3-dev
+   * python3-pip
+   * r-base
+   * r-recommended
+   * scala
+5. Ensure that python requirements in `requirements.txt` are installed
+4. Follow the [setup](docs/setup.md) runbook
 
-# Use cases
+## Running tasks
+`invoke.sh` is shell script made to wrap `pyinvoke` quite extensive list of
+tasks and collections, and meke its usage even easier. `invoke.sh`. To
+understand how to use `invoke.sh`, you can run:
+```
+bash invoke.sh --help
+```
+To have an idea of what the tasks are and do, please have a look at the
+[tasks](tasks/README.md) documentation.
+For a quick list of example usages, please refer to the
+[users](docs/runbook_users.md) or [ops](docs/runbook_ops.md) runbooks.
 
-## Create a Hail/Spark Cluster
-TODO: wirte down the use case's details
-
-## Destroy a Hail/Spark Cluster
-TODO: wirte down the use case's details
-
-## Use a Hail/Spark Cluster
-TODO: wirte down the use case's details
-
-# User Guide
-
-You can use the cluster in 3 possible ways:
-1. With interactive Jupyter Notebooks
-2. With interactive pyspark session on the command line
-3. With a non interactive scrypt
-
-# Important details
-1. In order for `import_vcf` / `export_vcf` to work, `tmp_dir` must point to a
-	 network shared directory. The directory `${HAIL_HOME}/tmp` is already shared
-	 through NFS protocol and available on all nodes.
-2. Hail initialisation is different from tool to tool.
+# Try your Jupyter's notebook
 
 ## Jupyter Notebook
 Open your hail-master Jupyter URL http://\<IP\_OR\_NAME\>/jupyter/ in a web
@@ -101,103 +110,6 @@ sc = pyspark.SparkContext()
 
 hail.init(sc=sc, tmp_dir=tmp_dir)
 ```
-
-# Admin Guide
-
-## What do you need?
-1. (required) `terraform` executable anywhere in your `PATH`
-2. (required) `packer` executable anywhere in your `PATH`
-4. (required) `openrc.sh` OpenStack's RC file, that you can get from
-   OpenStack's web interface. Alternatively, you could manually export the
-   shell environment variables required to configure the OpenStack provider in
-   `terraform`.
-
-### invoke.sh
-`invoke.sh` is shell script made to wrap `pyinvoke` quite extensive list of
-tasks and collections, and meke its usage even easier. `invoke.sh` will fulfill
-all the [requirements for invoke](invoke/README.md#what-do-you-need): it will
-create the `python3` virtual environment named `py3` with all the required
-`python3` modules, read all the bash environment variables in `openrc.sh` and
-then run `invoke` with the appropriate options and tasks. To understand how to
-use `invoke.sh`, you can run:
-```
-bash invoke.sh --help
-```
-`invoke.sh` is quite straightforward and you are very wellcome to read the
-source code.
-
-## The easy way
-The easy way to use this project is through the [invoke.sh](#invoke-sh)
-shellscript from the base directory of this repository.
-
-To build an Hail base image:
-```
-bash invoke.sh image hail-base/1.0.0 build
-```
-
-To share an Hail base image:
-```
-bash invoke.sh image hail-base/1.0.0 share --with hgi-dev,hgi
-```
-
-To accept am Hail base image:
-```
-bash invoke.sh image hail-base/1.0.0 accept
-```
-
-To create an Hail cluster:
-```
-bash invoke.sh deployment spark/ld14 up
-```
-The above command will run `terraform` with the correct variables file, and
-against the correct initial module. It also depends on other tasks:
-1. `clean`
-2. `init`
-3. `validate`
-4. `plan`
-which will automatically run in the correct order. You can replace
-`spark/ld14` with other values. 
-
-To update an spark deployment:
-```
-bash invoke.sh deployment spark/ld14 plan --to update
-# At this point you should check the update.tfplan
-bash invoke.sh deployment spark/ld14 update
-```
-The `update` task won't run unless there is an `update.tfplan` file available,
-but that file is not automatically created as a result of running other
-`invoke`'s tasks: the rationale is that we don't want you to unwillingly modify
-the infrastructure. That being said, the `up` task is effectively the same as:
-```
-bash invoke.sh deployment spark/ld14 plan --to update
-bash invoke.sh deployment spark/ld14 update
-# or, by running the plan and the update tasks with the same command
-bash invoke.sh deployment spark/ld14 plan --to update update
-```
-This means that you could use the `up` task to bypass the "2 steps" approach,
-**if you know what you are doing**. The `up` tasks just uses different file
-names and options which let all subtasks to run automatically.
-
-To destroy a hail cluster:
-```
-bash invoke.sh deployment spark/ld14 plan --to destroy
-# At this point you should check the destroy.tfplan
-bash invoke.sh deployment spark/ld14 down
-```
-The `down` task won't run unless there is a `destroy.tfplan` file available.
-The same rationale for to the `update` task is applied here, however, there is
-no task that bypasses the 2 steps. If you really (I mean REALLY) know what you
-are doing, you could run 2 tasks with the same `invoke.sh` run:
-```
-bash invoke.sh deployment spark/ld14 plan --to destroy down
-```
-
-## The hard way
-If you know your way around `OpenStack`, `packer` and `terraform` and you know
-how to setup the bash environment variables you need, then you are wellcome to
-run the appropriate terraform/packer commands to get your tasks done. Feel free
-to take inspiration from `invoke.sh` and all the `tasks` and `collection` files
-you can find in the `invoke/` directory.
 
 # How to contribute
 Read the [CONTRIBUTING.md](CONTRIBUTING.md) file

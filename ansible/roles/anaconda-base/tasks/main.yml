@@ -10,15 +10,8 @@
       -p {{ anaconda_install_dir }}/anaconda3 -b -s
   args:
     creates: "{{ anaconda_install_dir }}/anaconda3/bin/conda"
-
-- name: Fix Anaconda3 installation ownership and permissions
-  file:
-    state: directory
-    path: "{{ anaconda_install_dir }}/anaconda3"
-    recurse: yes
-    owner: "{{ anaconda_install_owner }}"
-    group: "{{ anaconda_install_group }}"
-    mode: "{{ anaconda_install_mode }}"
+  become: yes
+  become_user: "{{ anaconda_install_owner }}"
 
 - name: Update anaconda packages
   become: yes
@@ -26,6 +19,7 @@
   shell: "{{ anaconda_install_dir }}/anaconda3/bin/conda update --yes --all || true"
   tags:
     - molecule-idempotence-notest
+  changed_when: false
 
 - name: Remove Anaconda3's curl
   become: yes
@@ -33,14 +27,7 @@
   shell: "{{ anaconda_install_dir }}/anaconda3/bin/conda remove --yes curl || true"
   tags:
     - molecule-idempotence-notest
-
-- name: Install extra Anaconda3's modules
-  become: yes
-  become_user: "{{ anaconda_install_owner }}"
-  shell: "{{ anaconda_install_dir }}/anaconda3/bin/conda install --yes {{ anaconda_extra_modules | join(' ') }} || true"
-  when: anaconda_extra_modules != []
-  tags:
-    - molecule-idempotence-notest
+  changed_when: false
 
 - name: Set up system-wide environment variables
   template:

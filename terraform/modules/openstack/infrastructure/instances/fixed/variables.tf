@@ -21,7 +21,6 @@ variable "count" {
 }
 variable "network_name" {}
 variable "subnet_name" {}
-variable "key_pair" {}
 
 variable "security_groups" {
   type = "list"
@@ -39,7 +38,6 @@ variable "depends_on" {
   type = "list"
   default = []
 }
-variable "vault_password" {}
 variable "volume_size" {
   default = 64
 }
