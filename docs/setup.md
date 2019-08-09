@@ -310,7 +310,7 @@ advantages:
 The command we suggest to run the provisioning container is:
 
 ```bash
-docker run --tty --interactive --workdir /root --volume ${HOME}:/root hgi/provisioning-base:v0.5 bash
+docker run --tty --interactive --workdir /root --volume ${HOME}:/root hgi/provisioning-base:v0.5.1 bash
 ```
 The following is a simple explanation of the suggested options:
 
