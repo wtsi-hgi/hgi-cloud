@@ -94,11 +94,3 @@ variable "aws_default_region" {
   description = "The default region to make AWS requests"
   default     = "eu-west-1"
 }
-
-variable "openstack_flavours" {
-  description = "A list of available OpenStack flavours and their details"
-  type        = "list"
-
-  # TODO Terraform 0.12+
-  # type      = list(object({name = string, ram = number, cores = number}))
-}
