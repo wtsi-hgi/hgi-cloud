@@ -54,3 +54,10 @@ module "spark_secgroup" {
   programme           = "${var.programme}"
   env                 = "${var.env}"
 }
+
+module "docker_swarm_secgroup" {
+  source              = "../../infrastructure/secgroups/docker_swarm/"
+  datacenter          = "${var.datacenter}"
+  programme           = "${var.programme}"
+  env                 = "${var.env}"
+}
