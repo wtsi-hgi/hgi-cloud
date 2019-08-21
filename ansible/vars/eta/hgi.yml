@@ -124,7 +124,7 @@ spark_defaults_conf:
   spark.driver.memory: "32352m"
   spark.driver.maxResultSize: 0
 
-  spark.executor.memory: "32352m"
+  spark.executor.memory: "35840m"
   spark.executor.instances: 1
 
   spark.jars: "{{ spark_jars | join(',') }}"
