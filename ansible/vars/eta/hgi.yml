@@ -113,6 +113,8 @@ spark_jars:
   - "{{ anaconda_install_dir }}/anaconda3/lib/python{{ anaconda_python_version }}/site-packages/hail/hail-all-spark.jar"
   - "{{ spark_install_dir }}/jars/*.jar"
 
+spark_max_consecutive_attempts: 4
+
 spark_defaults_conf:
   # SparkContext Configuration
   spark.master: "spark://spark-master:{{ spark_master_port }}"
@@ -134,6 +136,8 @@ spark_defaults_conf:
   spark.executor.instances: 1
 
   spark.jars: "{{ spark_jars | join(',') }}"
+
+  spark.stage.maxConsecutiveAttempts: "{{ spark_max_consecutive_attempts }}"
 
   spark.serializer: "org.apache.spark.serializer.KryoSerializer"
   spark.kryo.registrator: "is.hail.kryo.HailKryoRegistrator"

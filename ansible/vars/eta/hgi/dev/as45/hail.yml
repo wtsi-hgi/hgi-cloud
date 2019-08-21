@@ -1,2 +1,2 @@
 ---
-{}
+spark_max_consecutive_attempts: 100
