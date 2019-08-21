@@ -121,10 +121,16 @@ spark_defaults_conf:
 
   spark.driver.host: spark-master
   spark.driver.bindAddress: 0.0.0.0
-  spark.driver.memory: "{{ (((0.985 * (spark_master_memory | int()) / 1024) - 2.11) * 1024) | int() }}m"
   spark.driver.maxResultSize: 0
 
+  # FIXME This linear model was determined experimentally and breaks
+  # down in extremely large memory conditions. It purposely under-
+  # -commits memory to compensate for measurement error; this is most
+  # noticeable with smaller memory flavours. See the issue comments for
+  # details: https://github.com/wtsi-hgi/hgi-cloud/issues/8
+  spark.driver.memory: "{{ (((0.985 * (spark_master_memory | int()) / 1024) - 2.11) * 1024) | int() }}m"
   spark.executor.memory: "{{ (((0.985 * (spark_slaves_memory | int()) / 1024) - 2.11) * 1024) | int() }}m"
+
   spark.executor.instances: 1
 
   spark.jars: "{{ spark_jars | join(',') }}"
