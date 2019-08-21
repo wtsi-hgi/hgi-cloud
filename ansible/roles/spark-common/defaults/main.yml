@@ -28,6 +28,8 @@ spark_master_host: spark-master
 
 spark_env_sh: {}
 
+spark_max_consecutive_attempts: 4
+
 spark_defaults_conf:
   # SparkContext Configuration
   spark.master: "spark://spark-master:{{ spark_master_port }}"
