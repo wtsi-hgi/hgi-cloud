@@ -121,11 +121,10 @@ spark_defaults_conf:
 
   spark.driver.host: spark-master
   spark.driver.bindAddress: 0.0.0.0
+  spark.driver.memory: "{{ (((0.985 * (spark_master_memory | int()) / 1024) - 1.15) * 1024) | int() }}m"
   spark.driver.maxResultSize: 0
 
-  spark.dynamicAllocation.enabled: true
-  spark.shuffle.service.enabled: true
-
+  spark.executor.memory: "{{ (((0.985 * (spark_slaves_memory | int()) / 1024) - 1.15) * 1024) | int() }}m"
   spark.executor.instances: 1
 
   spark.jars: "{{ spark_jars | join(',') }}"
