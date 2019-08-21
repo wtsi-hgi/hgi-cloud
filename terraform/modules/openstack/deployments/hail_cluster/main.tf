@@ -2,7 +2,11 @@ terraform { backend "s3" {} }
 provider "openstack" { version = "~> 1.16" }
 provider "template" { version = "~> 2.1" }
 
-data "openstack_compute_flavor_v2" "slave" {
+data "openstack_compute_flavor_v2" "spark_master" {
+  name = "${var.spark_master_flavor_name}"
+}
+
+data "openstack_compute_flavor_v2" "spark_slave" {
   name = "${var.spark_slaves_flavor_name}"
 }
 
@@ -18,7 +22,8 @@ locals {
     aws_secret_access_key         = "${var.aws_secret_access_key}"
     aws_s3_endpoint               = "${var.aws_s3_endpoint}"
     aws_default_region            = "${var.aws_default_region}"
-    spark_slaves_memory           = "${data.openstack_compute_flavor_v2.slave.ram}"
+    spark_master_memory           = "${data.openstack_compute_flavor_v2.spark_master.ram}"
+    spark_slaves_memory           = "${data.openstack_compute_flavor_v2.spark_slave.ram}"
   }
 }
 
