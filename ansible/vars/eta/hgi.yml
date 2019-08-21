@@ -123,6 +123,9 @@ spark_defaults_conf:
   spark.driver.bindAddress: 0.0.0.0
   spark.driver.maxResultSize: 0
 
+  spark.dynamicAllocation.enabled: true
+  spark.shuffle.service.enabled: true
+
   spark.executor.instances: 1
 
   spark.jars: "{{ spark_jars | join(',') }}"
