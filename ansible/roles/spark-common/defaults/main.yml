@@ -29,6 +29,7 @@ spark_master_host: spark-master
 spark_env_sh: {}
 
 spark_max_consecutive_attempts: 4
+spark_max_failures: 4
 
 spark_defaults_conf:
   # SparkContext Configuration

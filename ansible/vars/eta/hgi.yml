@@ -114,6 +114,7 @@ spark_jars:
   - "{{ spark_install_dir }}/jars/*.jar"
 
 spark_max_consecutive_attempts: 4
+spark_max_failures: 4
 
 spark_defaults_conf:
   # SparkContext Configuration
@@ -138,6 +139,7 @@ spark_defaults_conf:
   spark.jars: "{{ spark_jars | join(',') }}"
 
   spark.stage.maxConsecutiveAttempts: "{{ spark_max_consecutive_attempts }}"
+  spark.task.maxFailures: "{{ spark_max_failures }}"
 
   spark.serializer: "org.apache.spark.serializer.KryoSerializer"
   spark.kryo.registrator: "is.hail.kryo.HailKryoRegistrator"
