@@ -1,3 +1,2 @@
 ---
-# Automatically generated
-{}
+spark_max_consecutive_attempts: 100
