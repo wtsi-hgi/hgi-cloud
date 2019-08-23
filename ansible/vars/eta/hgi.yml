@@ -150,7 +150,7 @@ spark_defaults:
 
 spark_tuning: {}
 
-spark_defaults_conf: {{ spark_defaults | combine(spark_tuning) }}
+spark_defaults_conf: "{{ spark_defaults | combine(spark_tuning) }}"
 
 
 # Logger levels set to the official defaults

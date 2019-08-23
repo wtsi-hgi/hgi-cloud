@@ -64,7 +64,7 @@ spark_defaults:
 
 spark_tuning: {}
 
-spark_defaults_conf: {{ spark_defaults | combine(spark_tuning) }}
+spark_defaults_conf: "{{ spark_defaults | combine(spark_tuning) }}"
 
 spark_pid_dir: "{{ spark_home }}/run"
 spark_log_dir: "{{ spark_home }}/log"

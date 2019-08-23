@@ -2,3 +2,4 @@
 spark_tuning:
   spark.stage.maxConsecutiveAttempts: 123
   spark.task.maxFailures: 456
+  spark.driver.maxResultSize: 666
