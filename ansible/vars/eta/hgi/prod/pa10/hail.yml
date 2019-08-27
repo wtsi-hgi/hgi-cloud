@@ -1,3 +1,4 @@
 ---
-# Automatically generated
-{}
+spark_local_dirs:
+- /mnt/tmpfs
+- "{{ hail_home }}/tmp"

@@ -1,4 +1,8 @@
 ---
 spark_tuning:
   spark.stage.maxConsecutiveAttempts: 25
-  spark.task.maxFailures: 100
+  spark.task.maxFailures: 200
+
+spark_local_dirs:
+- /mnt/tmpfs
+- "{{ hail_home }}/tmp"
