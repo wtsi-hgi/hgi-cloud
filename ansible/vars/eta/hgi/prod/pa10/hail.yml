@@ -5,13 +5,13 @@ spark_tuning:
 
   # TEST: This configuration is per that created by hailctl on Google
   spark.submit.deployMode: client
-  spark.dynamicAllocation.enabled: true
-  spark.dynamicAllocation.minExecutors: 1
-  spark.dynamicAllocation.maxExecutors: 10000
-  spark.shuffle.service.enabled: true
+  spark.dynamicAllocation.enabled: false
+  #spark.dynamicAllocation.minExecutors: 1
+  #spark.dynamicAllocation.maxExecutors: 10000
+  #spark.shuffle.service.enabled: true
   spark.scheduler.minRegisteredResourcesRatio: 0.0
   spark.scheduler.mode: FAIR
-  spark.executor.instances: 2
+  spark.executor.instances: 1
   spark.executor.extraJavaOptions: -Xss4M
   spark.driver.extraJavaOptions: -Xss4M
   spark.kryoserializer.buffer.max: 1g
