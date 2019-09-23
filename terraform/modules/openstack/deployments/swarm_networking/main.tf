@@ -13,7 +13,7 @@ module "main_network" {
   programme             = "${var.programme}"
   env                   = "${var.env}"
   external_network_name = "${var.external_network_name}"
-  network_name          = "main"
+  network_name          = "docker-main"
   subnet_cidr           = "${var.main_subnet_cidr}"
   dns_nameservers       = "${var.external_dns_nameservers}"
 }
@@ -48,8 +48,9 @@ module "ssh_secgroup" {
   env                 = "${var.env}"
 }
 
-module "spark_secgroup" {
-  source              = "../../infrastructure/secgroups/spark/"
+
+module "docker_swarm_secgroup" {
+  source              = "../../infrastructure/secgroups/docker_swarm/"
   datacenter          = "${var.datacenter}"
   programme           = "${var.programme}"
   env                 = "${var.env}"

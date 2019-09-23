@@ -42,6 +42,7 @@ EXAMPLES
   $ bash invoke.sh deployment create --owner hermes --name networking
   $ bash invoke.sh deployment destroy --owner vvi --name hail
 
+
   $ bash invoke.sh image build --role-name base --role-version 0.1.0
   $ bash invoke.sh image promote --role-name hail-base --role-version 0.3.0 --to hgi-dev
   $ bash invoke.sh image share --role-name spark-base --role-version 1.2.0 --with f1c35e83bca7412f847211257c73b5f4
