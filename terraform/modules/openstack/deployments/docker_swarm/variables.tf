@@ -17,9 +17,15 @@ variable "deployment_owner" {
 }
 
 
-variable "image_name" {
+variable "docker_manager_image_name" {
   default = "bionic-WTSI-docker_b5612"
 }
+
+
+variable "docker_worker_image_name" {
+  default = "bionic-WTSI-docker_b5612"
+}
+
 
 variable "docker_manager_flavor_name" {
   default  = "m1.medium"

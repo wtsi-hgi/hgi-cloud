@@ -46,7 +46,7 @@ module "docker_manager" {
   deployment_name       = "${local.deployment_name}"
   deployment_color      = "blue"
   deployment_owner      = "${var.deployment_owner}"
-  image_name            = "${var.image_name}"
+  image_name            = "${var.docker_manager_image_name}"
 
   security_groups       = [
       "${var.datacenter}-${var.programme}-${var.env}-secgroup-base",
@@ -75,7 +75,7 @@ module "docker_workers" {
   deployment_name       = "${local.deployment_name}"
   deployment_color      = "blue"
   deployment_owner      = "${var.deployment_owner}"
-  image_name            = "${var.image_name}"
+  image_name            = "${var.docker_worker_image_name}"
 
   security_groups       = [
       "${var.datacenter}-${var.programme}-${var.env}-secgroup-base",
@@ -91,7 +91,7 @@ module "docker_workers" {
   role_name             = "docker-swarm-worker"
   role_version          = "${var.docker_workers_role_version}"
   other_data            = "${merge(local.other_data, map("docker_manager_private_address", module.docker_manager.access_ip_v4s[0]))}"
-  # Fix: For supporting multiple docker managers, woudl need to send the entire array and make the accompanying code changes. 
+  # Fix: For supporting multiple docker managers, woudl need to send the entire array and make the accompanying code changes.  
 
 }
 

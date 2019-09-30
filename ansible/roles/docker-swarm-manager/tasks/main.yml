@@ -2,7 +2,7 @@
 - name: Initiate a new docker-swarm 
   docker_swarm:
     state: present
-    register: docker_swarm_facts
+  register: docker_swarm_facts
 - debug:
     var: docker_swarm_facts
     var: docker_swarm_facts.swarm_facts.JoinTokens
