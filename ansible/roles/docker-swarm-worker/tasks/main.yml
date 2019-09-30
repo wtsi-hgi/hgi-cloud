@@ -1,0 +1,31 @@
+---
+# tasks file for docker-swarm-worker
+- name: Ensure docker manager address is set in /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ docker_manager_private_address | default('127.0.0.1', true) }} docker-manager"
+
+- name: Initiate a new docker-swarm 
+  shell:
+    sudo scp -o StrictHostKeyChecking=no -o NoHostAuthenticationForLocalhost=yes -o UserKnownHostsFile=/dev/null -i key.pem ec2-user@${aws_instance.manager.private_ip}:/home/ec2-user/worker-token.txt .
+    
+- name: Initiate a new docker-swarm 
+  shell:
+    "docker swarm join --token $(cat /home/ec2-user/worker-token.txt) ${aws_instance.manager.private_ip}:2377"
+
+
+# - name: Wait for docker swarm manager to come up. 
+#   wait_for:
+#     state: started
+#     host: docker-manager
+#     port: "{{ docker_swarm_port }}"
+#     delay: 10
+#     sleep: 5
+
+# - name: join swarm
+#   docker_swarm:
+#     state: join
+#     advertise_addr: docker-manager
+#     join_token: SWMTKN-1--xxxxx 
+#     remote_addrs: [ docker-manager ]
+

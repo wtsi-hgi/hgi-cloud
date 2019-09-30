@@ -1,0 +1,3 @@
+---
+# defaults file for docker-swarm-worker
+docker_swarm_port: 2377

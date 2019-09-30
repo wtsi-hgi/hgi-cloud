@@ -65,4 +65,7 @@ resource "openstack_compute_instance_v2" "instance" {
   network {
     port = "${element(module.network_port.port_id, count.index)}"
   }
+
+
+  
 }

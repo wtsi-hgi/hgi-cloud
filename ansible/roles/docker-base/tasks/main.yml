@@ -52,7 +52,7 @@
     state: present
 
 # FIXME: you shouldn't use variables from other roles
-- name: Ensure base user belongs to the docker gorup
+- name: Ensure base user belongs to the docker group
   user:
     name: "{{ base_user_name }}"
     groups:

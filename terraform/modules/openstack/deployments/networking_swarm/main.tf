@@ -34,19 +34,19 @@ module "main_network" {
 #   dns_nameservers       = "${var.external_dns_nameservers}"
 # }
 
-module "base_secgroup" {
-  source              = "../../infrastructure/secgroups/base/"
-  datacenter          = "${var.datacenter}"
-  programme           = "${var.programme}"
-  env                 = "${var.env}"
-}
+# module "base_secgroup" {
+#   source              = "../../infrastructure/secgroups/base/"
+#   datacenter          = "${var.datacenter}"
+#   programme           = "${var.programme}"
+#   env                 = "${var.env}"
+# }
 
-module "ssh_secgroup" {
-  source              = "../../infrastructure/secgroups/ssh/"
-  datacenter          = "${var.datacenter}"
-  programme           = "${var.programme}"
-  env                 = "${var.env}"
-}
+# module "ssh_secgroup" {
+#   source              = "../../infrastructure/secgroups/ssh/"
+#   datacenter          = "${var.datacenter}"
+#   programme           = "${var.programme}"
+#   env                 = "${var.env}"
+# }
 
 
 module "docker_swarm_secgroup" {
