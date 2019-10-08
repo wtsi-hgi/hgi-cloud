@@ -1,0 +1,186 @@
+[1;37mbash invoke.sh deployment create --name docker_swarm --owner pa11[0m
+Removing terraform/deployments/eta/hgi/prod/pa11/docker_swarm/*.tfplan
+Removing .terraform/terraform.tfstate
+[1;37mTF_LOG=TRACE terraform init -backend-config="region=eu-west-1" -backend-config="skip_credentials_validation=true" -backend-config="bucket=eta-hgi-bucket-pa11" -backend-config="key=terraform/deployments/eta/hgi/prod/pa11/docker_swarm/tfstate" terraform/modules/openstack/deployments/docker_swarm[0m
+[0m[1mInitializing modules...[0m
+- module.docker_manager
+- module.docker_workers
+- module.loadbalancer
+- module.docker_manager.user_data
+- module.docker_manager.network_port
+- module.docker_workers.user_data
+- module.docker_workers.network_port
+
+[0m[1mInitializing the backend...[0m
+[0m[32m
+Successfully configured the backend "s3"! Terraform will automatically
+use this backend unless the backend configuration changes.[0m
+
+[0m[1mInitializing provider plugins...[0m
+
+The following providers do not have any version constraints in configuration,
+so the latest version was installed.
+
+To prevent automatic upgrades to new major versions that may contain breaking
+changes, it is recommended to add version = "..." constraints to the
+corresponding provider blocks in configuration, with the constraint strings
+suggested below.
+
+* provider.template: version = "~> 2.1"
+
+[0m[1m[32mTerraform has been successfully initialized![0m[32m[0m
+[0m[32m
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.[0m
+[1;37mTF_LOG=TRACE terraform validate -check-variables=false -var-file=terraform/vars/eta.tfvars -var-file=terraform/vars/eta/hgi.tfvars -var-file=terraform/vars/eta/hgi/prod.tfvars -var-file=terraform/vars/eta/hgi/prod/pa11.tfvars -var-file=terraform/vars/eta/hgi/prod/pa11/docker_swarm.tfvars terraform/modules/openstack/deployments/docker_swarm[0m
+[1;37mTF_LOG=TRACE terraform plan -var-file=terraform/vars/eta.tfvars -var-file=terraform/vars/eta/hgi.tfvars -var-file=terraform/vars/eta/hgi/prod.tfvars -var-file=terraform/vars/eta/hgi/prod/pa11.tfvars -var-file=terraform/vars/eta/hgi/prod/pa11/docker_swarm.tfvars -out=terraform/deployments/eta/hgi/prod/pa11/docker_swarm/create.tfplan terraform/modules/openstack/deployments/docker_swarm[0m
+[0m[1mRefreshing Terraform state in-memory prior to plan...[0m
+The refreshed state will be used to calculate this plan, but will not be
+persisted to local or remote state storage.
+[0m
+[0m[1mdata.template_file.user_data: Refreshing state...[0m
+[0m[1mopenstack_compute_servergroup_v2.servergroup: Refreshing state... (ID: cf6aee76-8bfe-455e-b039-06d4da7110dd)[0m
+[0m[1mdata.openstack_networking_network_v2.network: Refreshing state...[0m
+[0m[1mdata.openstack_networking_secgroup_v2.secgroup[0]: Refreshing state...[0m
+[0m[1mdata.openstack_compute_keypair_v2.key_pair: Refreshing state...[0m
+[0m[1mdata.openstack_networking_network_v2.network: Refreshing state...[0m
+[0m[1mdata.openstack_networking_secgroup_v2.secgroup[3]: Refreshing state...[0m
+[0m[1mdata.openstack_networking_network_v2.network: Refreshing state...[0m
+[0m[1mdata.openstack_networking_secgroup_v2.secgroup[1]: Refreshing state...[0m
+[0m[1mdata.openstack_images_image_v2.base_image: Refreshing state...[0m
+[0m[1mdata.openstack_networking_secgroup_v2.secgroup[2]: Refreshing state...[0m
+[0m[1mdata.openstack_compute_keypair_v2.key_pair: Refreshing state...[0m
+[0m[1mdata.openstack_networking_secgroup_v2.secgroup[0]: Refreshing state...[0m
+[0m[1mdata.openstack_networking_secgroup_v2.secgroup[2]: Refreshing state...[0m
+[0m[1mdata.openstack_networking_secgroup_v2.secgroup[1]: Refreshing state...[0m
+[0m[1mdata.openstack_networking_secgroup_v2.secgroup[0]: Refreshing state...[0m
+[0m[1mdata.openstack_networking_secgroup_v2.secgroup[3]: Refreshing state...[0m
+[0m[1mopenstack_compute_servergroup_v2.servergroup: Refreshing state... (ID: e5668d7a-de77-472f-a436-ef84b0a1c7eb)[0m
+[0m[1mdata.openstack_networking_secgroup_v2.secgroup[2]: Refreshing state...[0m
+[0m[1mdata.openstack_networking_secgroup_v2.secgroup[1]: Refreshing state...[0m
+[0m[1mdata.openstack_images_image_v2.base_image: Refreshing state...[0m
+[0m[1mdata.openstack_networking_subnet_v2.subnet: Refreshing state...[0m
+[0m[1mopenstack_networking_port_v2.port[0]: Refreshing state... (ID: debb0335-c40c-4187-913e-a0785f3cb6dd)[0m
+[0m[1mopenstack_networking_port_v2.port[1]: Refreshing state... (ID: aa2817e8-60f6-4c79-8410-9c48f1794212)[0m
+[0m[1mopenstack_networking_port_v2.port: Refreshing state... (ID: 6adc4684-2e11-433f-ae18-dc851eb1dd8c)[0m
+[0m[1mopenstack_compute_instance_v2.instance: Refreshing state... (ID: 5714bea9-436b-4239-957b-518bb5b7989e)[0m
+[0m[1mopenstack_compute_floatingip_associate_v2.public_ip: Refreshing state... (ID: 172.27.83.170/5714bea9-436b-4239-957b-518bb5b7989e/)[0m
+[0m[1mdata.template_file.user_data[1]: Refreshing state...[0m
+[0m[1mdata.template_file.user_data[0]: Refreshing state...[0m
+[0m[1mopenstack_compute_instance_v2.instance[0]: Refreshing state... (ID: 49b38b10-8db5-45f9-ad01-d294552fed64)[0m
+[0m[1mopenstack_compute_instance_v2.instance[1]: Refreshing state... (ID: dd57662f-5179-4281-9f96-5a562ca043a8)[0m
+
+------------------------------------------------------------------------
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  [32m+[0m create
+[0m
+Terraform will perform the following actions:
+
+[32m  [32m+[0m [32mmodule.loadbalancer.openstack_lb_listener_v2.http
+[0m      id:                            <computed>
+      admin_state_up:                "true"
+      connection_limit:              <computed>
+      default_pool_id:               <computed>
+      loadbalancer_id:               "${openstack_lb_loadbalancer_v2.http.id}"
+      name:                          "eta-hgi-prod-lblistener-docker-main-pa11-docker_swarm"
+      protocol:                      "TCP"
+      protocol_port:                 "80"
+      region:                        <computed>
+      tenant_id:                     <computed>
+      timeout_client_data:           <computed>
+      timeout_member_connect:        <computed>
+      timeout_member_data:           <computed>
+      timeout_tcp_inspect:           <computed>
+[0m
+[0m[32m  [32m+[0m [32mmodule.loadbalancer.openstack_lb_loadbalancer_v2.http
+[0m      id:                            <computed>
+      admin_state_up:                "true"
+      loadbalancer_provider:         <computed>
+      name:                          "eta-hgi-prod-lb-docker-main-pa11-docker_swarm"
+      region:                        <computed>
+      security_group_ids.#:          "4"
+      security_group_ids.1333907864: "23f31ce9-70e7-432c-8008-cf6b8795c63c"
+      security_group_ids.1762249489: "abe6e2d1-210c-457e-9463-96bb7757285a"
+      security_group_ids.2153846965: "9965a360-5a1e-4cab-a8c8-de3c857f8d21"
+      security_group_ids.2155877913: "e8ecee51-e1fb-497a-bfe4-822972692335"
+      tenant_id:                     <computed>
+      vip_address:                   <computed>
+      vip_port_id:                   <computed>
+      vip_subnet_id:                 "5d52783c-7cc8-4dbc-8060-f817b05b51cc"
+[0m
+[0m[32m  [32m+[0m [32mmodule.loadbalancer.openstack_lb_member_v2.http[0]
+[0m      id:                            <computed>
+      address:                       "192.168.226.23"
+      admin_state_up:                "true"
+      pool_id:                       "${openstack_lb_pool_v2.http.id}"
+      protocol_port:                 "8080"
+      region:                        <computed>
+      subnet_id:                     "5d52783c-7cc8-4dbc-8060-f817b05b51cc"
+      tenant_id:                     <computed>
+      weight:                        <computed>
+[0m
+[0m[32m  [32m+[0m [32mmodule.loadbalancer.openstack_lb_member_v2.http[1]
+[0m      id:                            <computed>
+      address:                       "192.168.226.17"
+      admin_state_up:                "true"
+      pool_id:                       "${openstack_lb_pool_v2.http.id}"
+      protocol_port:                 "8080"
+      region:                        <computed>
+      subnet_id:                     "5d52783c-7cc8-4dbc-8060-f817b05b51cc"
+      tenant_id:                     <computed>
+      weight:                        <computed>
+[0m
+[0m[32m  [32m+[0m [32mmodule.loadbalancer.openstack_lb_member_v2.http[2]
+[0m      id:                            <computed>
+      address:                       "192.168.226.12"
+      admin_state_up:                "true"
+      pool_id:                       "${openstack_lb_pool_v2.http.id}"
+      protocol_port:                 "8080"
+      region:                        <computed>
+      subnet_id:                     "5d52783c-7cc8-4dbc-8060-f817b05b51cc"
+      tenant_id:                     <computed>
+      weight:                        <computed>
+[0m
+[0m[32m  [32m+[0m [32mmodule.loadbalancer.openstack_lb_pool_v2.http
+[0m      id:                            <computed>
+      admin_state_up:                "true"
+      lb_method:                     "ROUND_ROBIN"
+      listener_id:                   "${openstack_lb_listener_v2.http.id}"
+      name:                          "eta-hgi-prod-lbpool-docker-main-pa11-docker_swarm"
+      persistence.#:                 <computed>
+      protocol:                      "TCP"
+      region:                        <computed>
+      tenant_id:                     <computed>
+[0m
+[0m
+[0m[1mPlan:[0m 6 to add, 0 to change, 0 to destroy.[0m
+
+------------------------------------------------------------------------
+
+This plan was saved to: terraform/deployments/eta/hgi/prod/pa11/docker_swarm/create.tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "terraform/deployments/eta/hgi/prod/pa11/docker_swarm/create.tfplan"
+
+[1;37mTF_LOG=TRACE terraform apply -parallelism=64 terraform/deployments/eta/hgi/prod/pa11/docker_swarm/create.tfplan[0m
+[0m[1mmodule.loadbalancer.openstack_lb_loadbalancer_v2.http: Creating...[0m
+  admin_state_up:                "" => "true"
+  loadbalancer_provider:         "" => "<computed>"
+  name:                          "" => "eta-hgi-prod-lb-docker-main-pa11-docker_swarm"
+  region:                        "" => "<computed>"
+  security_group_ids.#:          "" => "4"
+  security_group_ids.1333907864: "" => "23f31ce9-70e7-432c-8008-cf6b8795c63c"
+  security_group_ids.1762249489: "" => "abe6e2d1-210c-457e-9463-96bb7757285a"
+  security_group_ids.2153846965: "" => "9965a360-5a1e-4cab-a8c8-de3c857f8d21"
+  security_group_ids.2155877913: "" => "e8ecee51-e1fb-497a-bfe4-822972692335"
+  tenant_id:                     "" => "<computed>"
+  vip_address:                   "" => "<computed>"
+  vip_port_id:                   "" => "<computed>"
+  vip_subnet_id:                 "" => "5d52783c-7cc8-4dbc-8060-f817b05b51cc"[0m

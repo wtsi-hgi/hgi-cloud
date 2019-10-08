@@ -31,8 +31,8 @@ locals {
   deployment_name       = "docker_swarm"
   other_data            = {
     docker_manager_external_address = "${var.docker_manager_external_address}"
-
   }
+
 } 
 
 
@@ -95,6 +95,34 @@ module "docker_workers" {
 
 }
 
+
+
+# module "loadbalancer" {
+#   source                = "../../infrastructure/loadbalancers/"
+#   datacenter            = "${var.datacenter}"
+#   programme             = "${var.programme}"
+#   env                   = "${var.env}"
+#   deployment_name       = "${local.deployment_name}"
+#   deployment_owner      = "${var.deployment_owner}"
+#   listener_port         = 80
+#   protocol              = "TCP"
+#   network_name          = "${var.docker_manager_network_name}"
+#   security_groups       = [
+#       "${var.datacenter}-${var.programme}-${var.env}-secgroup-base",
+#       "${var.datacenter}-${var.programme}-${var.env}-secgroup-ssh",
+#       "${var.datacenter}-${var.programme}-${var.env}-secgroup-docker_swarm-manager",
+#       "${var.datacenter}-${var.programme}-${var.env}-secgroup-docker_swarm-worker"
+#   ]
+#   count                 = 1
+#   member_count          = "${length("${module.docker_manager.access_ip_v4s}") + length("${module.docker_workers.access_ip_v4s}")}" 
+#   instance_access_ip_v4s= "${concat("${module.docker_manager.access_ip_v4s}", "${module.docker_workers.access_ip_v4s}")}" 
+
+# }
+
+
+
+
+
 # Why do manager and workers have different network names?
 # How do we get instance ids?
 resource "openstack_compute_floatingip_associate_v2" "public_ip" {
@@ -104,17 +132,25 @@ resource "openstack_compute_floatingip_associate_v2" "public_ip" {
   
 }
 
-
-resource "openstack_lb_loadbalancer_v2" "lb_1" {
-  vip_subnet_id = "d9415786-5f1a-428b-b35f-2f1523e146d2" "${var.docker_manager_network_name}"
-
-}
-
-
+# module "docker_volume" {
+#   source              = "../../infrastructure/instances/extra/persistent_volume"
+#   volume_ids          = ["${module.persistent_volume.volume_ids}"]
+#   instance_ids        = "${module.docker_manager.instance_ids}"
+# }
 
 
 
-
+# module "persistent_volume" {
+#   source              = "../../infrastructure/volumes/standard"
+#   datacenter          = "${var.datacenter}"
+#   programme           = "${var.programme}"
+#   env                 = "${var.env}"
+#   deployment_name     = "docker"
+#   deployment_owner    = "${var.deployment_owner}"
+#   volume_name         = "data"
+#   size                = 32
+#   count               = 1
+# }
 
 
 
