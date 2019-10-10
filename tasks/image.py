@@ -168,6 +168,7 @@ def share(context, with_project_id, role_name, role_version):
   :param role_version: the version of the ansible role to deploy on the instance
   :param with_project_id: the id of the project
   '''
+  _, _, glance = _get_clients()
   image_id = get_image(context, role_name, role_version).id
   glance.image_members.create(image_id, with_project_id)
 

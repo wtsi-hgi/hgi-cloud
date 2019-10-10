@@ -1,5 +1,10 @@
 ---
 # tasks file for docker-swarm-worker
+- name: Ensure base user belongs to the docker group
+  user:
+    name: "{{ base_user_name }}"
+    groups:
+      - docker
 - name: Ensure docker manager address is set in /etc/hosts
   lineinfile:
     path: /etc/hosts
@@ -9,9 +14,11 @@
 # https://stackoverflow.com/questions/50514275/docker-bridge-conflicts-with-host-network
   docker_network:
     name: tombstone
+    state: present
+    force: yes
     ipam_config:
-      subnet: 172.17.253.0/30
-  
+     - subnet: 172.17.253.0/30
+
 
 
 

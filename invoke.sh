@@ -1,3 +1,4 @@
+
 #!/usr/bin/env bash
 # This wants to be an handy script to wrap the usage of invoke.
 # This tool is supposed to work only from the base project directory.
@@ -58,8 +59,8 @@ EXAMPLES
 
   $ bash invoke.sh spark_distribution create
 
-  $ bash invoke.sh docker_swarm create
-  $ bash invoke.sh docker_swarm create --owner pa11 --networking true
+  $ bash invoke.sh docker create
+  $ bash invoke.sh docker create --owner pa11 --networking 
 
 
 HELP

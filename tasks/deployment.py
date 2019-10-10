@@ -79,7 +79,7 @@ def run_terraform(context, args):
     'TF_VAR_aws_s3_endpoint': os.environ['AWS_S3_ENDPOINT'],
     'TF_VAR_aws_default_region': os.environ['AWS_DEFAULT_REGION']
   }
-  context.run('terraform {}'.format(args), env=env)
+  context.run('TF_LOG=DEBUG terraform {}'.format(args), env=env)
 
 @invoke.task
 def clean(context):
