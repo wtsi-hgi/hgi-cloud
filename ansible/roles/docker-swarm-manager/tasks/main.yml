@@ -2,10 +2,16 @@
 - name: Initiate a new docker-swarm 
   docker_swarm:
     state: present
-  # register: docker_swarm_facts
+    register: manager_facts
+- name: Create a tombstone container that prevents the default docker_gwbridge network to use 172.17.** subnet
+# https://stackoverflow.com/questions/50514275/docker-bridge-conflicts-with-host-network
+  docker_network:
+    name: tombstone
+    ipam_config:
+      subnet: 172.17.253.0/30
 # - debug:
 #     var: docker_swarm_facts
-#     var: docker_swarm_facts.swarm_facts.JoinTokens
+#     var: docker_swarm_facts.swarm_facts.JoinTokens.Worker
     # advertise_addr: If advertise_addr is not specified, it will be automatically detected when possible.
 
 

@@ -11,95 +11,95 @@ import os
 import invoke 
 
 
-def create_terraform_vars(order, public_ip, network_cidr, volume_size):
-  '''
-  Creates and configures terraform input variables files
+# def create_terraform_vars(order, public_ip, network_cidr, volume_size):
+#   '''
+#   Creates and configures terraform input variables files
 
-  :param list order: the list of sub-directories where the `tfvars` files are
-  :param public_ip: the `public` network IP to associate to the cluster
-  :param network_cidr: the network CIDR to use for stand-alone isoleted
-                       Hail clusters
-  :param volume_size: the size of the extra volume for Hail's `tmp_dir`
-  '''
-  dirname = os.path.join('terraform', 'vars')
-  created = []
+#   :param list order: the list of sub-directories where the `tfvars` files are
+#   :param public_ip: the `public` network IP to associate to the cluster
+#   :param network_cidr: the network CIDR to use for stand-alone isoleted
+#                        Hail clusters
+#   :param volume_size: the size of the extra volume for Hail's `tmp_dir`
+#   '''
+#   dirname = os.path.join('terraform', 'vars')
+#   created = []
 
-  for name in order:
-    if not os.path.exists(dirname): 
-      os.mkdir(dirname)
-    tfvars = os.path.join(dirname, '{}.tfvars'.format(name))
-    if not os.path.exists(tfvars):
-      with open(tfvars, 'w') as f:
-        f.write("# Automatically generated\n")
-        created.append(tfvars)
-    dirname = os.path.join(dirname, name)
+#   for name in order:
+#     if not os.path.exists(dirname): 
+#       os.mkdir(dirname)
+#     tfvars = os.path.join(dirname, '{}.tfvars'.format(name))
+#     if not os.path.exists(tfvars):
+#       with open(tfvars, 'w') as f:
+#         f.write("# Automatically generated\n")
+#         created.append(tfvars)
+#     dirname = os.path.join(dirname, name)
 
-  if not os.path.exists(dirname):
-    os.mkdir(dirname)
+#   if not os.path.exists(dirname):
+#     os.mkdir(dirname)
 
-  tfvars = os.path.join(dirname, 'docker_swarm.tfvars')
-  if not os.path.exists(tfvars):
-    with open(tfvars, 'w') as conf:
-      conf.write('docker_manager_external_address = "{}"\n'.format(public_ip))
-    created.append(tfvars)
-  else:
-    print('Skipping {}: it already exists'.format(tfvars))
+#   tfvars = os.path.join(dirname, 'docker_swarm.tfvars')
+#   if not os.path.exists(tfvars):
+#     with open(tfvars, 'w') as conf:
+#       conf.write('docker_manager_external_address = "{}"\n'.format(public_ip))
+#     created.append(tfvars)
+#   else:
+#     print('Skipping {}: it already exists'.format(tfvars))
 
-  tfvars = os.path.join(dirname, 'networking.tfvars')
-  if network_cidr and not os.path.exist(tfvars):
-    with open(tfvars, 'w') as conf:
-      conf.write('main_subnet_cidr = "{}"\n'.format(network_cidr))
-    created.append(tfvars)
-  else:
-    print('Skipping {}: it already exists'.format(tfvars))
+#   tfvars = os.path.join(dirname, 'networking.tfvars')
+#   if network_cidr and not os.path.exist(tfvars):
+#     with open(tfvars, 'w') as conf:
+#       conf.write('main_subnet_cidr = "{}"\n'.format(network_cidr))
+#     created.append(tfvars)
+#   else:
+#     print('Skipping {}: it already exists'.format(tfvars))
 
-  return created
+#   return created
 
-def create_ansible_vars(order):
-  '''
-  Creates and configures Ansible's extra variables files
+# def create_ansible_vars(order):
+#   '''
+#   Creates and configures Ansible's extra variables files
 
-  :param list order: the list of sub-directories where the `tfvars` files are
-  '''
-  dirname = os.path.join('ansible', 'vars')
-  created = []
+#   :param list order: the list of sub-directories where the `tfvars` files are
+#   '''
+#   dirname = os.path.join('ansible', 'vars')
+#   created = []
 
-  for name in order + ['hail']:
-    if not os.path.exists(dirname):
-      os.mkdir(dirname)
-    yml = os.path.join(dirname, '{}.yml'.format(name))
-    if not os.path.exists(yml):
-      with open(yml, 'w') as f:
-        f.write("---\n# Automatically generated\n{}\n")
-      created.append(yml)
-    dirname = os.path.join(dirname, name)
+#   for name in order + ['hail']:
+#     if not os.path.exists(dirname):
+#       os.mkdir(dirname)
+#     yml = os.path.join(dirname, '{}.yml'.format(name))
+#     if not os.path.exists(yml):
+#       with open(yml, 'w') as f:
+#         f.write("---\n# Automatically generated\n{}\n")
+#       created.append(yml)
+#     dirname = os.path.join(dirname, name)
 
-  os.path.exists(dirname) or os.mkdir(dirname)
-  for name in ('docker-manager', 'docker-worker'):
-    yml = os.path.join(dirname, '{}.yml'.format(name))
-    if not os.path.exists(yml):
-      with open(yml, 'w') as f:
-        f.write("---\n# Automatically generated\n{}\n")
-      created.append(yml)
+#   os.path.exists(dirname) or os.mkdir(dirname)
+#   for name in ('docker-manager', 'docker-worker'):
+#     yml = os.path.join(dirname, '{}.yml'.format(name))
+#     if not os.path.exists(yml):
+#       with open(yml, 'w') as f:
+#         f.write("---\n# Automatically generated\n{}\n")
+#       created.append(yml)
 
-  return created
+#   return created
 
-@invoke.task
-def init(context, owner = None):
-	'''
-	Initialises a Docker Swarm configuration
+# @invoke.task
+# def init(context, owner = None):
+# 	'''
+# 	Initialises a Docker Swarm configuration
 
-	'''
+# 	'''
 
-	order = [
-		context.config['meta']['datacenter'],
-		context.config['meta']['programme'],
-		context.config['meta']['env'],
-		owner or os.environ['OS_USERNAME']
-	]
+# 	order = [
+# 		context.config['meta']['datacenter'],
+# 		context.config['meta']['programme'],
+# 		context.config['meta']['env'],
+# 		owner or os.environ['OS_USERNAME']
+# 	]
 
-	created = create_terraform_vars(order, public_up, network_cidr) + \
-			  create_ansible_vars(order)
+# 	created = create_terraform_vars(order, public_ip, network_cidr) + \
+# 			  create_ansible_vars(order)
 
 @invoke.task # decorator pattern
 def create(context, owner = None, networking =False):
