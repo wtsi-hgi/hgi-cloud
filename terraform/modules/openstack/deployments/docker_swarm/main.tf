@@ -52,7 +52,8 @@ module "docker_manager" {
       "${var.datacenter}-${var.programme}-${var.env}-secgroup-base",
       "${var.datacenter}-${var.programme}-${var.env}-secgroup-ssh",
       "${var.datacenter}-${var.programme}-${var.env}-secgroup-docker_swarm-manager",
-      "${var.datacenter}-${var.programme}-${var.env}-secgroup-docker_swarm-worker"
+      "${var.datacenter}-${var.programme}-${var.env}-secgroup-docker_swarm-worker",
+      "docker_swarm_web_app"
   ]
   count                = 1
   flavor_name          = "${var.docker_manager_flavor_name}"
@@ -81,7 +82,7 @@ module "docker_workers" {
       "${var.datacenter}-${var.programme}-${var.env}-secgroup-base",
       "${var.datacenter}-${var.programme}-${var.env}-secgroup-ssh",
       "${var.datacenter}-${var.programme}-${var.env}-secgroup-docker_swarm-worker",
-      "docker_web_app"
+      "docker_swarm_web_app"
   ]
 
   count                 = "${var.docker_workers_count}"

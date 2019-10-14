@@ -1,10 +1,11 @@
 ---
 # tasks file for docker-swarm-worker
-- name: Ensure base user belongs to the docker group
-  user:
-    name: "{{ base_user_name }}"
-    groups:
-      - docker
+- name: Open up docker socket
+  file:
+    state: file
+    path: /var/run/docker.sock
+    mode: "0666"
+
 - name: Ensure docker manager address is set in /etc/hosts
   lineinfile:
     path: /etc/hosts
@@ -18,31 +19,30 @@
     force: yes
     ipam_config:
      - subnet: 172.17.253.0/30
-
-
-
-
-# - name: Initiate a new docker-swarm 
-#   shell:
-#     sudo scp -o StrictHostKeyChecking=no -o NoHostAuthenticationForLocalhost=yes -o UserKnownHostsFile=/dev/null -i key.pem ec2-user@${aws_instance.manager.private_ip}:/home/ec2-user/worker-token.txt .
-    
-# - name: Initiate a new docker-swarm 
-#   shell:
-#     "docker swarm join --token $(cat /home/ec2-user/worker-token.txt) ${aws_instance.manager.private_ip}:2377"
-
-
-# - name: Wait for docker swarm manager to come up. 
-#   wait_for:
-#     state: started
-#     host: docker-manager
-#     port: "{{ docker_swarm_port }}"
-#     delay: 10
-#     sleep: 5
-
-# - name: join swarm
-#   docker_swarm:
-#     state: join
-#     advertise_addr: docker-manager
-#     join_token: SWMTKN-1--xxxxx 
-#     remote_addrs: "{{ docker_manager_private_address }}:2377"
+- name: Create a second tombstone container that prevents the default docker_gwbridge network to use 172.18.** subnet
+# https://stackoverflow.com/questions/50514275/docker-bridge-conflicts-with-host-network
+  docker_network:
+    name: tombstone-two
+    state: present
+    force: yes
+    ipam_config:
+      - subnet: 172.18.253.0/30
+- name: Wait for docker swarm manager to come up.
+  wait_for:
+    state: started
+    host: docker-manager
+    port: 90
+    delay: 10
+    sleep: 5
+- name: Get token
+  uri:
+    url: "http://{{ docker_manager_private_address }}:90"
+    return_content: yes
+  register: token
+- name: join swarm
+  docker_swarm:
+    state: join
+    advertise_addr: docker-manager
+    join_token: "{{ token.content }}"
+    remote_addrs: "{{ docker_manager_private_address }}:2377"
 

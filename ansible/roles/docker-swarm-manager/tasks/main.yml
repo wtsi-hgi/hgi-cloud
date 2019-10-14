@@ -1,9 +1,16 @@
 ---
-- name: Ensure base user belongs to the docker group
-  user:
-    name: "{{ base_user_name }}"
-    groups:
-      - docker
+- name: Install required system packages
+  apt: name={{ item }} state=latest update_cache=yes 
+  loop: [ 'nginx']
+  until: apt_status is success
+  register: apt_status
+  delay: 60
+  retries: 10
+- name: Open up docker socket
+  file:
+    state: file
+    path: /var/run/docker.sock
+    mode: "0666"
 - name: Create a tombstone container that prevents the default docker_gwbridge network to use 172.17.** subnet
 # https://stackoverflow.com/questions/50514275/docker-bridge-conflicts-with-host-network
   docker_network:
@@ -12,14 +19,35 @@
     force: yes
     ipam_config:
       - subnet: 172.17.253.0/30
+- name: Create a second tombstone container that prevents the default docker_gwbridge network to use 172.18.** subnet
+# https://stackoverflow.com/questions/50514275/docker-bridge-conflicts-with-host-network
+  docker_network:
+    name: tombstone-two
+    state: present
+    force: yes
+    ipam_config:
+      - subnet: 172.18.253.0/30
 - name: Initiate a new docker-swarm 
   docker_swarm:
     state: present
-  register: swarm_facts
+  register: swarm_info
+- debug:
+    msg: >-
+      addr: {{ ansible_default_ipv4.address }}
+      worker token: {{ swarm_info.swarm_facts.JoinTokens.Worker }}
+- name: save token to file
+  local_action: copy content="{{ swarm_info.swarm_facts.JoinTokens.Worker }}" dest="/home/ubuntu/token.log"
+  
+- name: Configure nginx
+  become: yes
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/conf.d/docker-manager.conf
+    mode: 0700
 
-# - debug:
-#     var: swarm_facts
-#     var: swarm_facts.swarm_facts.JoinTokens.Worker
-    # advertise_addr: If advertise_addr is not specified, it will be automatically detected when possible.
-
-
+- name: Start Nginx
+  become: yes
+  service:
+    name: nginx
+    enabled: yes
+    state: restarted
