@@ -144,11 +144,16 @@ The following are files which store various credentials and other sensitive info
   - For this reason, we reserve two dummy networks corresponding to 172.17.0.0/30 and 172.18.0.0/30 on each node at the time of provisioning, before the swarm initation. 
   - If any of the IP address from 172.17.0.0/30 and 172.18.0.0/30 or 172.19.0.0/16 are ever needed for an app, the provisining tasks would need to unblock these and reserve something else for docker_gwbridge for the app to work.
 
+
 - Multiple Managers:  A swarm cluster, just like a hail cluster, just supports one manager node. If there's a use-case for multiple managers: extra managers could join the cluster in the exact same way the workers do, just using the appropriate token discovered through docker-swarm-info
   
 - Authorized Keys: The following task in the Commons role adds authorised keys from a variable named authorized_keys: https://github.com/wtsi-hgi/hgi-cloud/blob/develop/ansible/roles/common/tasks/main.yml#L81-L87. For example, the authorised keys for Hermes and ISG is in here: https://github.com/wtsi-hgi/hgi-cloud/blob/develop/ansible/roles/hail-common/vars/main.yml 
 
 - Bind mounting a host directory into a service is not well-supported on docker swarm. If you bind mount a host path into your service’s containers, the path must exist on every swarm node. The Docker swarm mode scheduler can schedule containers on any machine that meets resource availability requirements and satisfies all constraints and placement preferences you specify. So you have to make sure the path is available to every node in the cluster the task can be scheduled to. But even with this approach container can be scheduled to a node with no or outdated data. So if it has to be done, it is better to pin services to concrete nodes.
+
+- For some mysterious reason, as a default the user `ubuntu` is unable to talk to the docker daemo on the manager node, even if the user is manually added. For this reason, during provisioning, we loosen the permisions of the docker socket to be open to all users. (This may or maynot be a security risk)
+
+- 
 
 
 

@@ -44,10 +44,13 @@
     src: nginx.conf.j2
     dest: /etc/nginx/conf.d/docker-manager.conf
     mode: 0700
-
 - name: Start Nginx
   become: yes
   service:
     name: nginx
     enabled: yes
     state: restarted
+- name: Ensure python requirements for the provisioning are installed
+  pip:
+    name: jsondiff
+    
