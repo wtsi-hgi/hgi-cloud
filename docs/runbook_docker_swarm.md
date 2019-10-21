@@ -1,8 +1,7 @@
 # Introduction
 
 This is the documentation for bringing up a Docker swarm cluster, intended for
-end-users. Before you continue reading, there are some terms and values
-that you need to know.
+end-users. 
 
 ## Why Docker Swarm?
 
@@ -13,10 +12,88 @@ that you need to know.
 
 
 
-# How to set up a new user?
+# How to deploy a new service to an existing Swarm?
 
 
-1. **Ensure the docker-main network is available**
+Note that most docker swarm deployments should be run as `hermes`. This is a user internal and specific to hgi team, and every member of the group can use its credentials to launch a service in an existing cluster, or to deploy/destroy a whole cluster.
+
+
+**Step 1.** Ensure any additional port used is part of the `docker_swarm_web_app` security group (which allows TCP ingress on Ports 80-100)
+
+**Step 2.** Copy the secret files and the compose files (which has the secret and service definitions) to the swarm manager using scp:
+
+For each secret used in the compose file:
+
+`scp -i /path/to/hermes_private_key  /path/to/secret_file ubuntu@<Swarm Manager IP address>:~`
+
+Example of secret files:
+
+- `Hgi-openrc.sh`
+- `config.yml`
+
+**Step 3.** For the docker-compose file:
+`scp -i /path/to/hermes_private_key  /path/to/docker-compose.yml ubuntu@<Swarm Manager IP address>:~`  
+
+After that, we can either do Method 1 (ssh into remote and manually deploy) or Method 2 (execute an ansible task locally)
+
+**Step 4 Method 1.**
+ 
+ssh into the remote host as ubuntu using hermes' private key:
+
+`ssh -i /path/to/hermes_private_key ubuntu@<Swarm Manager IP address>:~`  
+
+and run:
+
+`docker stack deploy`
+
+
+**Step 4 Method 2 (requires ansible on local machine)**
+
+
+`ansible all --key-file  /path/to/hermes_private_key  -i '<ubuntu@Swarm Manager IP address>,'-m docker_stack -a "name=app compose=docker-compose.yml" -vvv`
+
+
+
+# How to define a compose file?
+
+```yaml
+services:
+  backend:
+    image: mercury/openstack_report_backend:v2.0 
+    ports: 
+      - "3000:3000"
+    secrets:
+      - source: backend_secret
+        target: /app/hgi-openrc.sh
+  frontend:
+    image: mercury/openstack_report_frontend:v2.0
+    ports: 
+      - "8080:8080"
+    depends_on: 
+    - backend
+secrets:
+   backend_secret:
+      file: hgi-openrc.sh
+```
+
+## List of Secret Files in use
+
+The following are files which store various credentials and other sensitive information used by individual apps in the docker swarm. 
+
+### Application: Weaver
+
+`config.yml`
+
+### Application: Cluster Report
+
+`hgi-openrc.sh`
+
+
+
+# How to set up a new docker swarm cluster?
+
+
+1. **Ensure the docker-main network is available on the tenant**
 Docker Swarm runs on its on network, which needs to exists on a tenant prior to creating a swarm cluser. To set up the networking, run:
 
 `bash invoke docker create --networking`
@@ -48,6 +125,8 @@ Attributes to modify:
 
 Run this command:
 
+`mkdir --parents terraform/vars/${META_DATACENTER}/${META_PROGRAMME}/${META_ENV}/${OS_USERNAME}`
+
 `touch terraform/vars/${META_DATACENTER}/${META_PROGRAMME}/${META_ENV}/${OS_USERNAME}/docker_swarm.tfvars`
 
 And in the docker_swarm.tfvars file, add:
@@ -68,68 +147,19 @@ do
 done
 ```
 
+4. **Create the Docker Swarm cluster**
 
+From the root directory of `hgi-cloud`, run:
 
-
-# How to deploy a new service to the Swarm?
-
-## Method 1
-Copy the following secret files and the compose files (which has the secret and service definitions) to the swarm manager and run:
-
-`docker stack deploy`
-
-Example of secret files:
-
-- `Hgi-openrc.sh`
-- `config.yml`
-
-
-## Method 2
-
-This requires `pip install jsondiff` on manager:
-
-For each secret used in the compose file:
-
-`scp -i /path/to/hermes_private_key  /path/to/secret_file ubuntu@<Swarm Manager IP address>:~`
-
-`ansible all --key-file -i /path/to/hermes_private_key  -i '<Swarm Manager IP address>,'-m docker_stack -a "name=app compose=docker-compose.yml" -vvv`
-
-Ensure any additional port is opened in the in the `docker_swarm_web_app` security group (which allows TCP ingress on Ports 80-100)
-
-# How to define a service in compose file?
-
-```yaml
-services:
-  backend:
-    image: mercury/openstack_report_backend:v2.0 
-    ports: 
-      - "3000:3000"
-    secrets:
-      - source: backend_secret
-        target: /app/hgi-openrc.sh
-  frontend:
-    image: mercury/openstack_report_frontend:v2.0
-    ports: 
-      - "8080:8080"
-    depends_on: 
-    - backend
-secrets:
-   backend_secret:
-      file: hgi-openrc.sh
+```bash
+bash invoke.sh docker create
 ```
 
-## List of Secret Files
+5. ** Destroy your Docker Swarm cluster**
 
-The following are files which store various credentials and other sensitive information used by individual apps in the docker swarm. 
-
-### Application: Weaver
-
-`config.yml`
-
-### Application: Cluster Report
-
-`hgi-openrc.sh`
-
+```bash
+bash invoke.sh hail destroy
+```
 
 
 # Troubleshoot
@@ -153,7 +183,7 @@ The following are files which store various credentials and other sensitive info
 
 - For some mysterious reason, as a default the user `ubuntu` is unable to talk to the docker daemo on the manager node, even if the user is manually added. For this reason, during provisioning, we loosen the permisions of the docker socket to be open to all users. (This may or maynot be a security risk)
 
-- 
+- The software provisioned on each machine requires a minimum amount of disk space, so the flavour defined in the terraform vars must be appropriate. The `m1.tiny` flavour, for instance, has too little memory and would fail. 
 
 
 

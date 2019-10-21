@@ -31,13 +31,13 @@
   docker_swarm:
     state: present
   register: swarm_info
-- debug:
-    msg: >-
-      addr: {{ ansible_default_ipv4.address }}
-      worker token: {{ swarm_info.swarm_facts.JoinTokens.Worker }}
+# - debug:
+#     msg: >-
+#       addr: {{ ansible_default_ipv4.address }}
+#       worker token: {{ swarm_info.swarm_facts.JoinTokens.Worker }}
 - name: save token to file
   local_action: copy content="{{ swarm_info.swarm_facts.JoinTokens.Worker }}" dest="/home/ubuntu/token.log"
-  
+#NGinx server exposes an HTTP endpoint to all machines in the docker security group. (e.g. Used insecret sharing between manager and workers)
 - name: Configure nginx
   become: yes
   template:
@@ -50,6 +50,7 @@
     name: nginx
     enabled: yes
     state: restarted
+#This is needed to allow ansible to talk to the swarm remotely.    
 - name: Ensure python requirements for the provisioning are installed
   pip:
     name: jsondiff
