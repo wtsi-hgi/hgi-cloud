@@ -8,7 +8,7 @@ lint:
 platforms:
   - name: default
     image: eta-hgi-image-hail-base-0.2.3
-    flavor: m1.medium
+    flavor: m2.medium
     role: hail-volume
 provisioner:
   name: ansible
