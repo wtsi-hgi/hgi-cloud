@@ -28,12 +28,12 @@ variable "docker_worker_image_name" {
 
 
 variable "docker_manager_flavor_name" {
-  default  = "m1.medium"
+  default  = "m2.medium"
 }
 
 
 variable "docker_workers_flavor_name" {
-   default     = "m1.medium"
+   default     = "m2.medium"
 }
 
 variable "docker_manager_network_name" {
@@ -54,7 +54,7 @@ variable "docker_manager_external_address" {
 
 variable "docker_workers_count" {
 
-  default = 2
+  default = 1
 
 }
 
