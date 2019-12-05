@@ -9,12 +9,12 @@ variable "spark_slaves_count" {
 
 variable "spark_slaves_flavor_name" {
   description = "The name of the flavour of the Spark slaves instances"
-  default     = "m1.medium"
+  default     = "m2.medium"
 }
 
 variable "spark_master_flavor_name" {
   description = "The name of the flavour of the Spark master instance"
-  default     = "m1.medium"
+  default     = "m2.medium"
 }
 
 # This value is manually assigned to the user.

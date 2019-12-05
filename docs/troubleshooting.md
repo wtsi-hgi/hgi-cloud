@@ -108,16 +108,16 @@ equal:
 
 ```yml
 # This is good
-spark_master_flavor_name  = "m1.medium"
-spark_slaves_flavor_name  = "m1.medium"
+spark_master_flavor_name  = "m2.medium"
+spark_slaves_flavor_name  = "m2.medium"
 
 # This is bad
-spark_master_flavor_name  = "m1.tiny"
-spark_slaves_flavor_name  = "m1.3xlarge"  # Undercommitted workers
+spark_master_flavor_name  = "m2.tiny"
+spark_slaves_flavor_name  = "m2.3xlarge"  # Undercommitted workers
 
 # This is really bad
-spark_master_flavor_name  = "m1.3xlarge"
-spark_slaves_flavor_name  = "m1.tiny"     # Overcommitted workers
+spark_master_flavor_name  = "m2.3xlarge"
+spark_slaves_flavor_name  = "m2.tiny"     # Overcommitted workers
 ```
 
 In newer versions of the provisioning software, this discrepancy has
@@ -153,7 +153,6 @@ will need to edit your configuration to use a larger
 [flavour](https://ssg-confluence.internal.sanger.ac.uk/display/OPENSTACK/Flavours)
 and then rebuild your cluster.
 
-HGI would recommend starting with an `m1.medium` or `m2.medium` and
-moving up from there. Do not jump to the very large flavours, as there
-may not be quota for these machines and their configuration is not
-necessarily better.
+HGI would recommend starting with an `m2.medium` and moving up from
+there. Do not jump to the very large flavours, as there may not be quota
+for these machines and bigger is not necessarily better!
