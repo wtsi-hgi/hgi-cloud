@@ -10,3 +10,4 @@ terraform/deployments/
 __pycache__/
 vault_password.txt
 build/
+swarm_secrets/

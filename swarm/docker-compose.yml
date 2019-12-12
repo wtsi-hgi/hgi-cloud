@@ -1,0 +1,66 @@
+
+version: '3.5'
+
+# Compose has commands for managing the whole lifecycle of your application:
+
+# Start, stop, and rebuild services
+# View the status of running services
+# Stream the log output of running services
+# Run a one-off command on a service
+
+services:
+  backend:
+    image: mercury/openstack_report_backend:prod
+    ports: 
+      - "3000:3000" 
+    secrets:
+      - source: backend_secret
+        target: /app/hgi-openrc.sh
+    networks: [app]
+
+  frontend:
+    image: mercury/openstack_report_frontend:prod    
+    depends_on: 
+      - backend
+    command: "npm run serve -- --mode production"
+    networks: [app]
+  
+  weaver:
+    image: mercury/hgi-weaver:1.1 
+    ports:
+      - "3838:3838"
+    secrets:
+      - source: weaver_secret      
+        target: /srv/shiny-server/weaver/config.yml
+      - source: weaver_secret      
+        target: /srv/shiny-server/spaceman/config.yml
+    networks: [app]
+
+  nginx:
+    image: nginx 
+    ports: 
+      - "80:8080"
+    depends_on:
+      - frontend
+      - backend
+    configs:
+      - source: nginx_config
+        target: /etc/nginx/nginx.conf 
+    networks: [app]
+
+secrets:
+   backend_secret:
+      file: hgi-openrc.sh
+   weaver_secret:
+      file: config.yml    
+  
+configs:
+   nginx_config:
+      file: nginx.conf
+
+networks:
+  app:
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.0.1.1/24
