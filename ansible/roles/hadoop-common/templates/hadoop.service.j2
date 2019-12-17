@@ -8,7 +8,6 @@ After=network-online.target
 User={{ hadoop_user_name }}
 Type=forking
 {% if service == "namenode" %}
-ExecStartPre={{ hadoop_home }}/bin/hdfs {{ service }} -format
 ExecStart={{ hadoop_home }}/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start {{ service }}
 {% else %}
 ExecStart={{ hadoop_home }}/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start {{ service }}
