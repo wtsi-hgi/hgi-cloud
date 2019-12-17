@@ -1,0 +1,60 @@
+---
+- name: Configure profile
+  template:
+    src: "profile.j2"
+    dest: "/etc/profile"
+    owner: root
+    group: root
+  tags: ["config"]
+
+- name: Configure Hadoop environment
+  template:
+    src: "hadoop-env.sh.j2"
+    dest: "{{ hadoop_home }}/etc/hadoop/hadoop-env.sh"
+    owner: "{{ hadoop_user_name }}"
+    group: "{{ hadoop_group_name }}"
+  tags: ["config"]
+
+- name: Configure core-site.xml
+  template:
+    src: "core-site.xml.j2"
+    dest: "{{ hadoop_home }}/etc/hadoop/core-site.xml"
+    owner: "{{ hadoop_user_name }}"
+    group: "{{ hadoop_group_name }}"
+  tags: ["config"]
+
+- name: Configure hdfs-site.xml
+  template:
+    src: "hdfs-site.xml.j2"
+    dest: "{{ hadoop_home }}/etc/hadoop/hdfs-site.xml"
+    owner: "{{ hadoop_user_name }}"
+    group: "{{ hadoop_group_name }}"
+  tags: ["config"]
+
+- name: Configure mapred-site.xml
+  template:
+    src: "mapred-site.xml.j2"
+    dest: "{{ hadoop_home }}/etc/hadoop/mapred-site.xml"
+    owner: "{{ hadoop_user_name }}"
+    group: "{{ hadoop_group_name }}"
+  tags: ["config"]
+
+- name: Configure yarn-site.xml
+  template:
+    src: "yarn-site.xml.j2"
+    dest: "{{ hadoop_home }}/etc/hadoop/yarn-site.xml"
+    owner: "{{ hadoop_user_name }}"
+    group: "{{ hadoop_group_name }}"
+  tags: ["config"]
+
+- name: Install Hadoop services
+  template:
+    src: "hadoop.service.j2"
+    dest: "/etc/systemd/system/hadoop-{{ service }}.service"
+    owner: root
+  become: yes
+  loop:
+    - namenode
+    - datanode
+  loop_control:
+    loop_var: service

@@ -1,0 +1,16 @@
+---
+hadoop_logs_dir: "{{ hadoop_home }}/logs"
+
+hdfs_home: "{{ hadoop_home }}"
+hdfs_replicas: 1
+hdfs_namenode_dir: "{{ hdfs_home }}/namenode"
+hdfs_datanode_dir: "{{ hdfs_home }}/datanode"
+
+yarn_home: "{{ hadoop_home }}"
+yarn_logs_dir: "{{ yarn_home }}/logs"
+        
+hadoop_defaults:
+
+hadoop_tuning: {}
+
+hadoop_defaults_conf: "{{ hadoop_defaults | combine(hadoop_tuning) }}"
