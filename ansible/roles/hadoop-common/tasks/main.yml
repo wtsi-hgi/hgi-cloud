@@ -47,6 +47,17 @@
     group: "{{ hadoop_group_name }}"
   tags: ["config"]
 
+- name: Setup Hadoop local dirs
+  file:
+    state: directory
+    path: "{{ local_dir }}"
+    owner: "{{ hadoop_install_owner }}"
+    group: "{{ hadoop_install_group }}"
+    mode: "{{ hadoop_install_mode }}"
+  loop: "{{ hadoop_local_dirs }}"
+  loop_control:
+    loop_var: local_dir
+
 - name: Install Hadoop services
   template:
     src: "hadoop.service.j2"

@@ -1,10 +1,19 @@
 ---
 hadoop_logs_dir: "{{ hadoop_home }}/logs"
 
+hadoop_install_owner: "{{ base_install_owner }}"
+hadoop_install_group: "{{ base_install_group }}"
+hadoop_install_mode: "ug+rw,o+r"
+
 hdfs_home: "{{ hadoop_home }}"
 hdfs_replicas: 1
 hdfs_namenode_dir: "{{ hdfs_home }}/namenode"
 hdfs_datanode_dir: "{{ hdfs_home }}/datanode"
+
+hadoop_local_dirs:
+  - "{{ hdfs_namenode_dir }}"
+  - "{{ hdfs_datanode_dir }}"
+  - "{{ hadoop_logs_dir }}"
 
 yarn_home: "{{ hadoop_home }}"
 yarn_logs_dir: "{{ yarn_home }}/logs"
