@@ -29,10 +29,9 @@ fi
 export PATH=$PATH:{{ hadoop_home }}/bin:{{ hadoop_home }}/sbin
 export HADOOP_HOME={{ hadoop_home }}
 export HADOOP_CONF_DIR={{ hadoop_home }}/etc/hadoop
-export HDFS_NAMENODE_USER={{ hadoop_user }}
-export HDFS_DATANODE_USER={{ hadoop_user }}
-export HDFS_SECONDARYNAMENODE_USER={{ hadoop_user }}
-export JAVA_HOME={{ java_home }}
+export HDFS_NAMENODE_USER={{ hadoop_user_name }}
+export HDFS_DATANODE_USER={{ hadoop_user_name }}
+export HDFS_SECONDARYNAMENODE_USER={{ hadoop_user_name }}
 export HADOOP_MAPRED_HOME={{ hadoop_home }}
 export HADOOP_COMMON_HOME={{ hadoop_home }}
 export HADOOP_HDFS_HOME={{ hadoop_home }}
