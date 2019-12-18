@@ -21,5 +21,9 @@
           <name>fs.defaultFS</name>
 	  <value>hdfs://{{ spark_master_host }}:9820/</value>
   </property>
+  <property>
+	  <name>io.file.buffer.size</name>
+	  <value>131072</value>
+  </property>
 </configuration>
 
