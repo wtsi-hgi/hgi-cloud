@@ -23,3 +23,5 @@ hadoop_defaults:
 hadoop_tuning: {}
 
 hadoop_defaults_conf: "{{ hadoop_defaults | combine(hadoop_tuning) }}"
+
+java_home: "/usr/lib/jvm/java-{{ java_jdk_version }}-openjdk-amd64"
