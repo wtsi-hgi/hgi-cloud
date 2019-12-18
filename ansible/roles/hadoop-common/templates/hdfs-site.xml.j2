@@ -22,7 +22,7 @@
   </property>
   <property>
           <name>dfs.datanode.data.dir</name>
-          <value>file://{{ hdfs_datanode_dir }}</value>
+	  <value>file://{{ hdfs_datanode_dir }},[RAM_DISK]file:///mnt/tmpfs</value>
   </property>
   <property>
           <name>dfs.replication</name>
