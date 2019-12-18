@@ -4,6 +4,8 @@
   become_user: "{{ hadoop_user_name }}"
   command: "{{ hadoop_home }}/bin/hdfs namenode -format -nonInteractive"
   run_once: yes
+  environment:
+    JAVA_HOME: "{{ java_home }}"
 
 - name: Enable and start hadoop-datanode service
   become: yes
