@@ -7,6 +7,8 @@ After=network-online.target
 [Service]
 User={{ hadoop_user_name }}
 Type=forking
+Environment=JAVA_HOME={{ java_home }}
+Environment=HADOOP_CONF_DIR={{ hadoop_home }}/etc/hadoop
 {% if service == "namenode" %}
 ExecStart={{ hadoop_home }}/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start {{ service }}
 {% else %}
