@@ -7,13 +7,6 @@
   environment:
     JAVA_HOME: "{{ java_home }}"
 
-- name: Enable and start hadoop-datanode service
-  become: yes
-  service:
-    name: hadoop-datanode
-    enabled: yes
-    state: started
-
 - name: Enable and start hadoop-namenode service
   become: yes
   service:
