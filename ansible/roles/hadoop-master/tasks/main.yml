@@ -2,7 +2,7 @@
 - name: Format hadoop-namenode
   become: yes
   become_user: "{{ hadoop_user_name }}"
-  command: "echo 'Y' | {{ hadoop_home }}"
+  command: "echo 'Y' | {{ hadoop_home }}/bin/hdfs namenode -format"
 
 - name: Enable and start hadoop-datanode service
   become: yes
