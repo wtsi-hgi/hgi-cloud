@@ -51,18 +51,18 @@
   register: swapon_show
   changed_when: false
 
-  #- name: Create tmpfs mountpoint
-  #  file:
-  #    path: /mnt/tmpfs
-  #    state: directory
-  #
-  #- name: Mount tmpfs
-  #  mount:
-  #    path: /mnt/tmpfs
-  #    state: mounted
-  #    src: tmpfs
-  #    fstype: tmpfs
-  #    opts: "defaults,noatime,mode=1777,nosuid,size={{ swapon_show.stdout }}G"
+- name: Create tmpfs mountpoint
+  file:
+    path: /mnt/tmpfs
+    state: directory
+
+- name: Mount tmpfs
+  mount:
+    path: /mnt/tmpfs
+    state: mounted
+    src: tmpfs
+    fstype: tmpfs
+    opts: "defaults,noatime,mode=1777,nosuid,size={{ swapon_show.stdout }}G"
 
 - name: Configure Collectd
   template:
