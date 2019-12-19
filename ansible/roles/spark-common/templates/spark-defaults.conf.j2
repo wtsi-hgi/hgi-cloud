@@ -12,3 +12,5 @@
 {% for key, value in spark_defaults_conf.items() | sort %}
 {{ "%-50s%s" | format(key, value) }}
 {% endfor %}
+
+spark.hadoop.dfs.replication                      {{ hdfs_replicas }}
