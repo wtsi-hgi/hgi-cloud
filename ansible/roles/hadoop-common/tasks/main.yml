@@ -69,11 +69,3 @@
     - datanode
   loop_control:
     loop_var: service
-
-- name: Mount datanode dir on /dev/vda2
-  mount:
-    path: "{{ hdfs_datanode_dir }}"
-    state: mounted
-    src: /dev/vda2
-    fstype: ext4
-    opts: "defaults,noatime,mode=1777,nosuid,size={{ swapon_show.stdout }}G"
