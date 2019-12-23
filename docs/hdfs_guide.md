@@ -19,9 +19,9 @@ There are multiple ways of moving data around in HDFS. To copy files from your c
 `hadoop fs -put` command, e.g. `hadoop fs -put ~/hail/tmp/scripts/ /scripts`.
 Similarly you can copy data from HDFS with the `hadoop fs -get` command.
 
-You can also transfer data easily between S3 and HDFS with the `hadoop distcp` command.
+You can also transfer data easily between HDFS and S3 with the `hadoop distcp` command.
 ```
-hadoop distcp s3a://<bucket_name>/<source_path> /user/hgi/<target_path>
+hadoop distcp hdfs:///<source_path> s3a://<bucket_name>/<target_path>
 ```
 
 You can specify different access credentials with the -D flag, or change the configuration in `/opt/sanger.ac.uk/hgi/hadoop/etc/hadoop/core-site.xml`.
@@ -29,5 +29,6 @@ You can specify different access credentials with the -D flag, or change the con
 hadoop distcp \
 -D fs.s3a.access.key=<access_key> \
 -D fs.s3a.secret.key=<secret_key> \
-s3a://<bucket_name>/<source_path> /user/hgi/<target_path>
+hdfs:///<source_path> s3a://<bucket_name>/<target_path>
 ```
+
