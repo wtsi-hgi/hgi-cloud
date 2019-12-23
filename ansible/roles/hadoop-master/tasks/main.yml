@@ -13,3 +13,10 @@
     name: hadoop-namenode
     enabled: yes
     state: started
+
+- name: Enable and start yarn-resourcemanager service
+  become: yes
+  service:
+    name: yarn-resourcemanager
+    enabled: yes
+    state: started

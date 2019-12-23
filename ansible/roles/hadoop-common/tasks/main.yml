@@ -69,3 +69,15 @@
     - datanode
   loop_control:
     loop_var: service
+
+- name: Install YARN services
+  template:
+    src: "yarn.service.j2"
+    dest: "/etc/systemd/system/yarn-{{ service }}.service"
+    owner: root
+  become: yes
+  loop:
+    - resourcemanager
+    - nodemanager
+  loop_control:
+    loop_var: service

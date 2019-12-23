@@ -5,3 +5,10 @@
     name: hadoop-datanode
     enabled: yes
     state: started
+
+- name: Enable and start yarn-nodemanager service
+  become: yes
+  service:
+    name: yarn-nodemanager
+    enabled: yes
+    state: started

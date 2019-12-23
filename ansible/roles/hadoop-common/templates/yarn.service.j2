@@ -9,8 +9,8 @@ User={{ hadoop_user_name }}
 Type=forking
 Environment=JAVA_HOME={{ java_home }}
 Environment=HADOOP_CONF_DIR={{ hadoop_home }}/etc/hadoop
-ExecStart={{ hadoop_home }}/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start {{ service }}
-ExecStop={{ hadoop_home }}/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs stop {{ service }}
+ExecStart={{ hadoop_home }}/sbin/yarn-daemon.sh --config $HADOOP_CONF_DIR start {{ service }}
+ExecStop={{ hadoop_home }}/sbin/yarn-daemon.sh --config $HADOOP_CONF_DIR stop {{ service }}
 TimeoutSec=30
 Restart=on-failure
 RestartSec=30
