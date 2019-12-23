@@ -17,7 +17,7 @@
 <!-- Site specific YARN configuration properties -->
   <property>
 	  <name>yarn.resourcemanager.hostname</name>
-	  <value>{{ spark_master_host | default('0.0.0.0', true) }}</value>
+	  <value>{{ spark_master_private_address | default('0.0.0.0', true) }}</value>
   </property>
   <property>
           <name>yarn.nodemanager.aux-services</name>
