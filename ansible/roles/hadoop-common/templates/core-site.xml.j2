@@ -25,5 +25,16 @@
 	  <name>io.file.buffer.size</name>
 	  <value>131072</value>
   </property>
+  <property>
+          <name>fs.s3a.endpoint</name>
+          <value>cog.sanger.ac.uk</value>
+  </property>
+  <property>
+          <name>fs.s3a.access.key</name>
+	  <value>{{ aws_access_key_id | default('undef') }}</value>
+  </property>
+  <property>
+          <name>fs.s3a.secret.key</name>
+	  <value>{{ aws_secret_access_key | default('undef') }}</value>
 </configuration>
 
