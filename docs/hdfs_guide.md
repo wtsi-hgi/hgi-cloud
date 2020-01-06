@@ -5,7 +5,7 @@ Create a cluster as described in the [setup guide](https://github.com/wtsi-hgi/h
 You can write to HDFS (Hadoop Distributed File System) by specifying the namenode and port that HDFS is connected to, along with the desired directory.
 This is configured in `$HADOOP_HOME/etc/hadoop/core-site.xml`, and by default is set to `hdfs://spark-master:9820/`.
 
-For example, to initialise Hail with HDFS storage, you can write something like this
+For example, to initialise Hail with HDFS storage, you can write something like this:
 ```python
 tmp_dir = "hdfs://spark-master:9820/"
 sc = pyspark.SparkContext()
@@ -32,3 +32,4 @@ hadoop distcp \
 hdfs:///<source_path> s3a://<bucket_name>/<target_path>
 ```
 
+Find the official docs [here](https://hadoop.apache.org/docs/r2.7.1/).
