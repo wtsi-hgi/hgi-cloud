@@ -1,6 +1,6 @@
 # HDFS Guide
 
-Before provisioning your cluster with HDFS, ensure that the `spark_master_role_version` and `spark_slaves_role_version` variables are set to `feature/hdfs` in `/usr/src/provisioning/terraform/vars/eta/hgi/prod.tfvars`.
+Create a cluster as described in the [setup guide](https://github.com/wtsi-hgi/hgi-cloud/blob/feature/hdfs/docs/setup.md), except make sure to checkout the HDFS branch: `git checkout feature/hdfs` after following the instructions under 'Prepare to Run the Provisioning Software'.
 
 You can write to HDFS (Hadoop Distributed File System) by specifying the namenode and port that HDFS is connected to, along with the desired directory.
 This is configured in `$HADOOP_HOME/etc/hadoop/core-site.xml`, and by default is set to `hdfs://spark-master:9820/`.
