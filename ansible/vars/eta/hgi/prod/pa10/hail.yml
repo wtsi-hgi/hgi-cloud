@@ -1,4 +1,5 @@
 ---
+hail_version:"0.2.31"
 spark_tuning:
   spark.speculation: true
   spark.local.dir: /opt/sanger.ac.uk/hgi/hail/tmp
