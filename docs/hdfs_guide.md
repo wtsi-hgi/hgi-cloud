@@ -11,7 +11,7 @@ tmp_dir = "hdfs://spark-master:9820/"
 sc = pyspark.SparkContext()
 hl.init(sc=sc, tmp_dir=tmp_dir, default_reference="GRCh38")
 ```
-
+You can view the status of each node and the filesystem at `<spark_master_public_ip>:50070`.
 
 ## Transferring data in and out of HDFS
 
@@ -31,5 +31,6 @@ hadoop distcp \
 -D fs.s3a.secret.key=<secret_key> \
 hdfs:///<source_path> s3a://<bucket_name>/<target_path>
 ```
+NOTE: Currently, HDFS is mounted on tmpfs, meaning that if one node of your cluster is rebooted or goes down, all data stored in HDFS will be lost. It is therefore recommended to transfer your data off HDFS once you are finished with it, either to a local volume, or to S3.
 
 Find the official docs [here](https://hadoop.apache.org/docs/r2.7.1/).
