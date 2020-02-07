@@ -4,3 +4,4 @@ spark_tuning:
   spark.local.dir: /opt/sanger.ac.uk/hgi/hail/tmp
   spark.stage.maxConsecutiveAttempts: 25
   spark.task.maxFailures: 100
+hail_version: "0.2.31"
