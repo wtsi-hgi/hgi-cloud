@@ -17,7 +17,7 @@ hadoop_version: "2.7.1"
 java_jdk_version: "8"
 spark_hadoop_profile: "2.7"
 spark_version: "2.4.3"
-hail_version: "0.2.19"
+hail_version: "0.2.28"
 
 # A list of extra jars that the users might want to install. It is possible to
 # install them with a different name.
@@ -113,7 +113,7 @@ spark_jars:
   - "{{ anaconda_install_dir }}/anaconda3/lib/python{{ anaconda_python_version }}/site-packages/hail/hail-all-spark.jar"
   - "{{ spark_install_dir }}/jars/*.jar"
 
-spark_defaults_conf:
+spark_defaults:
   # SparkContext Configuration
   spark.master: "spark://spark-master:{{ spark_master_port }}"
   spark.sql.files.maxPartitionBytes: "42949672960"
@@ -121,10 +121,16 @@ spark_defaults_conf:
 
   spark.driver.host: spark-master
   spark.driver.bindAddress: 0.0.0.0
-  spark.driver.memory: "{{ (ansible_memtotal_mb - 2048) | int() }}m"
   spark.driver.maxResultSize: 0
 
-  spark.executor.memory: "{{ (openstack_flavours | selectattr('name', 'equalto', spark_slaves_flavor_name) | first | default({'ram': 2048})).ram | int() - 2048 }}m"
+  # FIXME This linear model was determined experimentally and breaks
+  # down in extremely large memory conditions. It purposely under-
+  # -commits memory to compensate for measurement error; this is most
+  # noticeable with smaller memory flavours. See the issue comments for
+  # details: https://github.com/wtsi-hgi/hgi-cloud/issues/8
+  spark.driver.memory: "{{ (((0.985 * (spark_master_memory | int()) / 1024) - 2.11) * 1024) | int() }}m"
+  spark.executor.memory: "{{ (((0.985 * (spark_slaves_memory | int()) / 1024) - 2.11) * 1024) | int() }}m"
+
   spark.executor.instances: 1
 
   spark.jars: "{{ spark_jars | join(',') }}"
@@ -141,6 +147,10 @@ spark_defaults_conf:
   # spark.hadoop.fs.s3a.bucket.<bucket_name>.aws.credentials.provider:  org.apache.hadoop.fs.s3a.AnonymousAWSCredentialsProvider
   spark.ui.reverseProxy: true
   spark.ui.reverseProxyUrl: "http://{{ spark_master_external_address | default('localhost', true) }}/spark"
+
+spark_tuning: {}
+
+spark_defaults_conf: "{{ spark_defaults | combine(spark_tuning) }}"
 
 
 # Logger levels set to the official defaults

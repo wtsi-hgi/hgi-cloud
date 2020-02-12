@@ -1,2 +1,4 @@
 ---
-{}
+spark_tuning:
+  spark.stage.maxConsecutiveAttempts: 25
+  spark.task.maxFailures: 100

@@ -118,25 +118,6 @@ def get_hail_volume_name(context, owner):
   volumes = [v.id for v in openstack.volume.volumes() if v.name == volume_name]
   return volumes[0] if volumes else None
 
-
-def get_openstack_flavours():
-  # Quick-and-dirty function that serialises the OpenStack flavours into
-  # a Terraform variable
-  openstack = openstack_client.connect(auth_url=os.environ['OS_AUTH_URL'],
-                                       project_name=os.environ['OS_PROJECT_NAME'],
-                                       username=os.environ['OS_USERNAME'],
-                                       password=os.environ['OS_PASSWORD'],
-                                       region_name=os.environ['OS_REGION_NAME'],
-                                       app_name='invoke')
-
-  return "[{}]".format(
-    ", ".join(
-      f"{{name = \"{flavour.name}\", ram = {flavour.ram}, cpus = {flavour.vcpus}}}"
-      for flavour in openstack.list_flavors()
-    )
-  )
-
-
 @invoke.task
 def init(context, public_ip, network_cidr=None, volume_size=None, owner=None):
   '''
@@ -202,10 +183,7 @@ def create(context, owner=None, networking=False):
   if networking:
     context.run('bash invoke.sh deployment create --name networking --owner {}'.format(owner))
   context.run('bash invoke.sh deployment create --name hail_volume --owner {}'.format(owner))
-  env = {
-    'TF_VAR_hail_volume': get_hail_volume_name(context, owner),
-    "TF_VAR_openstack_flavours": get_openstack_flavours()
-  }
+  env = {'TF_VAR_hail_volume': get_hail_volume_name(context, owner)}
 
   context.run('bash invoke.sh deployment create --name hail_cluster --owner {}'.format(owner), env=env)
 
@@ -226,8 +204,7 @@ def destroy(context, owner=None, networking=False, yes_also_hail_volume=False):
   volume = get_hail_volume_name(context, owner)
   env = {
     'TF_VAR_hail_volume': volume or "",
-    "TF_VAR_password": "",
-    "TF_VAR_openstack_flavours": "[]"
+    "TF_VAR_password": ""
   }
 
   context.run('bash invoke.sh deployment destroy --name hail_cluster --owner {}'.format(owner), env=env)

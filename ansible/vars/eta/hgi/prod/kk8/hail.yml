@@ -1,3 +1,5 @@
 ---
-# Automatically generated
-{}
+spark_tuning:
+  spark.speculation: true
+  spark.stage.maxConsecutiveAttempts: 25
+  spark.task.maxFailures: 100

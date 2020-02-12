@@ -75,7 +75,7 @@ examples below.
    able to provide the addresses of *Console Servers* for different
    environments.
 
-5. The version of the *provisioning software* (e.g., `v0.5`)
+5. The version of the *provisioning software* (e.g., `v0.5.1`)
 
 # Running the *Provisioning Software*
 
@@ -310,7 +310,7 @@ advantages:
 The command we suggest to run the provisioning container is:
 
 ```bash
-docker run --tty --interactive --workdir /root --volume ${HOME}:/root hgi/provisioning-base:v0.5 bash
+docker run --tty --interactive --workdir /root --volume ${HOME}:/root hgi/provisioning-base:v0.5.1 bash
 ```
 The following is a simple explanation of the suggested options:
 
@@ -320,9 +320,10 @@ The following is a simple explanation of the suggested options:
   directory
 * `--volume ${HOME}:/root`: Makes the user's current home directory
   available inside the container
-* `hgi/provisioning-base:v0.5`: This represents the name and version of
-  the provisioning container. Keep in mind that `v0.5` represents the
-  version of the provisioning software and this is subject to change.
+* `hgi/provisioning-base:v0.5.1`: This represents the name and version
+  of the provisioning container. Keep in mind that `v0.5.1` represents
+  the version of the provisioning software and this is subject to
+  change.
 * `bash`: This is the name of the shell to run inside the container
 
 ### Prepare to Run the Provisioning Software
