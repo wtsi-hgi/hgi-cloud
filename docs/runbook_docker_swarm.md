@@ -164,6 +164,8 @@ bash invoke.sh hail destroy
 
 # Troubleshoot
 
+- You might need to authenticate against docker hub to download images from a private repository. For this, use `docker login`
+
 - Terraform returns with succesful provisioning even if the bootup script is still running in the background (the bootup script that sets up the swarm does many tasks: in).  As a result, the swarm might not be up until after some time.
 
 - Security Groups, including the one corresponding to swarm (`docker_swarm_web_app`) is hard-coded in the terraform script. Any change in them through other channels is going to break terraform. 
@@ -185,7 +187,11 @@ bash invoke.sh hail destroy
 
 - The software provisioned on each machine requires a minimum amount of disk space, so the flavour defined in the terraform vars must be appropriate. The `m1.tiny` flavour, for instance, has too little memory and would fail. 
 
-
+- The only way to update configuration mounted onto an existing swarm stack is to remove the stack and redeploy it
+```
+docker stack rm <my_stack_name>
+docker stack deploy -c docker-compose.yml --with-registry-auth <my_stack_name>
+```
 
 
 

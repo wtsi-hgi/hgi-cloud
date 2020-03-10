@@ -26,7 +26,7 @@ services:
     networks: [app]
   
   weaver:
-    image: mercury/hgi-weaver:1.1.3
+    image: mercury/hgi-weaver:1.1.3 
     ports:
       - "3838:3838"
     secrets:
@@ -36,6 +36,18 @@ services:
         target: /srv/shiny-server/spaceman/config.yml
     networks: [app]
 
+  login-page:
+    image: mercury/auth-login-page
+    ports:
+      - "9000:9000"
+    networks: [app]
+
+  nginx-ldap-auth-daemon:
+    image: mercury/nginx-ldap-auth-daemon:test 
+    ports:
+      - "8888:8888"
+    networks: [app]
+
   nginx:
     image: nginx 
     ports: 
@@ -43,6 +55,9 @@ services:
     depends_on:
       - frontend
       - backend
+      - weaver
+      - login-page
+      - nginx-ldap-auth-daemon
     configs:
       - source: nginx_config
         target: /etc/nginx/nginx.conf 

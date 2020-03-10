@@ -1,0 +1,9 @@
+# Enter your database credentials here
+
+default:
+  data:
+    host: "hgilustremon-db.internal.sanger.ac.uk"
+    port: 3476
+    database: "hgi_lustre_usage"
+    username: "hgi_lustre_rw"
+    password: "een5uoChieh0"
