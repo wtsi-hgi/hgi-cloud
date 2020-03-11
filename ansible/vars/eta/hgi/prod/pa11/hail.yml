@@ -2,3 +2,4 @@ spark_tuning:
   spark.speculation: true
   spark.stage.maxConsecutiveAttempts: 25
   spark.task.maxFailures: 100
+hail_version: "0.2.31"
