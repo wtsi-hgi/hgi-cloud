@@ -12,6 +12,7 @@ sc = pyspark.SparkContext()
 hl.init(sc=sc, tmp_dir=tmp_dir, default_reference="GRCh38")
 ```
 You can view the status of each node and the filesystem at `<spark_master_public_ip>:50070`.
+You can also check the total HDFS usage on the cluster with `hdfs dfs` commands, e.g. `hdfs dfs -df -h`, or `hdfs dfs -ls /<path>`. More HDFS commands can be found on the help page, `hdfs dfs -help`.
 
 ## Transferring data in and out of HDFS
 
