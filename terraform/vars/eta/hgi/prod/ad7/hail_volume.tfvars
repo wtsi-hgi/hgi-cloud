@@ -1,1 +1,1 @@
-hail_volume_size = 500
+hail_volume_size = 50000
