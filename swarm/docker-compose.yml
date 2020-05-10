@@ -1,4 +1,4 @@
-
+  
 version: '3.5'
 
 # Compose has commands for managing the whole lifecycle of your application:
@@ -27,8 +27,6 @@ services:
   
   weaver:
     image: mercury/hgi-weaver:1.1.3 
-    ports:
-      - "3838:3838"
     secrets:
       - source: weaver_secret      
         target: /srv/shiny-server/weaver/config.yml
@@ -48,12 +46,36 @@ services:
       - "8888:8888"
     networks: [app]
 
+  gwas-frontend:
+    image: mercury/gwasplots:1.0
+    ports:
+      - "3001:8080"
+    environment:
+      - NODE_ENV=production
+    configs:
+      - source: gwas_whitelist
+        target: /usr/src/app/whitelist.js
+    command: "node server.js"
+    depends_on:
+      - gwas-db
+    networks: [app]
+
+  gwas-db:
+    image: mongo:bionic
+    volumes:
+      - gwasdb:/data/db
+    networks: [app]
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
   nginx:
     image: nginx 
     ports: 
       - "443:443"
       - "80:8080"
     depends_on:
+      - gwas-frontend
       - frontend
       - backend
       - weaver
@@ -68,12 +90,16 @@ services:
         target: /etc/ssl/private/apps_hgi_sanger_ac_uk-key.pem
     networks: [app]
 
+volumes:
+  gwasdb:
+    driver: local
+
 secrets:
    backend_secret:
       file: hgi-openrc.sh
    weaver_secret:
       file: config.yml    
-  
+
 configs:
    nginx_config:
       file: nginx.conf
@@ -81,6 +107,8 @@ configs:
       file: apps_hgi_sanger_ac_uk-cert.pem
    ssl_key:
       file: apps_hgi_sanger_ac_uk-key.pem 
+   gwas_whitelist:
+      file: gwas_whitelist.js
 
 networks:
   app:
