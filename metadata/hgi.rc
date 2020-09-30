@@ -1,4 +1,4 @@
 META_PROVIDER="openstack"
-META_DATACENTER="eta"
+META_DATACENTER="theta"
 META_PROGRAMME="hgi"
 META_ENV="prod"

@@ -1,0 +1,4 @@
+---
+hail_extra_pip:
+- plotly
+- dash

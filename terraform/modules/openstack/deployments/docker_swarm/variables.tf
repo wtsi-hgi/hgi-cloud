@@ -1,6 +1,6 @@
 variable "datacenter" {
 
-  default = "eta"
+  default = "theta"
 
 }
 
@@ -18,12 +18,12 @@ variable "deployment_owner" {
 
 
 variable "docker_manager_image_name" {
-  default = "bionic-WTSI-docker_b5612"
+  default = "bionic-WTSI-docker_49930_38ab07e9"
 }
 
 
 variable "docker_worker_image_name" {
-  default = "bionic-WTSI-docker_b5612"
+  default = "bionic-WTSI-docker_49930_38ab07e9"
 }
 
 

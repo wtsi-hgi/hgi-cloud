@@ -19,7 +19,7 @@ spark_distribution:
   hadoop_version: 0.0.0
   hadoop_profile: "0.0"
   mirror: https://archive.apache.org/dist/spark
-  bucket_name: eta-default-bucket-anonimous
+  bucket_name: theta-default-bucket-anonimous
   sha512:
     2.4.3: |
       3EAEA3B0 A81A717B B43CE6EE 0BB2C3B8 351EF080 DB9499AF 66F9F22C
