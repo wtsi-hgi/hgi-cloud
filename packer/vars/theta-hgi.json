@@ -1,6 +1,6 @@
 {
   "datacenter": "theta",
   "programme": "hgi",
-  "env": "ci",
+  "env": "prod",
   "source_image_name": "bionic-server"
 }

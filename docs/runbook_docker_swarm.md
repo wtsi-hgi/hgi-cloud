@@ -96,7 +96,7 @@ The following are files which store various credentials and other sensitive info
 1. **Ensure the docker-main network is available on the tenant**
 Docker Swarm runs on its on network, which needs to exists on a tenant prior to creating a swarm cluser. To set up the networking, run:
 
-`bash invoke docker create --networking`
+`bash invoke.sh docker create --networking`
 
 2. **Ensure an appropriate base image is configured and avaiable**
 
