@@ -8,7 +8,7 @@ Make sure you have `terraform 0.11`, and `packer 1.4` installed. Installing `ans
 
 1. Clone the `hgi-cloud` repository.
 
-2. Log into the Openstack web interface as `mercury`, using the password stored in `/hgi/secrets/openstack-mercury.pw` on `hgi-farm5` once sudo'd as 'mercury'.
+2. Log into the Openstack web interface as `mercury`, using the password stored in `/hgi/secrets/openstack-mercury.pw` on `hgi-farm5` once sudo'd as `mercury`.
 
 3. Select an appropriate project from the menu in the upper left corner.
 
@@ -16,15 +16,15 @@ Make sure you have `terraform 0.11`, and `packer 1.4` installed. Installing `ans
 
 5. Fill in the values at the bottom of `openrc.sh` using `/hgi/secrets/mercury.s3.key` on `hgi-farm5`.
 
-6. Add 'export AWS_S3_ENDPOINT="cog.sanger.ac.uk"' & 'export AWS_DEFAULT_REGION="eu-west-1"' to the bottom of the 'openrc.sh'
+6. Add `export AWS_S3_ENDPOINT="cog.sanger.ac.uk"` & `export AWS_DEFAULT_REGION="eu-west-1"` to the bottom of the `openrc.sh`
 
 7. Run `source openrc.sh`.
 
 8. `cd` to the cloned `hgi-cloud` directory and run `git checkout theta/dockerSwarm`.
 
-9. Run `bash invoke.sh docker create`. This creates a set of Openstack machines which are configured to act as swarm. If 'theta-hgi-prod-subnet-docker-main' has not been setup, run 'bash invoke.sh docker create --networking'
+9. Run `bash invoke.sh docker create`. This creates a set of Openstack machines which are configured to act as swarm. If `theta-hgi-prod-subnet-docker-main` has not been setup, run `bash invoke.sh docker create --networking`
 
-10. To destroy your docker swarm cluster run 'bash invoke.sh docker destroy'
+10. To destroy your docker swarm cluster run `bash invoke.sh docker destroy`
 
 NOTE: If you are installing `terraform 0.11` using Homebrew on OSX, you will need to explicitly add it to the PATH before doing step 8. For example: `export PATH="/usr/local/opt/terraform@0.11/bin:$PATH`
 
