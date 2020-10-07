@@ -47,7 +47,7 @@ services:
     networks: [app]
 
   gwas-frontend:
-    image: mercury/gwasplots:1.7
+    image: mercury/gwasplots:1.6
     volumes:
       - type: bind
         source: /home/ubuntu/img 
@@ -91,10 +91,6 @@ services:
     configs:
       - source: nginx_config
         target: /etc/nginx/nginx.conf 
-      - source: ssl_cert
-        target: /etc/ssl/certs/apps_hgi_sanger_ac_uk-cert.pem
-      - source: ssl_key
-        target: /etc/ssl/private/apps_hgi_sanger_ac_uk-key.pem
     networks: [app]
 
 volumes:
@@ -109,11 +105,7 @@ secrets:
 
 configs:
    nginx_config:
-      file: nginx.conf
-   ssl_cert:
-      file: apps_hgi_sanger_ac_uk-cert.pem
-   ssl_key:
-      file: apps_hgi_sanger_ac_uk-key.pem 
+      file: nginx-test.conf
    gwas_whitelist:
       file: gwas_whitelist.js
 
