@@ -22,7 +22,7 @@ Make sure you have `terraform 0.11`, and `packer 1.4` installed. Installing `ans
 
 8. `cd` to the cloned `hgi-cloud` directory and run `git checkout theta/dockerSwarm`.
 
-9. Run `bash invoke.sh docker create`. This creates a set of Openstack machines which are configured to act as swarm. If `theta-hgi-prod-subnet-docker-main` has not been setup, run `bash invoke.sh docker create --networking`
+9. Run `bash invoke.sh docker create`. This creates a set of Openstack machines which are configured to act as swarm. If `theta-<Project>-subnet-docker-main` has not been setup, run `bash invoke.sh docker create --networking`
 
 10. To destroy your docker swarm cluster run `bash invoke.sh docker destroy`
 
@@ -32,7 +32,7 @@ NOTE: If you are installing `terraform 0.11` using Homebrew on OSX, you will nee
 
 1. Create a `docker-compose.yml` file that defines the services that will run on the swarm.
 
-2. Download Hermes' private key from `/home/mercury/ssh-keys/hermes` on `hgi-mercury-farm3`.
+2. Download Mercury's private key from `/hgi/secrets/` on `hgi-farm5`.
 
 `scp mercury@hgi-mercury-farm3:/home/mercury/ssh-keys/hermes .`
 
@@ -40,9 +40,9 @@ NOTE: If you are installing `terraform 0.11` using Homebrew on OSX, you will nee
 
 4. Copy over the compose file and any credentials files your services will need.
 
-`scp -i ./hermes ./config.yml ubuntu@[manager node IP]:~`
+`scp -i ./mercury ./config.yml ubuntu@[manager node IP]:~`
 
-`scp -i ./hermes ./docker-compose.yml ubuntu@[manager node IP]:~`, etc
+`scp -i ./mercury ./docker-compose.yml ubuntu@[manager node IP]:~`, etc
 
 5. (NOTE: Run this step OR step 6) Initialise the swarm using `ansible`:
 
