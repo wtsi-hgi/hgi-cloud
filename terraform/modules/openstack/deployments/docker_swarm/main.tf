@@ -7,9 +7,9 @@ provider openstack {
   version = "~> 1.16"
 }
 
-# Other data is communicated to ansible after merging with some outputs of terraform (e.g. smark master private ip). 
+# Other data is communicated to ansible after merging with some outputs of terraform (e.g. smark master private ip).
 
-#  How? First, the "instance_id"  output of the "spark_master module" is assigned to "other_data" argument, This argument is passed to the module "spark_slave" when its time to create slaves alongwith other metadata (datacentre, program etc.) 
+#  How? First, the "instance_id"  output of the "spark_master module" is assigned to "other_data" argument, This argument is passed to the module "spark_slave" when its time to create slaves alongwith other metadata (datacentre, program etc.)
 
 #  The "spark_slave" module then uses the "other_data" passed to it to its "user_data" module (alongwith the other metadata!) in an argument "template_vars"
 
@@ -18,22 +18,22 @@ provider openstack {
 # The template files generates a string which does the following:
 # clones the ansible git repo
 # writes the other_data to a file in the git rep
-# call ansible with the var file as an extra command line argument. 
+# call ansible with the var file as an extra command line argument.
 
 
-# This string is passed to the "user_data" attribute provided by openstack "openstack_compute_instance_v2", which then executes it at as  shell script at boot time. 
+# This string is passed to the "user_data" attribute provided by openstack "openstack_compute_instance_v2", which then executes it at as  shell script at boot time.
 
-# As part of the ansible execution,  the "common" role at ansible ensures that etc/hosts is modifed to register the spark_master_private_ip as spark-master, which can be referred to by any future provisioning. 
+# As part of the ansible execution,  the "common" role at ansible ensures that etc/hosts is modifed to register the spark_master_private_ip as spark-master, which can be referred to by any future provisioning.
 
 
 locals {
-  deployment_version    = "0.1.0" 
+  deployment_version    = "0.1.0"
   deployment_name       = "docker_swarm"
   other_data            = {
     docker_manager_external_address = "${var.docker_manager_external_address}"
   }
 
-} 
+}
 
 
 
@@ -53,7 +53,7 @@ module "docker_manager" {
       "${var.datacenter}-${var.programme}-${var.env}-secgroup-ssh",
       "${var.datacenter}-${var.programme}-${var.env}-secgroup-docker_swarm-manager",
       "${var.datacenter}-${var.programme}-${var.env}-secgroup-docker_swarm-worker",
-      "docker_swarm_web_app"
+      "${var.datacenter}-${var.programme}-${var.env}-secgroup-docker_swarm-web_app"
   ]
   count                = 1
   flavor_name          = "${var.docker_manager_flavor_name}"
@@ -93,7 +93,7 @@ module "docker_workers" {
   role_name             = "docker-swarm-worker"
   role_version          = "${var.docker_workers_role_version}"
   other_data            = "${merge(local.other_data, map("docker_manager_private_address", module.docker_manager.access_ip_v4s[0]))}"
-  # Fix: For supporting multiple docker managers, woudl need to send the entire array and make the accompanying code changes.  
+  # Fix: For supporting multiple docker managers, woudl need to send the entire array and make the accompanying code changes.
 
 }
 
@@ -116,8 +116,8 @@ module "docker_workers" {
 #       "${var.datacenter}-${var.programme}-${var.env}-secgroup-docker_swarm-worker"
 #   ]
 #   count                 = 1
-#   member_count          = "${length("${module.docker_manager.access_ip_v4s}") + length("${module.docker_workers.access_ip_v4s}")}" 
-#   instance_access_ip_v4s= "${concat("${module.docker_manager.access_ip_v4s}", "${module.docker_workers.access_ip_v4s}")}" 
+#   member_count          = "${length("${module.docker_manager.access_ip_v4s}") + length("${module.docker_workers.access_ip_v4s}")}"
+#   instance_access_ip_v4s= "${concat("${module.docker_manager.access_ip_v4s}", "${module.docker_workers.access_ip_v4s}")}"
 
 # }
 
@@ -131,7 +131,7 @@ resource "openstack_compute_floatingip_associate_v2" "public_ip" {
 
   floating_ip = "${var.docker_manager_external_address}"
   instance_id = "${module.docker_manager.instance_ids[0]}"
-  
+
 }
 
 # module "docker_volume" {
@@ -153,9 +153,3 @@ resource "openstack_compute_floatingip_associate_v2" "public_ip" {
 #   size                = 32
 #   count               = 1
 # }
-
-
-
-
-
-

@@ -27,6 +27,12 @@ resource "openstack_networking_secgroup_v2" "docker_swarm-worker" {
   delete_default_rules  = true
 }
 
+resource "openstack_networking_secgroup_v2" "docker_swarm-web_app" {
+  name                  = "${var.datacenter}-${var.programme}-${var.env}-secgroup-docker_swarm-web_app"
+  description           = "The security group for docker swarm services. Ports exposed by any service deployed to the swarm must adhere to this group's rules for it to be able to serve external requests."
+  delete_default_rules  = false
+}
+
 # FIXME Do we need "manager to worker" rules in any of the following planes?
 
 # Management plane
@@ -183,4 +189,116 @@ resource "openstack_networking_secgroup_rule_v2" "docker_swarm-worker-worker-sec
   protocol          = "esp"
   remote_group_id   = "${openstack_networking_secgroup_v2.docker_swarm-worker.id}"
   security_group_id = "${openstack_networking_secgroup_v2.docker_swarm-worker.id}"
+}
+
+# docker_swarm-web_app settings
+
+resource "openstack_networking_secgroup_rule_v2" "docker_swarm-secgroup_1" {
+  direction         = "egress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 3476
+  port_range_max    = 3476
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = "${openstack_networking_secgroup_v2.docker_swarm-web_app.id}"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "docker_swarm-secgroup_2" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 80
+  port_range_max    = 90
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = "${openstack_networking_secgroup_v2.docker_swarm-web_app.id}"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "docker_swarm-secgroup_3" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 443
+  port_range_max    = 443
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = "${openstack_networking_secgroup_v2.docker_swarm-web_app.id}"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "docker_swarm-secgroup_4" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 3000
+  port_range_max    = 3000
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = "${openstack_networking_secgroup_v2.docker_swarm-web_app.id}"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "docker_swarm-secgroup_5" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 3001
+  port_range_max    = 3001
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = "${openstack_networking_secgroup_v2.docker_swarm-web_app.id}"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "docker_swarm-secgroup_6" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 3444
+  port_range_max    = 3444
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = "${openstack_networking_secgroup_v2.docker_swarm-web_app.id}"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "docker_swarm-secgroup_7" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 3476
+  port_range_max    = 3476
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = "${openstack_networking_secgroup_v2.docker_swarm-web_app.id}"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "docker_swarm-secgroup_8" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 3838
+  port_range_max    = 3838
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = "${openstack_networking_secgroup_v2.docker_swarm-web_app.id}"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "docker_swarm-secgroup_9" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 8080
+  port_range_max    = 8080
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = "${openstack_networking_secgroup_v2.docker_swarm-web_app.id}"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "docker_swarm-secgroup_10" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 8888
+  port_range_max    = 8888
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = "${openstack_networking_secgroup_v2.docker_swarm-web_app.id}"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "docker_swarm-secgroup_11" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 9000
+  port_range_max    = 9000
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = "${openstack_networking_secgroup_v2.docker_swarm-web_app.id}"
 }
