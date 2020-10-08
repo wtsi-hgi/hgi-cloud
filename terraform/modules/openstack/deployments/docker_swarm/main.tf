@@ -82,7 +82,7 @@ module "docker_workers" {
       "${var.datacenter}-${var.programme}-${var.env}-secgroup-base",
       "${var.datacenter}-${var.programme}-${var.env}-secgroup-ssh",
       "${var.datacenter}-${var.programme}-${var.env}-secgroup-docker_swarm-worker",
-      "docker_swarm_web_app"
+      "${var.datacenter}-${var.programme}-${var.env}-secgroup-docker_swarm-web_app"
   ]
 
   count                 = "${var.docker_workers_count}"
