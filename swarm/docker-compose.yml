@@ -1,4 +1,4 @@
-  
+
 version: '3.5'
 
 # Compose has commands for managing the whole lifecycle of your application:
@@ -11,26 +11,26 @@ version: '3.5'
 services:
   backend:
     image: mercury/openstack_report_backend:prod
-    ports: 
-      - "3000:3000" 
+    ports:
+      - "3000:3000"
     secrets:
       - source: backend_secret
         target: /app/hgi-openrc.sh
     networks: [app]
 
   frontend:
-    image: mercury/openstack_report_frontend:prod    
-    depends_on: 
+    image: mercury/openstack_report_frontend:prod
+    depends_on:
       - backend
     command: "npm run serve -- --mode production"
     networks: [app]
-  
+
   weaver:
-    image: mercury/hgi-weaver:1.1.3 
+    image: mercury/hgi-weaver:1.1.3
     secrets:
-      - source: weaver_secret      
+      - source: weaver_secret
         target: /srv/shiny-server/weaver/config.yml
-      - source: weaver_secret      
+      - source: weaver_secret
         target: /srv/shiny-server/spaceman/config.yml
     networks: [app]
 
@@ -41,7 +41,7 @@ services:
     networks: [app]
 
   nginx-ldap-auth-daemon:
-    image: mercury/nginx-ldap-auth-daemon:test 
+    image: mercury/nginx-ldap-auth-daemon:test
     ports:
       - "8888:8888"
     networks: [app]
@@ -70,8 +70,8 @@ services:
         constraints:
           - "node.role==manager"
   nginx:
-    image: nginx 
-    ports: 
+    image: nginx
+    ports:
       - "443:443"
       - "80:8080"
     depends_on:
@@ -83,7 +83,7 @@ services:
       - nginx-ldap-auth-daemon
     configs:
       - source: nginx_config
-        target: /etc/nginx/nginx.conf 
+        target: /etc/nginx/nginx.conf
       - source: ssl_cert
         target: /etc/ssl/certs/apps_hgi_sanger_ac_uk-cert.pem
       - source: ssl_key
@@ -98,7 +98,7 @@ secrets:
    backend_secret:
       file: hgi-openrc.sh
    weaver_secret:
-      file: config.yml    
+      file: config.yml
 
 configs:
    nginx_config:
@@ -106,7 +106,7 @@ configs:
    ssl_cert:
       file: apps_hgi_sanger_ac_uk-cert.pem
    ssl_key:
-      file: apps_hgi_sanger_ac_uk-key.pem 
+      file: apps_hgi_sanger_ac_uk-key.pem
    gwas_whitelist:
       file: gwas_whitelist.js
 
@@ -114,5 +114,6 @@ networks:
   app:
     ipam:
       driver: default
-      config:
-      - subnet: 10.0.1.1/24
+###FIX ME: Subnet is breaking launching services###
+#      config:
+#      - subnet: 10.0.1.1/24
