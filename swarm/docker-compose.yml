@@ -16,6 +16,8 @@ services:
     secrets:
       - source: backend_secret
         target: /app/hgi-openrc.sh
+      - source: tenants_secret
+        target: /app/tenants_conf.yml
     networks: [app]
 
   frontend:
@@ -99,6 +101,8 @@ secrets:
       file: hgi-openrc.sh
    weaver_secret:
       file: config.yml
+   tenants_secret:
+      file: tenants_conf.yml
 
 configs:
    nginx_config:
