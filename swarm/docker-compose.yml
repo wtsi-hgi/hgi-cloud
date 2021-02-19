@@ -10,7 +10,7 @@ version: '3.5'
 
 services:
   backend:
-    image: mercury/openstack_report_backend:prod
+    image: mercury/openstack_report_backend:theta
     ports:
       - "3000:3000"
     secrets:
@@ -21,7 +21,7 @@ services:
     networks: [app]
 
   frontend:
-    image: mercury/openstack_report_frontend:prod
+    image: mercury/openstack_report_frontend:theta
     depends_on:
       - backend
     command: "npm run serve -- --mode production"
