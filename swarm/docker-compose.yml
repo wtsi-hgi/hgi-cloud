@@ -1,4 +1,3 @@
-
 version: '3.5'
 
 # Compose has commands for managing the whole lifecycle of your application:
@@ -49,7 +48,11 @@ services:
     networks: [app]
 
   gwas-frontend:
-    image: mercury/gwasplots:1.0
+    image: mercury/gwasplots:1.9
+    volumes:
+      - type: bind
+        source: /volume/img 
+        target: /usr/src/app/build/data/img
     ports:
       - "3001:8080"
     environment:
@@ -65,7 +68,9 @@ services:
   gwas-db:
     image: mongo:bionic
     volumes:
-      - gwasdb:/data/db
+      - type: bind
+        source: /volume/data/db 
+        target: /data/db
     networks: [app]
     deploy:
       placement:
