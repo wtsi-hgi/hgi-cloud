@@ -76,6 +76,30 @@ services:
       placement:
         constraints:
           - "node.role==manager"
+
+  scrna_db:
+    # database for the scRNA webapp
+    image: postgres:13.2
+    restart: unless-stopped
+    volumes:
+      - /volume/scRNA_test_app/scrna_pgdata_folder/data:/var/lib/postgresql/data #change the @scrna_pgdata_folder/data to any route for the permenent data storage. data folder needs to be in here. If not existing, please create prior deployment
+    env_file: scrna.env  
+    networks: [app]
+  
+  scrna_web2:
+    # scRNA application 
+    image: mercury/scrna_web_browser:0.31
+    volumes:
+      - /volume/scRNA_test_app/scrna_static_and_media_files:/vol/web  #change the @scrna_static_and_media_files to any route for the permenent data storage. If not existing, please create prior deployment
+    depends_on:
+      - scrna_db
+    env_file: scrna.env
+    ports: 
+        - "3002:8081"  
+    networks: [app]
+
+
+
   nginx:
     image: nginx
     ports:
@@ -88,6 +112,8 @@ services:
       - weaver
       - login-page
       - nginx-ldap-auth-daemon
+      - scrna_web2
+      - scrna_db
     configs:
       - source: nginx_config
         target: /etc/nginx/nginx.conf
@@ -96,10 +122,11 @@ services:
       - source: ssl_key
         target: /etc/ssl/private/apps_hgi_sanger_ac_uk-key.pem
     networks: [app]
+    volumes:
+      - /volume/scRNA_test_app/scrna_static_and_media_files:/vol/static #needed by scRNA webapp
 
 volumes:
-  gwasdb:
-    driver: local
+  api_data:
 
 secrets:
    backend_secret:
