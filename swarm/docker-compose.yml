@@ -88,15 +88,49 @@ services:
   
   scrna_web2:
     # scRNA application 
-    image: mercury/scrna_web_browser:0.31
+    image: mercury/scrna_web_browser:1.2
     volumes:
       - /volume/scRNA_test_app/scrna_static_and_media_files:/vol/web  #change the @scrna_static_and_media_files to any route for the permenent data storage. If not existing, please create prior deployment
+      #- api_data:/app
+    #entrypoint: ./scrna_entrypoint.sh
     depends_on:
       - scrna_db
     env_file: scrna.env
     ports: 
         - "3002:8081"  
     networks: [app]
+    #deploy:
+     # placement:
+      #  constraints:
+       #   - "node.role==manager"
+
+  launcher-backend:
+    # Cluster Launcher Backend
+    image: mercury/cluster_launcher_backend:prod
+    networks: [app]
+    volumes:
+     - /home/ubuntu/clusters:/backend/clusters
+    secrets:
+     - source: mercury-key
+       target: /root/.ssh/id_rsa
+       mode: 0600
+     - source: mercury-key-pub
+       target: /backend/mercury-key.pub
+     - source: backend_secret
+       target: /backend/hgi-openrc.sh
+     - source: tenants_secret
+       target: /backend/tenants_conf.yml
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
+
+  launcher-frontend:
+    # Cluster Launcher Frontend
+    image: mercury/cluster_launcher_frontend:prod
+    networks: [app]
+    depends_on: 
+      - launcher_backend
 
 
 
@@ -114,6 +148,8 @@ services:
       - nginx-ldap-auth-daemon
       - scrna_web2
       - scrna_db
+      - launcher-backend
+      - launcher-frontend
     configs:
       - source: nginx_config
         target: /etc/nginx/nginx.conf
@@ -124,6 +160,7 @@ services:
     networks: [app]
     volumes:
       - /volume/scRNA_test_app/scrna_static_and_media_files:/vol/static #needed by scRNA webapp
+      #- api_data:/app 
 
 volumes:
   api_data:
@@ -135,6 +172,10 @@ secrets:
       file: config.yml
    tenants_secret:
       file: tenants_conf.yml
+   mercury-key:
+      file: id_rsa
+   mercury-key-pub:
+      file: mercury-key.pub
 
 configs:
    nginx_config:
