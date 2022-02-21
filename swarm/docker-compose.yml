@@ -27,12 +27,10 @@ services:
     networks: [app]
 
   weaver:
-    image: mercury/hgi-weaver:1.1.3
+    image: mercury/hgi-weaver:2.2.2
     secrets:
       - source: weaver_secret
         target: /srv/shiny-server/weaver/config.yml
-      - source: weaver_secret
-        target: /srv/shiny-server/spaceman/config.yml
     networks: [app]
 
   login-page:
@@ -88,7 +86,7 @@ services:
   
   scrna_web2:
     # scRNA application 
-    image: mercury/scrna_web_browser:1.2
+    image: mercury/scrna_web_browser:1.44
     volumes:
       - /volume/scRNA_test_app/scrna_static_and_media_files:/vol/web  #change the @scrna_static_and_media_files to any route for the permenent data storage. If not existing, please create prior deployment
       #- api_data:/app
@@ -109,7 +107,7 @@ services:
     image: mercury/cluster_launcher_backend:prod
     networks: [app]
     volumes:
-     - /home/ubuntu/clusters:/backend/clusters
+     - /volume/clusters:/backend/clusters
     secrets:
      - source: mercury-key
        target: /root/.ssh/id_rsa
@@ -132,7 +130,32 @@ services:
     depends_on: 
       - launcher_backend
 
+  genestack-study-viewer:
+    # Genestack Study Viewer
+    image: mercury/genestack-study-viewer:1.3
+    ports:
+      - "3838:3838"
+    networks: [app]
+    env_file:
+      - .genestack_study_viewer.env
 
+  genestack-uploader:
+    # Genestack Uploader App
+    image: mercury/genestack-uploader:2.0.prod
+    networks: [app]
+    environment:
+      GSSERVER: default
+    configs:
+      - source: genestack-config
+        target: /root/.genestack.cfg
+      - source: s3-config
+        target: /root/.s3cfg
+    secrets:
+      - source: mercury-key
+        target: /root/.ssh/id_rsa_genestack
+        mode: 0600
+      - source: mercury-key-pub
+        target: /root/.ssh/id_rsa_genestack.pub
 
   nginx:
     image: nginx
@@ -150,6 +173,7 @@ services:
       - scrna_db
       - launcher-backend
       - launcher-frontend
+      - genestack-study-viewer
     configs:
       - source: nginx_config
         target: /etc/nginx/nginx.conf
@@ -169,7 +193,7 @@ secrets:
    backend_secret:
       file: hgi-openrc.sh
    weaver_secret:
-      file: config.yml
+      file: weaver-config.yml
    tenants_secret:
       file: tenants_conf.yml
    mercury-key:
@@ -186,6 +210,10 @@ configs:
       file: apps_hgi_sanger_ac_uk-key.pem
    gwas_whitelist:
       file: gwas_whitelist.js
+   genestack-config:
+      file: genestack-uploader/.genestack.cfg
+   s3-config:
+      file: genestack-uploader/.s3cfg
 
 networks:
   app:
