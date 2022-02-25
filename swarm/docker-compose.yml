@@ -141,7 +141,7 @@ services:
 
   genestack-uploader:
     # Genestack Uploader App
-    image: mercury/genestack-uploader:2.0.prod
+    image: mercury/genestack-uploader:2.1.prod
     networks: [app]
     environment:
       GSSERVER: default
