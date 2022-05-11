@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# this assumes the new nginx.conf is at /home/ubuntu/swarm/nginx.conf
+
 stack="dockerSwarm"                                                                                                                        
                                                                                                                                            
 docker service scale ${stack}_nginx=0                                                                                                      
