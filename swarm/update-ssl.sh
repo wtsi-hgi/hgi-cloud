@@ -1,3 +1,7 @@
+#!/bin/bash
+
+# this assumes below that the new .pem cert file is at /home/ubuntu/swarm/apps_hgi_sanger_ac_uk-cert.pem  
+
 docker service scale ${stack}_nginx=0                                                                                                      
 docker service update --config-rm ${stack}_ssl_cert ${stack}_nginx                                                                         
 docker config rm ${stack}_ssl_cert                                                                                                         
