@@ -182,6 +182,10 @@ services:
       - source: ssl_key
         target: /etc/ssl/private/apps_hgi_sanger_ac_uk-key.pem
     networks: [app]
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"    
     volumes:
       - /volume/scRNA_test_app/scrna_static_and_media_files:/vol/static #needed by scRNA webapp
       #- api_data:/app 
