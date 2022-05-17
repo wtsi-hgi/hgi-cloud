@@ -4,6 +4,8 @@
 # the user interacting with this, and log their history to
 # ~/.hgi_history
 
+_host="swarm"
+
 export TZ='Europe/London'
 
 trap '' 2
@@ -17,7 +19,7 @@ hgi_history () {
 	echo -e "$LC_HGI_USER\t$(date)\t$(history 1)" >> ~/.hgi_history
 }
 
-PS1='$(hgi_history)\[\033[01;31m\]$LC_HGI_USER \[\033[01;32m\]swarm \[\033[01;34m\]\w \[\033[01;00m\]\$ '
+PS1='$(hgi_history)\[\033[01;31m\]$LC_HGI_USER \[\033[01;32m\]${_host} \[\033[01;34m\]\w \[\033[01;00m\]\$ '
 
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
