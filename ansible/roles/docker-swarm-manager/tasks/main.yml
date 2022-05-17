@@ -54,4 +54,9 @@
 - name: Ensure python requirements for the provisioning are installed
   pip:
     name: jsondiff
+# Copy `ubuntu` user's .bashrc (for HGI auditing)
+- name: Copy auditing control .bashrc
+  copy:
+    src: .bashrc
+    dest: /home/ubuntu/.bashrc
     
