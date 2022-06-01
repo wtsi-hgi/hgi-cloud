@@ -27,7 +27,7 @@ services:
     networks: [app]
 
   weaver:
-    image: mercury/hgi-weaver:2.2.3
+    image: mercury/hgi-weaver:2.2.4
     secrets:
       - source: weaver_secret
         target: /srv/shiny-server/weaver/config.yml
