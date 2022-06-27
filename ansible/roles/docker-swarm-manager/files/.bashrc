@@ -8,6 +8,12 @@ _host="swarm"
 
 export TZ='Europe/London'
 
+# Enable the subsequent settings only in interactive sessions
+case $- in
+  *i*) ;;
+    *) return;;
+esac
+
 trap '' 2
 while [[ $LC_HGI_USER == "" ]]; do
 	read -p "HGI User (i.e. mg38): " LC_HGI_USER
