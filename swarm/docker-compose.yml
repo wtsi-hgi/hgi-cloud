@@ -86,7 +86,7 @@ services:
   
   scrna_web2:
     # scRNA application 
-    image: mercury/scrna_web_browser:1.44
+    image: mercury/scrna_web_browser:1.47
     volumes:
       - /volume/scRNA_test_app/scrna_static_and_media_files:/vol/web  #change the @scrna_static_and_media_files to any route for the permenent data storage. If not existing, please create prior deployment
       #- api_data:/app
