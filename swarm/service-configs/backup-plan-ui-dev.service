@@ -1,0 +1,11 @@
+[Unit]
+Description=Backup Plan dev-UI
+After=network.target
+
+[Service]
+Environment="BACKUP_PLAN_UI_PORT=4001"
+ExecStart=/opt/backup-plan-ui/dev/backup-plan-ui /opt/backup-plan-ui/dev/plan.csv
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
