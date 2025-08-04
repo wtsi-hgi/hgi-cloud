@@ -1,0 +1,10 @@
+[Unit]
+Description=Run backup plan uploads on midnights
+
+[Timer]
+OnCalendar=*-*-* 00:00:00
+Persistent=true
+Unit=backup-plan-backup.service
+
+[Install]
+WantedBy=timers.target

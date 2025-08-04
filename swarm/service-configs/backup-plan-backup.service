@@ -1,0 +1,5 @@
+[Unit]
+Description=Upload backup plan database to s3
+
+[Service]
+ExecStart=/bin/bash -c "s3cmd -c /home/ubuntu/.s3cfg put /opt/backup-plan-ui/prod/plan.csv s3://backup-plans/plan-$(date +%%Y-%%m-%%d).csv"
