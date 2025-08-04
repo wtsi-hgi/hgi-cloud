@@ -26,12 +26,33 @@ services:
     command: "npm run serve -- --mode production"
     networks: [app]
 
-  weaver:
-    image: mercury/hgi-weaver:2.3.0
-    secrets:
-      - source: weaver_secret
-        target: /srv/shiny-server/weaver/config.yml
-    networks: [app]
+  softpack-frontend:
+    image: mercury/softpack-frontend:1.1.60
+    ports:
+      - "3003:8080"
+    configs:
+      - source: softpack_configuration
+        target: /root/.softpack/core/config.yml
+      - source: softpackHosts
+        target: /etc/hosts
+    volumes:
+      - type: bind
+        source: /home/ubuntu/spackCache/
+        target: /spackCache
+    networks: [ app ]
+
+  farmReport:
+    image: mercury/simple-host:1.0.0
+    ports:
+      - "3004:8080"
+    volumes:
+      - type: bind
+        source: /home/ubuntu/farmReports/
+        target: /opt/www/farmReports
+      - type: bind
+        source: /home/ubuntu/publish/
+        target: /opt/www/publish
+    networks: [ app ]
 
   login-page:
     image: mercury/auth-login-page
@@ -49,7 +70,7 @@ services:
     image: mercury/gwasplots:1.9
     volumes:
       - type: bind
-        source: /volume/img 
+        source: /volume/img
         target: /usr/src/app/build/data/img
     ports:
       - "3001:8080"
@@ -67,7 +88,7 @@ services:
     image: mongo:bionic
     volumes:
       - type: bind
-        source: /volume/data/db 
+        source: /volume/data/db
         target: /data/db
     networks: [app]
     deploy:
@@ -81,11 +102,11 @@ services:
     restart: unless-stopped
     volumes:
       - /volume/scRNA_test_app/scrna_pgdata_folder/data:/var/lib/postgresql/data #change the @scrna_pgdata_folder/data to any route for the permenent data storage. data folder needs to be in here. If not existing, please create prior deployment
-    env_file: scrna.env  
+    env_file: scrna.env
     networks: [app]
-  
+
   scrna_web2:
-    # scRNA application 
+    # scRNA application
     image: mercury/scrna_web_browser:1.47
     volumes:
       - /volume/scRNA_test_app/scrna_static_and_media_files:/vol/web  #change the @scrna_static_and_media_files to any route for the permenent data storage. If not existing, please create prior deployment
@@ -94,8 +115,8 @@ services:
     depends_on:
       - scrna_db
     env_file: scrna.env
-    ports: 
-        - "3002:8081"  
+    ports:
+        - "3002:8081"
     networks: [app]
     #deploy:
      # placement:
@@ -127,14 +148,12 @@ services:
     # Cluster Launcher Frontend
     image: mercury/cluster_launcher_frontend:prod
     networks: [app]
-    depends_on: 
+    depends_on:
       - launcher_backend
 
   genestack-study-viewer:
     # Genestack Study Viewer
     image: mercury/genestack-study-viewer:1.3
-    ports:
-      - "3838:3838"
     networks: [app]
     env_file:
       - .genestack_study_viewer.env
@@ -166,7 +185,7 @@ services:
       - gwas-frontend
       - frontend
       - backend
-      - weaver
+      - softpack-frontend
       - login-page
       - nginx-ldap-auth-daemon
       - scrna_web2
@@ -182,13 +201,16 @@ services:
       - source: ssl_key
         target: /etc/ssl/private/apps_hgi_sanger_ac_uk-key.pem
     networks: [app]
+    volumes:
+     - /volume/scRNA_test_app/scrna_static_and_media_files:/vol/static #needed by scRNA webapp
+     - type: bind
+       source: /home/ubuntu/.acme.sh/apps.hgi.sanger.ac.uk_ecc
+       target: /etc/ssl/private/
     deploy:
       placement:
         constraints:
-          - "node.role==manager"    
-    volumes:
-      - /volume/scRNA_test_app/scrna_static_and_media_files:/vol/static #needed by scRNA webapp
-      #- api_data:/app 
+          - "node.role==manager"
+      #- api_data:/app
 
 volumes:
   api_data:
@@ -196,8 +218,6 @@ volumes:
 secrets:
    backend_secret:
       file: hgi-openrc.sh
-   weaver_secret:
-      file: weaver-config.yml
    tenants_secret:
       file: tenants_conf.yml
    mercury-key:
@@ -218,6 +238,10 @@ configs:
       file: genestack-uploader/.genestack.cfg
    s3-config:
       file: genestack-uploader/.s3cfg
+   softpack_configuration:
+      file: softpack.yml
+   softpackHosts:
+      file: softpackHosts
 
 networks:
   app:

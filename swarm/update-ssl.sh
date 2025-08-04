@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# this assumes below that the new .pem cert file is at /home/ubuntu/swarm/apps_hgi_sanger_ac_uk-cert.pem  
-# ran from /home/ubuntu/swarm/ where config files like docker-compose.yml are present (from this repo)
+echo "THIS SCRIPT IS NO LONGER REQUIRED."
+exit 1;
+
+stack="dockerSwarm"
 
 docker service scale ${stack}_nginx=0                                                                                                      
 docker service update --config-rm ${stack}_ssl_cert ${stack}_nginx                                                                         
